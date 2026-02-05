@@ -95,7 +95,7 @@ export default function CreateRoomPage() {
                             type="text"
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
-                            placeholder="친구들이 알아볼 이름을 입력하세요"
+                            placeholder="MC 닉네임 정하기"
                             className="w-full h-[56px] pl-4 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                             autoFocus
                             inputMode="text"
@@ -153,17 +153,17 @@ export default function CreateRoomPage() {
                             );
                         })}
                     </div>
-
-                    {/* Guide Text */}
-                    <div className="mt-8 p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-3 items-start">
-                        <Info className="w-5 h-5 shrink-0 mt-0.5 text-blue-600" />
-                        <p className="text-xs leading-5 text-blue-700">
-                            <span className="font-bold">TIP</span>: 어떤 테마를 고를지 고민되시나요?
-                            <br />
-                            어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
-                        </p>
-                    </div>
                 </section>
+
+                {/* Guide Text */}
+                <div className="mb-8 p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-3 items-start">
+                    <Info className="w-5 h-5 shrink-0 mt-0.5 text-blue-600" />
+                    <p className="text-xs leading-5 text-blue-700">
+                        <span className="font-bold">TIP</span>: 어떤 테마를 고를지 고민되시나요?
+                        <br />
+                        어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
+                    </p>
+                </div>
             </div>
 
             {/* Bottom CTA */}
