@@ -17,6 +17,13 @@ const config: Config = {
                     hover: "#FA5252",
                     light: "#FFF5F5", // bg-brand-light
                 },
+                // Alias for backward compatibility
+                primary: {
+                    DEFAULT: "#FF6B6B",
+                    foreground: "#FFFFFF",
+                },
+                secondary: "#F3F4F6", // Neutral 100
+                accent: "#FF6B6B",
                 neutral: {
                     50: "#F9FAFB",
                     100: "#F3F4F6",
