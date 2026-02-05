@@ -79,10 +79,10 @@ export default function CreateRoomPage() {
             </header>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 pt-8 pb-8">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 pt-4 pb-4">
                 {/* Step 1 */}
-                <section className="mb-10">
-                    <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-4">
+                <section className="mb-6">
+                    <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-3">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">
                             1
                         </span>
@@ -96,7 +96,7 @@ export default function CreateRoomPage() {
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
                             placeholder="MC 닉네임 정하기"
-                            className="w-full h-[56px] pl-4 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+                            className="w-full h-[52px] pl-4 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                             autoFocus
                             inputMode="text"
                             autoCapitalize="off"
@@ -106,21 +106,21 @@ export default function CreateRoomPage() {
                         />
                     </div>
 
-                    <p className="mt-2 text-xs text-gray-400 leading-5">
+                    <p className="mt-1.5 text-xs text-gray-400 leading-5">
                         예: 현, 민지, 팀장님 등
                     </p>
                 </section>
 
                 {/* Step 2 */}
-                <section className="mb-6">
-                    <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-4">
+                <section className="mb-4">
+                    <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-3">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">
                             2
                         </span>
                         모임 성격 선택
                     </label>
 
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2.5">
                         {CATEGORIES.map((cat) => {
                             const isSelected = selectedCategory === cat.id;
                             return (
@@ -128,17 +128,17 @@ export default function CreateRoomPage() {
                                     key={cat.id}
                                     type="button"
                                     onClick={() => setSelectedCategory(cat.id)}
-                                    className={`w-full p-4 rounded-xl border flex items-center gap-4 transition-all active:scale-[0.98] text-left ${isSelected
+                                    className={`w-full p-3 rounded-xl border flex items-center gap-3 transition-all active:scale-[0.98] text-left ${isSelected
                                         ? 'border-black bg-gray-50 ring-1 ring-black shadow-sm'
                                         : 'border-gray-100 bg-white hover:border-gray-300'
                                         }`}
                                 >
                                     <span className="text-2xl w-8 text-center">{cat.emoji}</span>
                                     <div className="flex-1 min-w-0">
-                                        <span className={`block text-[15px] font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-700'}`}>
+                                        <span className={`block text-[14px] font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-700'}`}>
                                             {cat.label}
                                         </span>
-                                        <span className="block text-[12px] text-gray-400 mt-0.5">
+                                        <span className="block text-[11px] text-gray-400 mt-0.5">
                                             {cat.desc}
                                         </span>
                                     </div>
@@ -154,12 +154,10 @@ export default function CreateRoomPage() {
                 </section>
 
                 {/* Guide Text */}
-                <div className="mt-6 p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-3 items-start">
-                    <Info className="w-5 h-5 shrink-0 mt-0.5 text-blue-600" />
-                    <p className="text-xs leading-5 text-blue-700">
-                        <span className="font-bold">TIP</span>: 어떤 테마를 고를지 고민되시나요?
-                        <br />
-                        어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
+                <div className="mt-4 p-3 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-2.5 items-start">
+                    <Info className="w-4 h-4 shrink-0 mt-0.5 text-blue-600" />
+                    <p className="text-[11px] leading-[1.4] text-blue-700">
+                        <span className="font-bold">TIP</span>: 어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
                     </p>
                 </div>
             </div>
