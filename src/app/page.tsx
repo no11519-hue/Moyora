@@ -14,10 +14,10 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col px-5 pt-3 pb-4 overflow-hidden">
+      <div className="flex-1 flex flex-col px-5 pt-2 pb-3 overflow-hidden">
 
         {/* 1. Hero Compact */}
-        <section className="flex flex-col items-center text-center space-y-3 mb-4 shrink-0">
+        <section className="flex flex-col items-center text-center space-y-2 mb-3 shrink-0">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold tracking-wide uppercase">
             <Zap className="w-3 h-3" fill="currentColor" /> 3초 컷 아이스브레이킹
           </span>
@@ -33,8 +33,8 @@ export default function Home() {
           </p>
 
           {/* CTA Compact */}
-          <Link href="/create" className="w-full max-w-[280px] mt-1 group">
-            <button className="w-full py-3 bg-neutral-900 text-white rounded-full font-bold text-[15px] flex items-center justify-center gap-2 shadow-md group-active:scale-95 transition-all">
+          <Link href="/create" className="w-full max-w-[280px] mt-0.5 group">
+            <button className="w-full py-2.5 bg-neutral-900 text-white rounded-full font-bold text-[15px] flex items-center justify-center gap-2 shadow-md group-active:scale-95 transition-all">
               지금 방 만들기
               <ArrowRight className="w-4 h-4 opacity-70 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -42,19 +42,19 @@ export default function Home() {
         </section>
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-100 mb-4 shrink-0"></div>
+        <div className="w-full h-px bg-neutral-100 mb-3 shrink-0"></div>
 
         {/* 2. Popular Themes (2x2 Grid, No Scroll) */}
         <section className="flex-1 min-h-0 shrink-0">
-          <div className="flex items-center gap-1.5 mb-2.5">
+          <div className="flex items-center gap-1.5 mb-2">
             <Sparkles className="w-4 h-4 text-brand fill-brand/20" />
             <h2 className="text-[15px] font-bold text-neutral-800">인기 테마</h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2">
             {THEME_CARDS.map((theme, i) => (
-              <div key={i} className="p-3 rounded-2xl border border-neutral-100 bg-neutral-50/50 flex flex-col items-center text-center gap-1.5 active:bg-neutral-100 transition-colors">
-                <div className="text-2xl">{theme.icon}</div>
+              <div key={i} className="p-2.5 rounded-2xl border border-neutral-100 bg-neutral-50/50 flex flex-col items-center text-center gap-1 active:bg-neutral-100 transition-colors">
+                <div className="text-xl">{theme.icon}</div>
                 <div>
                   <span className="block font-bold text-[13px] text-neutral-900">{theme.title}</span>
                   <span className="block text-[10px] text-neutral-400 mt-0.5">{theme.sub}</span>
@@ -65,7 +65,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <p className="text-[10px] text-neutral-300 text-center mt-4 shrink-0">
+        <p className="text-[10px] text-neutral-300 text-center mt-3 shrink-0">
           © 2026 Moyora. Simple Ice-breaking Service.
         </p>
 
