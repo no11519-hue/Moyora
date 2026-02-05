@@ -4,20 +4,20 @@ import { ArrowRight, Zap, Sparkles } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="mobile-container flex flex-col relative bg-white min-h-screen overflow-hidden">
+    <main className="mobile-container h-screen flex flex-col relative bg-white overflow-hidden">
 
       {/* Compact Header */}
-      <header className="h-12 flex items-center justify-between px-5 sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
+      <header className="h-12 flex items-center justify-between px-5 shrink-0 bg-white/90 backdrop-blur-sm">
         <div className="flex items-center gap-1.5 opacity-90">
           <span className="text-xl">🤗</span>
           <span className="font-bold text-base tracking-tight text-neutral-900">Moyora</span>
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col px-5 pt-4 pb-8">
+      <div className="flex-1 flex flex-col px-5 pt-4 pb-8 overflow-hidden">
 
         {/* 1. Hero Compact */}
-        <section className="flex flex-col items-center text-center space-y-4 mb-6">
+        <section className="flex flex-col items-center text-center space-y-4 mb-6 shrink-0">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold tracking-wide uppercase">
             <Zap className="w-3 h-3" fill="currentColor" /> 3초 컷 아이스브레이킹
           </span>
@@ -42,10 +42,10 @@ export default function Home() {
         </section>
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-100 mb-6"></div>
+        <div className="w-full h-px bg-neutral-100 mb-6 shrink-0"></div>
 
         {/* 2. Popular Themes (2x2 Grid, No Scroll) */}
-        <section className="flex-1">
+        <section className="flex-1 min-h-0 shrink-0">
           <div className="flex items-center gap-1.5 mb-3">
             <Sparkles className="w-4 h-4 text-brand fill-brand/20" />
             <h2 className="text-[15px] font-bold text-neutral-800">인기 테마</h2>
@@ -65,7 +65,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <p className="text-[10px] text-neutral-300 text-center mt-6">
+        <p className="text-[10px] text-neutral-300 text-center mt-6 shrink-0">
           © 2026 Moyora. Simple Ice-breaking Service.
         </p>
 
