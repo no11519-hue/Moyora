@@ -90,18 +90,13 @@ export default function CreateRoomPage() {
                     </label>
 
                     <div className="relative">
-                        {/* Icon */}
-                        <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                            <User className="w-5 h-5" />
-                        </div>
-
                         {/* Input */}
                         <input
                             type="text"
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
                             placeholder="친구들이 알아볼 이름을 입력하세요"
-                            className="w-full h-[56px] pl-12 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+                            className="w-full h-[56px] pl-4 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                             autoFocus
                             inputMode="text"
                             autoCapitalize="off"
