@@ -57,10 +57,10 @@ export default function CreateRoomPage() {
     };
 
     return (
-        <div className="mobile-container flex flex-col relative bg-white h-screen overflow-hidden">
+        <div className="mobile-container flex flex-col bg-white">
 
             {/* Header */}
-            <header className="h-14 flex items-center px-4 bg-white border-b border-gray-100 shrink-0">
+            <header className="h-14 flex items-center px-4 bg-white border-b border-gray-100 shrink-0 sticky top-0 z-30">
                 <Link href="/" className="p-2 -ml-2 text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-50">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
@@ -68,12 +68,12 @@ export default function CreateRoomPage() {
             </header>
 
             {/* Scrollable Content */}
-            <div className="flex-1 flex flex-col px-5 pt-6 overflow-y-auto pb-24">
+            <div className="flex-1 flex flex-col px-6 pt-8 pb-32 overflow-y-auto">
 
                 {/* Step 1 */}
-                <section className="mb-8">
-                    <label className="flex items-center gap-2 text-[14px] font-bold text-gray-800 mb-3">
-                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px]">1</span>
+                <section className="mb-10">
+                    <label className="flex items-center gap-2 text-[15px] font-bold text-gray-800 mb-4">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">1</span>
                         진행자 닉네임
                     </label>
                     <div className="relative">
@@ -82,17 +82,19 @@ export default function CreateRoomPage() {
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
                             placeholder="친구들이 알아볼 이름을 입력하세요"
-                            className="w-full h-[52px] pl-12 pr-4 rounded-xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+                            className="w-full h-[56px] pl-14 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                             autoFocus
                         />
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <div className="absolute left-5 top-1/2 -translate-y-1/2">
+                            <User className="w-5 h-5 text-gray-400" />
+                        </div>
                     </div>
                 </section>
 
                 {/* Step 2 */}
-                <section className="flex-1">
-                    <label className="flex items-center gap-2 text-[14px] font-bold text-gray-800 mb-3">
-                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px]">2</span>
+                <section>
+                    <label className="flex items-center gap-2 text-[15px] font-bold text-gray-800 mb-4">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">2</span>
                         모임 성격 선택
                     </label>
                     <div className="flex flex-col gap-3">
@@ -109,23 +111,23 @@ export default function CreateRoomPage() {
                                             : 'border-gray-100 bg-white hover:border-gray-300'}
                             `}
                                 >
-                                    <span className="text-2xl">{cat.emoji}</span>
+                                    <span className="text-2xl w-8 text-center">{cat.emoji}</span>
                                     <div className="flex-1">
                                         <span className={`block text-[15px] font-bold ${isSelected ? 'text-gray-900' : 'text-gray-700'}`}>
                                             {cat.label}
                                         </span>
                                         <span className="block text-[12px] text-gray-400 mt-0.5">{cat.desc}</span>
                                     </div>
-                                    {isSelected && <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center"><Check className="w-3 h-3 text-white" /></div>}
+                                    {isSelected && <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center"><Check className="w-3.5 h-3.5 text-white" /></div>}
                                 </button>
                             )
                         })}
                     </div>
 
-                    {/* Guide Text to fill space */}
-                    <div className="mt-6 p-4 rounded-xl bg-blue-50/50 border border-blue-100 text-blue-800 flex gap-3 items-start">
-                        <Info className="w-5 h-5 shrink-0 mt-0.5" />
-                        <p className="text-xs leading-5">
+                    {/* Guide Text */}
+                    <div className="mt-8 p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-3 items-start">
+                        <Info className="w-5 h-5 shrink-0 mt-0.5 text-blue-600" />
+                        <p className="text-xs leading-5 text-blue-700">
                             <span className="font-bold">TIP</span>: 어떤 테마를 고를지 고민되시나요?<br />
                             어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
                         </p>
@@ -135,19 +137,21 @@ export default function CreateRoomPage() {
             </div>
 
             {/* Fixed Bottom CTA */}
-            <div className="absolute bottom-0 left-0 w-full p-5 bg-white border-t border-gray-100 z-20">
-                <button
-                    onClick={handleCreate}
-                    disabled={!isValid || isCreating}
-                    className={`
-                w-full h-[56px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-md
-                ${isValid
-                            ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
-                            : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'}
-            `}
-                >
-                    {isCreating ? <Loader2 className="animate-spin w-5 h-5" /> : '시작하기'}
-                </button>
+            <div className="fixed bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-white via-white to-transparent z-40 flex justify-center pointer-events-none">
+                <div className="w-full max-w-[480px] pointer-events-auto">
+                    <button
+                        onClick={handleCreate}
+                        disabled={!isValid || isCreating}
+                        className={`
+                    w-full h-[58px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg
+                    ${isValid
+                                ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
+                                : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'}
+                `}
+                    >
+                        {isCreating ? <Loader2 className="animate-spin w-5 h-5" /> : '시작하기'}
+                    </button>
+                </div>
             </div>
 
         </div>
