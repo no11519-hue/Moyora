@@ -137,8 +137,8 @@ export default function CreateRoomPage() {
             </div>
 
             {/* Fixed Bottom CTA */}
-            <div className="fixed bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-white via-white to-transparent z-40 flex justify-center pointer-events-none">
-                <div className="w-full max-w-[480px] pointer-events-auto">
+            <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] flex justify-center">
+                <div className="w-full max-w-[480px]">
                     <button
                         onClick={handleCreate}
                         disabled={!isValid || isCreating}

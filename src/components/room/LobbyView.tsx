@@ -91,7 +91,7 @@ export default function LobbyView() {
 
             {/* Host Controls */}
             {currentUser?.is_host && (
-                <div className="fixed bottom-6 w-full max-w-md px-6 z-20">
+                <div className="sticky bottom-0 w-full max-w-md px-6 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] bg-white border-t border-gray-200 z-20">
                     <button
                         onClick={handleStart}
                         disabled={participants.length < 2 || isStarting}
