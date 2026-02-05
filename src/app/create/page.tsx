@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, Check, Loader2, User, Info } from 'lucide-react';
+import { ArrowLeft, Check, Loader2, Info } from 'lucide-react';
 
 const CATEGORIES = [
     { id: 'introduction', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
@@ -23,6 +23,11 @@ export default function CreateRoomPage() {
 
     const trimmedNickname = useMemo(() => nickname.trim(), [nickname]);
     const isValid = Boolean(selectedCategory) && trimmedNickname.length > 0;
+
+    const selectedDesc = useMemo(() => {
+        if (!selectedCategory) return null;
+        return CATEGORIES.find((c) => c.id === selectedCategory)?.desc ?? null;
+    }, [selectedCategory]);
 
     const handleCreate = async () => {
         if (!isValid || isCreating || !selectedCategory) return;
@@ -65,9 +70,9 @@ export default function CreateRoomPage() {
     };
 
     return (
-        <div className="mobile-container h-screen flex flex-col bg-white overflow-hidden">
+        <div className="mobile-container w-full max-w-[480px] mx-auto min-h-[100dvh] flex flex-col bg-white">
             {/* Header */}
-            <header className="h-14 flex items-center gap-1 px-4 bg-white border-b border-gray-100 shrink-0">
+            <header className="h-12 flex items-center gap-1 px-4 bg-white border-b border-gray-100 shrink-0">
                 <Link
                     href="/"
                     className="p-2 -ml-2 text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-50"
@@ -75,52 +80,49 @@ export default function CreateRoomPage() {
                 >
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
-                <h1 className="text-[17px] font-semibold text-gray-900">방 만들기</h1>
+                <h1 className="text-[16px] font-semibold text-gray-900">방 만들기</h1>
             </header>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 pt-3 pb-2">
+            {/* ✅ 핵심: flex-1 + min-h-0 => 아래 CTA가 화면 밖으로 밀리지 않음 */}
+            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 pt-3 pb-3">
                 {/* Step 1 */}
                 <section className="mb-4">
-                    <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-2">
+                    <label className="flex items-center gap-2 text-[14px] font-semibold text-gray-800 mb-2">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">
                             1
                         </span>
                         진행자 닉네임
                     </label>
 
-                    <div className="relative">
-                        {/* Input */}
-                        <input
-                            type="text"
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
-                            placeholder="MC 닉네임 정하기"
-                            className="w-full h-[48px] pl-4 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                            autoFocus
-                            inputMode="text"
-                            autoCapitalize="off"
-                            autoCorrect="off"
-                            spellCheck={false}
-                            maxLength={20}
-                        />
-                    </div>
+                    <input
+                        type="text"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        placeholder="MC 닉네임 정하기"
+                        className="w-full h-[48px] px-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+                        autoFocus
+                        inputMode="text"
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        maxLength={20}
+                    />
 
-                    <p className="mt-1 text-xs text-gray-400 leading-5">
-                        예: 현, 민지, 팀장님 등
-                    </p>
+                    <p className="mt-1 text-xs text-gray-400 leading-5">예: 현, 민지, 팀장님 등</p>
                 </section>
 
                 {/* Step 2 */}
                 <section className="mb-3">
-                    <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-2">
+                    <label className="flex items-center gap-2 text-[14px] font-semibold text-gray-800 mb-2">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">
                             2
                         </span>
                         모임 성격 선택
                     </label>
 
-                    <div className="flex flex-col gap-2">
+                    {/* ✅ 세로 길이 줄이기: 2열 그리드 + desc는 선택했을 때만 아래에서 보여줌 */}
+                    <div className="grid grid-cols-2 gap-2">
                         {CATEGORIES.map((cat) => {
                             const isSelected = selectedCategory === cat.id;
                             return (
@@ -128,18 +130,17 @@ export default function CreateRoomPage() {
                                     key={cat.id}
                                     type="button"
                                     onClick={() => setSelectedCategory(cat.id)}
-                                    className={`w-full p-2.5 rounded-xl border flex items-center gap-3 transition-all active:scale-[0.98] text-left ${isSelected
-                                        ? 'border-black bg-gray-50 ring-1 ring-black shadow-sm'
-                                        : 'border-gray-100 bg-white hover:border-gray-300'
-                                        }`}
+                                    className={[
+                                        'w-full rounded-xl border p-3 flex items-center gap-2 text-left transition-all active:scale-[0.98]',
+                                        isSelected
+                                            ? 'border-black bg-gray-50 ring-1 ring-black shadow-sm'
+                                            : 'border-gray-100 bg-white hover:border-gray-300',
+                                    ].join(' ')}
                                 >
                                     <span className="text-xl w-7 text-center">{cat.emoji}</span>
                                     <div className="flex-1 min-w-0">
-                                        <span className={`block text-[14px] font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-700'}`}>
+                                        <span className="block text-[13px] font-semibold text-gray-800">
                                             {cat.label}
-                                        </span>
-                                        <span className="block text-[11px] text-gray-400 mt-0.5">
-                                            {cat.desc}
                                         </span>
                                     </div>
                                     {isSelected && (
@@ -151,28 +152,37 @@ export default function CreateRoomPage() {
                             );
                         })}
                     </div>
+
+                    {/* 선택된 테마 설명을 한 줄로만 */}
+                    {selectedDesc && (
+                        <p className="mt-2 text-[11px] text-gray-500 leading-4">
+                            {selectedDesc}
+                        </p>
+                    )}
                 </section>
 
                 {/* Guide Text */}
-                <div className="mt-3 p-2.5 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-2 items-start">
+                <div className="mt-2 p-2.5 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-2 items-start">
                     <Info className="w-4 h-4 shrink-0 mt-0.5 text-blue-600" />
                     <p className="text-[11px] leading-[1.4] text-blue-700">
-                        <span className="font-bold">TIP</span>: 어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
+                        <span className="font-bold">TIP</span>: 어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 무난해요!
                     </p>
                 </div>
             </div>
 
             {/* Bottom CTA */}
-            <div className="shrink-0 border-t border-gray-200 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
+            <div className="shrink-0 border-t border-gray-200 bg-white px-4 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))]">
                 <div className="mx-auto w-full max-w-[480px]">
                     <button
                         type="button"
                         onClick={handleCreate}
                         disabled={!isValid || isCreating}
-                        className={`w-full h-[58px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg ${isValid
-                            ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
-                            : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'
-                            }`}
+                        className={[
+                            'w-full h-[52px] rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-lg',
+                            isValid
+                                ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
+                                : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed',
+                        ].join(' ')}
                     >
                         {isCreating ? <Loader2 className="animate-spin w-5 h-5" /> : '시작하기'}
                     </button>
