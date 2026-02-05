@@ -28,20 +28,22 @@ body {
 /* Mobile Container Utility */
 @layer components {
   .mobile-container {
-    /* Base styles (Mobile First) */
-    @apply w-full max-w-[480px] mx-auto min-h-screen bg-white shadow-xl;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100vh;
+    background-color: white;
   }
-}
 
-/* Desktop Specific Overrides (sm breakpoint) */
-@media (min-width: 640px) {
-  .mobile-container {
-    /* Use standard Tailwind utilities here if needed, or raw CSS */
-    margin-top: 0;
-    margin-bottom: 0;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    /* Using a known color from theme or hardcoded for safety against 'unknown class' error */
-    border-color: #E5E7EB;
+  /* Desktop Styles (SM breakpoint) */
+  @media (min-width: 640px) {
+    .mobile-container {
+      max-width: 480px;
+      margin-top: 0;
+      margin-bottom: 0;
+      border-left: 1px solid #E5E7EB;
+      border-right: 1px solid #E5E7EB;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
   }
 }
