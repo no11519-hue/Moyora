@@ -65,7 +65,7 @@ export default function CreateRoomPage() {
     };
 
     return (
-        <div className="mobile-container min-h-dvh flex flex-col bg-white">
+        <div className="mobile-container min-h-dvh flex flex-col bg-white overflow-x-hidden">
             {/* Header */}
             <header className="h-14 flex items-center gap-1 px-4 bg-white border-b border-gray-100 shrink-0 sticky top-0 z-30">
                 <Link
@@ -79,7 +79,7 @@ export default function CreateRoomPage() {
             </header>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-6 pt-8 pb-8">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 pt-8 pb-8">
                 {/* Step 1 */}
                 <section className="mb-10">
                     <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-4">
@@ -112,7 +112,7 @@ export default function CreateRoomPage() {
                 </section>
 
                 {/* Step 2 */}
-                <section>
+                <section className="mb-8">
                     <label className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 mb-4">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-[12px] font-bold">
                             2
@@ -128,12 +128,10 @@ export default function CreateRoomPage() {
                                     key={cat.id}
                                     type="button"
                                     onClick={() => setSelectedCategory(cat.id)}
-                                    className={`
-                    w-full p-4 rounded-xl border flex items-center gap-4 transition-all active:scale-[0.98] text-left
-                    ${isSelected
+                                    className={`w-full p-4 rounded-xl border flex items-center gap-4 transition-all active:scale-[0.98] text-left ${isSelected
                                             ? 'border-black bg-gray-50 ring-1 ring-black shadow-sm'
-                                            : 'border-gray-100 bg-white hover:border-gray-300'}
-                  `}
+                                            : 'border-gray-100 bg-white hover:border-gray-300'
+                                        }`}
                                 >
                                     <span className="text-2xl w-8 text-center">{cat.emoji}</span>
                                     <div className="flex-1 min-w-0">
@@ -156,7 +154,7 @@ export default function CreateRoomPage() {
                 </section>
 
                 {/* Guide Text */}
-                <div className="mb-8 p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-3 items-start">
+                <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-3 items-start">
                     <Info className="w-5 h-5 shrink-0 mt-0.5 text-blue-600" />
                     <p className="text-xs leading-5 text-blue-700">
                         <span className="font-bold">TIP</span>: 어떤 테마를 고를지 고민되시나요?
@@ -173,12 +171,10 @@ export default function CreateRoomPage() {
                         type="button"
                         onClick={handleCreate}
                         disabled={!isValid || isCreating}
-                        className={`
-              w-full h-[58px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg
-              ${isValid
+                        className={`w-full h-[58px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg ${isValid
                                 ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
-                                : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'}
-            `}
+                                : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'
+                            }`}
                     >
                         {isCreating ? <Loader2 className="animate-spin w-5 h-5" /> : '시작하기'}
                     </button>

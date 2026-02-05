@@ -4,7 +4,7 @@ import { ArrowRight, Zap, Sparkles } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="mobile-container flex flex-col relative bg-white min-h-screen">
+    <main className="mobile-container flex flex-col relative bg-white min-h-screen overflow-hidden">
 
       {/* Compact Header */}
       <header className="h-12 flex items-center justify-between px-5 sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
@@ -12,9 +12,6 @@ export default function Home() {
           <span className="text-xl">🤗</span>
           <span className="font-bold text-base tracking-tight text-neutral-900">Moyora</span>
         </div>
-        <Link href="#" className="py-1 px-3 rounded-full bg-neutral-100 text-[11px] font-medium text-neutral-500">
-          Demo
-        </Link>
       </header>
 
       <div className="flex-1 flex flex-col px-5 pt-4 pb-8">
