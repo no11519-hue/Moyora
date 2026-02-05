@@ -7,6 +7,13 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Check, Loader2, User, Info } from 'lucide-react';
 import Link from 'next/link';
 
+const CATEGORIES = [
+    { id: 'introduction', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
+    { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
+    { id: 'workshop', label: '워크숍/팀빌딩', emoji: '📢', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
+    { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
+];
+
 export default function CreateRoomPage() {
     const router = useRouter();
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -82,7 +89,7 @@ export default function CreateRoomPage() {
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
                             placeholder="친구들이 알아볼 이름을 입력하세요"
-                            className="w-full h-[56px] pl-14 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+                            className="w-full h-[56px] pl-17 pr-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                             autoFocus
                         />
                         <div className="absolute left-5 top-1/2 -translate-y-1/2">
@@ -137,30 +144,22 @@ export default function CreateRoomPage() {
             </div>
 
             {/* Fixed Bottom CTA */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] flex justify-center">
-                <div className="w-full max-w-[480px]">
+            <div className="shrink-0 border-t border-gray-200 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
+                <div className="mx-auto w-full max-w-[480px]">
                     <button
                         onClick={handleCreate}
                         disabled={!isValid || isCreating}
                         className={`
-                    w-full h-[58px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg
-                    ${isValid
+        w-full h-[58px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg
+        ${isValid
                                 ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
                                 : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'}
-                `}
+      `}
                     >
                         {isCreating ? <Loader2 className="animate-spin w-5 h-5" /> : '시작하기'}
                     </button>
                 </div>
             </div>
-
         </div>
     );
 }
-
-const CATEGORIES = [
-    { id: 'introduction', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
-    { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
-    { id: 'workshop', label: '워크숍/팀빌딩', emoji: '📢', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
-    { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
-];
