@@ -10,51 +10,42 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                background: "#FDFBF7", // Warm Cream
-                foreground: "#1F2937",
-                primary: {
-                    DEFAULT: "#FF6B6B", // Coral Pink
-                    foreground: "#FFFFFF",
+                background: "#F9FAFB", // 차분한 Off-white (Gray-50)
+                foreground: "#111827", // Gray-900
+                brand: {
+                    DEFAULT: "#FF6B6B", // Coral Pink (Main)
                     hover: "#FA5252",
+                    light: "#FFF5F5", // bg-brand-light
                 },
-                secondary: {
-                    DEFAULT: "#FF9F43", // Warm Orange (Sunny Yellowish Orange)
-                    foreground: "#FFFFFF",
+                neutral: {
+                    50: "#F9FAFB",
+                    100: "#F3F4F6",
+                    200: "#E5E7EB", // Border
+                    300: "#D1D5DB",
+                    400: "#9CA3AF", // Disabled text
+                    500: "#6B7280", // Sub text
+                    600: "#4B5563",
+                    700: "#374151",
+                    800: "#1F2937",
+                    900: "#111827",
                 },
-                accent: {
-                    DEFAULT: "#FFD93D", // Sunny Yellow for highlights if needed
-                    foreground: "#1F2937",
-                },
-                surface: "#FFFFFF", // Card background
-                border: "#E5E7EB",
             },
             borderRadius: {
-                lg: "1rem",
-                xl: "1.5rem",
-                '2xl': "2rem",
-                '3xl': "2.5rem", // More rounded
+                'xl': '12px',
+                '2xl': '16px',
+                '3xl': '24px',
             },
             boxShadow: {
-                soft: "0 10px 40px -10px rgba(0,0,0,0.08)",
-                glow: "0 0 20px rgba(255, 107, 107, 0.3)",
-                card: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
-                'card-hover': "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                'sm': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+                'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                'sticky': '0 -4px 12px rgba(0,0,0,0.05)', // 하단 고정 버튼용
             },
-            animation: {
-                'bounce-slow': 'bounce 3s infinite',
-                'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                'slide-up': 'slideUp 0.3s ease-out forwards',
-                'float': 'float 6s ease-in-out infinite',
+            spacing: {
+                'safe-bottom': 'env(safe-area-inset-bottom)', // iOS Safe Area
             },
-            keyframes: {
-                slideUp: {
-                    '0%': { transform: 'translateY(20px)', opacity: '0' },
-                    '100%': { transform: 'translateY(0)', opacity: '1' },
-                },
-                float: {
-                    '0%, 100%': { transform: 'translateY(0)' },
-                    '50%': { transform: 'translateY(-10px)' },
-                }
+            fontFamily: {
+                sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'Helvetica Neue', 'Segoe UI', 'sans-serif'],
             }
         },
     },

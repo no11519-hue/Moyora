@@ -1,123 +1,137 @@
 
 import Link from 'next/link';
-import { ArrowRight, Sparkles, MessageCircle, Heart, Beer, Users, Gamepad2 } from 'lucide-react';
+import { ArrowRight, Zap, Users, Sparkles, MessageSquare, Heart, Beer, Smile } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center px-5 py-6 relative overflow-hidden bg-[#FDFBF7]">
-      {/* Background Decor: Festive & Organic */}
-      <div className="absolute top-[-10%] right-[-20%] w-72 h-72 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl animate-float pointer-events-none" />
-      <div className="absolute top-[30%] left-[-20%] w-56 h-56 bg-gradient-to-tr from-accent/30 to-primary/10 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }} />
-      <div className="absolute bottom-[-10%] right-[10%] w-80 h-80 bg-gradient-to-t from-secondary/10 to-transparent rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '4s' }} />
+    <main className="mobile-container flex flex-col relative overflow-hidden">
 
-      {/* Header */}
-      <header className="w-full flex justify-center pb-2 z-10 animate-slide-up">
-        <div className="flex items-center gap-2">
-          <Users className="w-6 h-6 text-primary" strokeWidth={2.5} />
-          <h1 className="text-xl font-black tracking-tight text-gray-800">
-            모여라 <span className="text-primary">Moyora</span>
-          </h1>
+      {/* 1. Header (Simple) */}
+      <header className="h-14 flex items-center justify-between px-5 border-b border-neutral-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xl">🤗</span>
+          <span className="font-bold text-lg tracking-tight text-neutral-900">Moyora</span>
         </div>
+        <Link href="#" className="text-xs font-medium text-neutral-500 hover:text-brand transition-colors">
+          데모 체험
+        </Link>
       </header>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm gap-8 z-10 mt-[-20px]">
+      <div className="flex-1 flex flex-col pb-10">
 
-        {/* Hero Text */}
-        <div className="text-center space-y-4 animate-slide-up">
-          <span className="inline-block px-4 py-1.5 bg-white border-2 border-primary/10 rounded-full text-xs font-bold text-primary shadow-sm mb-2">
-            🤗 모두가 즐거운 연결
-          </span>
-          <h2 className="text-[34px] font-black text-gray-900 leading-[1.2]">
-            어색한 침묵은 끝!<br />
-            <span className="relative inline-block z-10">
-              <span className="absolute inset-x-0 bottom-1 h-3 bg-secondary/30 -z-10 rounded-sm"></span>
-              3초면 텐션 UP
+        {/* 2. Hero Section */}
+        <section className="px-6 pt-10 pb-8 flex flex-col gap-6 text-center items-center">
+
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-light text-brand text-[11px] font-bold tracking-wide uppercase">
+              <Zap className="w-3 h-3" fill="currentColor" /> 3초면 아이스브레이킹 끝
             </span>
-          </h2>
-          <p className="text-gray-500 text-base font-medium leading-relaxed px-2 text-balance">
-            설치도, 회원가입도 필요 없어요.<br />
-            지금 바로 <span className="font-bold text-gray-700">QR 코드</span>로 시작하세요!
-          </p>
-        </div>
-
-        {/* CTA Button */}
-        <div className="w-full px-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <Link href="/create" className="w-full group relative block">
-            {/* Glow Effect */}
-            <div className="absolute top-4 left-0 w-full h-full bg-primary/30 rounded-3xl blur-xl opacity-60 group-hover:opacity-100 transition duration-500"></div>
-
-            <button className="relative w-full py-5 bg-gradient-to-r from-primary to-secondary text-white rounded-3xl shadow-xl shadow-primary/20 flex items-center justify-center gap-3 text-xl font-black group-hover:scale-[1.02] active:scale-[0.98] transition-all border-b-4 border-black/10 active:border-b-0 active:translate-y-1">
-              <span>지금 방 만들기</span>
-              <div className="bg-white/20 p-1.5 rounded-full">
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" strokeWidth={3} />
-              </div>
-            </button>
-          </Link>
-          <p className="text-[11px] font-medium text-gray-400 text-center mt-4">
-            ✨ 100% 무료 • 무제한 플레이
-          </p>
-        </div>
-      </div>
-
-      {/* Bottom Section: Popular Themes */}
-      <div className="w-full max-w-sm mt-auto pb-6 z-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-        <div className="flex justify-between items-end px-1 mb-4">
-          <h3 className="text-sm font-extrabold text-gray-400 flex items-center gap-1.5 uppercase tracking-wider">
-            <Sparkles className="w-4 h-4 text-accent fill-accent" />
-            인기 테마 미리보기
-          </h3>
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+            <h1 className="text-[28px] leading-[1.3] font-semibold text-neutral-900 text-balance">
+              QR 찍고,<br />
+              대화가 시작됩니다.
+            </h1>
+            <p className="text-neutral-500 text-[15px] leading-relaxed max-w-[280px] mx-auto text-balance">
+              어색한 침묵은 그만.<br />
+              설치 없이, 로그인 없이 바로 시작하세요.
+            </p>
           </div>
-        </div>
 
-        {/* 가로 스크롤 카드 */}
-        <div className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5 scrollbar-hide snap-x">
-          {THEMES.map((theme, i) => (
-            <div key={i} className="min-w-[150px] p-5 bg-white rounded-3xl border border-gray-100 shadow-card hover:shadow-card-hover flex flex-col gap-3 snap-center active:scale-95 transition-all">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${theme.colorBg} mb-1 shadow-sm`}>
-                {theme.icon}
-              </div>
-              <div>
-                <span className="block font-black text-gray-800 text-lg leading-tight mb-1">{theme.title}</span>
-                <span className="block text-xs font-semibold text-gray-400">{theme.desc}</span>
-              </div>
+          {/* Feature Chips */}
+          <div className="flex gap-2 justify-center flex-wrap">
+            {["⚡ 설치 없음", "🙅‍♂️ 로그인 없음", "🚀 1분 준비"].map((txt, i) => (
+              <span key={i} className="px-2.5 py-1 bg-neutral-100 rounded-md text-xs text-neutral-600 font-medium">
+                {txt}
+              </span>
+            ))}
+          </div>
+
+          {/* 3. Primary CTA (Above Fold) */}
+          <div className="w-full mt-2">
+            <Link href="/create" className="block w-full">
+              <button className="w-full h-[52px] bg-brand hover:bg-brand-hover text-white rounded-xl font-bold text-[17px] flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                지금 방 만들기
+                <ArrowRight className="w-5 h-5 opacity-90" />
+              </button>
+            </Link>
+            <div className="mt-4 flex justify-center">
+              <button className="text-[13px] text-neutral-400 font-medium border-b border-transparent hover:border-neutral-300 transition-all flex items-center gap-1">
+                어떻게 작동하나요? <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
-          ))}
-          {/* 여백용 더미 */}
-          <div className="min-w-[5px]"></div>
-        </div>
+          </div>
+        </section>
+
+        <div className="h-2 bg-neutral-50 border-t border-b border-neutral-100/50"></div>
+
+        {/* 4. Popular Themes (Horizontal Scroll) */}
+        <section className="py-8 pl-6">
+          <div className="flex items-center gap-2 mb-4 pr-6">
+            <Sparkles className="w-4 h-4 text-brand" />
+            <h2 className="text-lg font-bold text-neutral-900">이런 모임, 어때요?</h2>
+          </div>
+
+          <div className="flex gap-3 overflow-x-auto pb-6 pr-6 -ml-1 pl-1 scrollbar-hide snap-x snap-mandatory">
+            {THEME_CARDS.map((theme, i) => (
+              <div key={i} className="min-w-[160px] p-5 rounded-2xl border border-neutral-200 bg-white shadow-xs flex flex-col gap-3 snap-start active:bg-neutral-50 transition-colors">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${theme.bg}`}>
+                  {theme.icon}
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-bold text-neutral-900">{theme.title}</span>
+                  <span className="text-xs text-neutral-500">{theme.sub}</span>
+                </div>
+                <div className="mt-2 pt-3 border-t border-neutral-100">
+                  <span className="text-[11px] text-neutral-400 bg-neutral-50 px-2 py-1 rounded inline-block line-clamp-1">
+                    " {theme.q} "
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 5. How it works (Simple Steps) */}
+        <section className="px-6 py-2 pb-12">
+          <h3 className="text-sm font-bold text-neutral-400 uppercase mb-6 tracking-wider">How to play</h3>
+          <div className="space-y-6 border-l-2 border-neutral-100 ml-2 pl-6 relative">
+            <Step
+              num={1} title="방 만들기"
+              desc="주제만 고르면 끝. 10초면 충분해요."
+            />
+            <Step
+              num={2} title="QR 코드 공유"
+              desc="참가자는 카메라만 켜면 입장 완료."
+            />
+            <Step
+              num={3} title="실시간 플레이"
+              desc="질문에 투표하고 결과를 함께 즐겨요."
+            />
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-auto py-8 text-center border-t border-neutral-100 bg-neutral-50">
+          <p className="text-[11px] text-neutral-400">© 2026 Moyora. All rights reserved.</p>
+        </footer>
+
       </div>
     </main>
   );
 }
 
-const THEMES = [
-  {
-    title: "두근두근\n소개팅",
-    desc: "첫인상 1위는?",
-    icon: <Heart className="w-6 h-6 text-primary fill-primary/20" />,
-    colorBg: "bg-red-50",
-  },
-  {
-    title: "왁자지껄\n술자리",
-    desc: "벌칙 당첨은?",
-    icon: <Beer className="w-6 h-6 text-amber-600 fill-amber-600/20" />,
-    colorBg: "bg-amber-50",
-  },
-  {
-    title: "으샤으샤\n워크숍",
-    desc: "법카 찬스!",
-    icon: <MessageCircle className="w-6 h-6 text-blue-600 fill-blue-600/20" />,
-    colorBg: "bg-blue-50",
-  },
-  {
-    title: "랜덤게임\n플레이",
-    desc: "무엇이 나올까?",
-    icon: <Gamepad2 className="w-6 h-6 text-purple-600 fill-purple-600/20" />,
-    colorBg: "bg-purple-50",
-  },
+function Step({ num, title, desc }: { num: number, title: string, desc: string }) {
+  return (
+    <div className="relative">
+      <div className="absolute -left-[33px] top-0 w-3.5 h-3.5 rounded-full bg-neutral-200 border-2 border-white ring-1 ring-neutral-100"></div>
+      <h4 className="font-bold text-neutral-900 text-[15px]">{title}</h4>
+      <p className="text-sm text-neutral-500 mt-0.5">{desc}</p>
+    </div>
+  )
+}
+
+const THEME_CARDS = [
+  { title: "아이스브레이킹", sub: "어색함 해제", bg: "bg-blue-50", icon: "🧊", q: "학창시절 별명은?" },
+  { title: "소개팅/미팅", sub: "설레는 탐색전", bg: "bg-pink-50", icon: "💕", q: "첫인상 1위는?" },
+  { title: "회식/술자리", sub: "텐션 UP!", bg: "bg-orange-50", icon: "🍻", q: "이 사람 주사는?" },
+  { title: "팀 워크숍", sub: "훈훈한 마무리", bg: "bg-green-50", icon: "💼", q: "숨은 해결사는?" },
 ];
