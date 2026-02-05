@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, Check, Loader2, User } from 'lucide-react';
+import { ArrowLeft, Check, Loader2, User, Info } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CreateRoomPage() {
@@ -57,38 +57,45 @@ export default function CreateRoomPage() {
     };
 
     return (
-        <div className="mobile-container flex flex-col relative bg-white pb-20">
+        <div className="mobile-container flex flex-col relative bg-white h-screen overflow-hidden">
 
             {/* Header */}
-            <header className="h-12 flex items-center px-4 sticky top-0 bg-white z-30">
-                <Link href="/" className="p-2 -ml-2 text-neutral-500 hover:text-neutral-900">
+            <header className="h-14 flex items-center px-4 bg-white border-b border-gray-100 shrink-0">
+                <Link href="/" className="p-2 -ml-2 text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-50">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
-                <h1 className="text-[16px] font-bold text-neutral-900 ml-1">방 만들기</h1>
+                <h1 className="text-[17px] font-bold text-gray-900 ml-1">방 만들기</h1>
             </header>
 
-            <div className="flex-1 flex flex-col px-5 pt-4">
+            {/* Scrollable Content */}
+            <div className="flex-1 flex flex-col px-5 pt-6 overflow-y-auto pb-24">
 
                 {/* Step 1 */}
-                <div className="mb-6">
-                    <label className="block text-[13px] font-bold text-neutral-500 mb-2">1. 진행자 닉네임</label>
+                <section className="mb-8">
+                    <label className="flex items-center gap-2 text-[14px] font-bold text-gray-800 mb-3">
+                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px]">1</span>
+                        진행자 닉네임
+                    </label>
                     <div className="relative">
                         <input
                             type="text"
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
-                            placeholder="이름 입력"
-                            className="w-full h-11 pl-9 pr-4 rounded-lg bg-neutral-50 border border-neutral-200 text-sm font-bold focus:bg-white focus:border-neutral-900/30 outline-none transition-all"
+                            placeholder="친구들이 알아볼 이름을 입력하세요"
+                            className="w-full h-[52px] pl-12 pr-4 rounded-xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                             autoFocus
                         />
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     </div>
-                </div>
+                </section>
 
                 {/* Step 2 */}
-                <div>
-                    <label className="block text-[13px] font-bold text-neutral-500 mb-2">2. 테마 선택</label>
-                    <div className="flex flex-col gap-2">
+                <section className="flex-1">
+                    <label className="flex items-center gap-2 text-[14px] font-bold text-gray-800 mb-3">
+                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px]">2</span>
+                        모임 성격 선택
+                    </label>
+                    <div className="flex flex-col gap-3">
                         {CATEGORIES.map((cat) => {
                             const isSelected = selectedCategory === cat.id;
                             return (
@@ -96,41 +103,50 @@ export default function CreateRoomPage() {
                                     key={cat.id}
                                     onClick={() => setSelectedCategory(cat.id)}
                                     className={`
-                                w-full p-3.5 rounded-xl border flex items-center gap-3 transition-all active:scale-[0.98]
+                                w-full p-4 rounded-xl border flex items-center gap-4 transition-all active:scale-[0.98] text-left
                                 ${isSelected
-                                            ? 'border-brand/50 bg-brand/5 ring-1 ring-brand/50'
-                                            : 'border-neutral-100 bg-white hover:bg-neutral-50'}
+                                            ? 'border-black bg-gray-50 ring-1 ring-black shadow-sm'
+                                            : 'border-gray-100 bg-white hover:border-gray-300'}
                             `}
                                 >
-                                    <span className="text-xl">{cat.emoji}</span>
-                                    <div className="flex-1 text-left">
-                                        <span className={`block text-sm font-bold ${isSelected ? 'text-brand' : 'text-neutral-800'}`}>
+                                    <span className="text-2xl">{cat.emoji}</span>
+                                    <div className="flex-1">
+                                        <span className={`block text-[15px] font-bold ${isSelected ? 'text-gray-900' : 'text-gray-700'}`}>
                                             {cat.label}
                                         </span>
-                                        <span className="block text-[11px] text-neutral-400">{cat.desc}</span>
+                                        <span className="block text-[12px] text-gray-400 mt-0.5">{cat.desc}</span>
                                     </div>
-                                    {isSelected && <Check className="w-4 h-4 text-brand" />}
+                                    {isSelected && <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center"><Check className="w-3 h-3 text-white" /></div>}
                                 </button>
                             )
                         })}
                     </div>
-                </div>
+
+                    {/* Guide Text to fill space */}
+                    <div className="mt-6 p-4 rounded-xl bg-blue-50/50 border border-blue-100 text-blue-800 flex gap-3 items-start">
+                        <Info className="w-5 h-5 shrink-0 mt-0.5" />
+                        <p className="text-xs leading-5">
+                            <span className="font-bold">TIP</span>: 어떤 테마를 고를지 고민되시나요?<br />
+                            어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요!
+                        </p>
+                    </div>
+                </section>
 
             </div>
 
-            {/* Bottom CTA (Floating) */}
-            <div className="fixed bottom-0 w-full max-w-[480px] p-5 bg-gradient-to-t from-white via-white to-transparent z-40">
+            {/* Fixed Bottom CTA */}
+            <div className="absolute bottom-0 left-0 w-full p-5 bg-white border-t border-gray-100 z-20">
                 <button
                     onClick={handleCreate}
                     disabled={!isValid || isCreating}
                     className={`
-                w-full h-12 rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 shadow-sm transition-all
+                w-full h-[56px] rounded-xl font-bold text-[16px] flex items-center justify-center gap-2 transition-all shadow-md
                 ${isValid
-                            ? 'bg-neutral-900 text-white hover:bg-black active:scale-[0.98]'
-                            : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'}
+                            ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
+                            : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'}
             `}
                 >
-                    {isCreating ? <Loader2 className="animate-spin w-4 h-4" /> : '시작하기'}
+                    {isCreating ? <Loader2 className="animate-spin w-5 h-5" /> : '시작하기'}
                 </button>
             </div>
 
@@ -139,8 +155,8 @@ export default function CreateRoomPage() {
 }
 
 const CATEGORIES = [
-    { id: 'introduction', label: '아이스브레이킹', emoji: '🧊', desc: '가벼운 질문들' },
-    { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '설레는 시그널' },
-    { id: 'workshop', label: '워크숍/팀빌딩', emoji: '📢', desc: '팀워크 다지기' },
-    { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '텐션 폭발!' },
+    { id: 'introduction', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
+    { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
+    { id: 'workshop', label: '워크숍/팀빌딩', emoji: '📢', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
+    { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
 ];
