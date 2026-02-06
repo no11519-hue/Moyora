@@ -102,58 +102,56 @@ export default function VotingView({ votes }: VotingViewProps) {
                 </div>
             </div>
 
-            {/* 2. Main Question Card (Centered) */}
-            <div className="flex-1 flex flex-col justify-center px-6 py-4 w-full max-w-lg mx-auto">
-                <div
-                    key={currentQuestion.id} // Trigger animation on change
-                    className="animate-slide-in-right //custom-animation-class-needed-or-standard
-                               flex flex-col justify-center items-center text-center
-                               bg-white rounded-[2.5rem] p-8 shadow-card-lg border border-gray-100/80
-                               min-h-[320px] relative overflow-hidden group
-                    "
-                >
-                    {/* Decorative Background Elements */}
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-secondary" />
-                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+            {/* 2. Main Content Area - 40:60 SPLIT (Question:Voting) */}
+            <div className="flex-1 flex flex-col gap-y-6 px-6 py-6 w-full max-w-lg mx-auto overflow-y-auto">
 
-                    {/* Question Content */}
-                    <div className="mb-2">
-                        <div className="w-10 h-10 mx-auto bg-primary/10 rounded-full flex items-center justify-center text-xl mb-4 text-primary">
-                            Q
+                {/* Question Card Block - COMPACT (40% space) */}
+                <div className="flex-shrink-0">
+                    <div
+                        key={currentQuestion.id}
+                        className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 relative overflow-hidden"
+                    >
+                        {/* Decorative Top Bar */}
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary to-secondary" />
+
+                        {/* Question Content - COMPACT */}
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-base font-bold text-primary shrink-0">
+                                Q
+                            </div>
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                {currentQuestion.type?.replace(/_/g, ' ')}
+                            </span>
                         </div>
+
+                        <h2 className="text-xl font-black text-gray-900 leading-tight break-keep mb-3">
+                            {currentQuestion.content}
+                        </h2>
+
+                        {/* Instruction Hint */}
+                        <p className="text-xs font-medium text-gray-400">
+                            {isVoteType ? '👇 투표할 대상을 선택하세요' : isBalanceType ? '👇 하나를 선택하세요' : '💬 자유롭게 이야기해보세요'}
+                        </p>
                     </div>
-
-                    <h2 className="text-[28px] sm:text-[32px] font-black text-gray-900 leading-[1.35] tracking-tight break-keep text-balance drop-shadow-sm">
-                        {currentQuestion.content}
-                    </h2>
-
-                    {/* Instruction Hint */}
-                    <p className="mt-6 text-sm font-medium text-gray-400 animate-pulse">
-                        {isVoteType ? '투표할 대상을 선택하세요' : isBalanceType ? '하나를 선택하세요' : '자유롭게 이야기해보세요'}
-                    </p>
                 </div>
 
-                {/* --- UI Branching based on Type (Voting Options) --- */}
-                {/* Voting Options move below or inside depending on design. User asked for card to be centered. Options should follow. */}
-                {/* IF it's a voting/balance game, we put options BELOW the main card or Integrated? */}
-                {/* Let's put them below, but with less margin so they feel connected. */}
-
-                <div className="mt-6 w-full animate-fade-in-up delay-100">
-                    {/* 1. People Voting */}
+                {/* Voting Options Block - DOMINANT (60% space, flex-1) */}
+                <div className="flex-1 flex flex-col w-full min-h-0">
+                    {/* 1. People Voting - 2 COLUMN MASSIVE GRID */}
                     {isVoteType && (
                         !myVote ? (
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-4 h-full content-start">
                                 {participants.map((p) => (
                                     <button
                                         key={p.id}
                                         onClick={() => handleVote(p.id)}
                                         disabled={isVoting}
-                                        className="relative bg-white p-3 rounded-2xl border border-gray-100 flex items-center gap-3 active:scale-98 transition-all shadow-sm hover:shadow-md hover:border-primary/30 text-left"
+                                        className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:opacity-50"
                                     >
-                                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-lg shrink-0">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center text-2xl font-black text-indigo-700">
                                             {p.nickname[0]}
                                         </div>
-                                        <span className="font-bold text-gray-900 text-sm truncate">
+                                        <span className="font-bold text-gray-900 text-base text-center leading-tight">
                                             {p.nickname}
                                         </span>
                                     </button>
@@ -164,21 +162,23 @@ export default function VotingView({ votes }: VotingViewProps) {
                         )
                     )}
 
-                    {/* 2. Balance Game */}
+                    {/* 2. Balance Game - TWO GIANT VERTICAL BLOCKS */}
                     {isBalanceType && (
                         !myVote ? (
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-4 h-full">
                                 {options.map((opt, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => handleVote(idx === 0 ? 'A' : 'B')}
                                         disabled={isVoting}
-                                        className={`w-full py-5 rounded-2xl text-lg font-bold border-2 shadow-sm active:scale-98 transition-all flex items-center justify-between px-6
-                                    ${idx === 0 ? 'bg-blue-50/50 border-blue-100 text-blue-700 hover:bg-blue-50' : 'bg-red-50/50 border-red-100 text-red-700 hover:bg-red-50'}
+                                        className={`flex-1 min-h-[120px] rounded-3xl text-2xl font-black border-4 shadow-xl active:scale-95 transition-all flex flex-col items-center justify-center gap-3 px-6 disabled:opacity-50
+                                    ${idx === 0
+                                                ? 'bg-gradient-to-br from-red-50 to-red-100 border-red-300 text-red-700 hover:from-red-100 hover:to-red-200 hover:border-red-400'
+                                                : 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-300 text-blue-700 hover:from-blue-100 hover:to-blue-200 hover:border-blue-400'}
                                 `}
                                     >
-                                        <span className="text-2xl">{idx === 0 ? '🅰️' : '🅱️'}</span>
-                                        <span>{opt}</span>
+                                        <span className="text-5xl">{idx === 0 ? '🅰️' : '🅱️'}</span>
+                                        <span className="text-center leading-tight">{opt}</span>
                                     </button>
                                 ))}
                             </div>
@@ -189,7 +189,7 @@ export default function VotingView({ votes }: VotingViewProps) {
 
                     {/* 4. Roulette Game (Inline) */}
                     {isRouletteType && (
-                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 flex flex-col items-center">
+                        <div className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-200 flex flex-col items-center justify-center flex-1">
                             {currentUser?.is_host ? (
                                 <RouletteGame participants={participants} onComplete={async (winnerId) => {
                                     await handleVote(winnerId);
@@ -213,9 +213,9 @@ export default function VotingView({ votes }: VotingViewProps) {
                 <div className="fixed bottom-0 left-0 z-50 w-full p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 pb-[calc(16px+env(safe-area-inset-bottom))]">
                     <button
                         onClick={handleShowResult}
-                        className="w-full h-[56px] bg-[#111827] text-white rounded-xl font-bold text-lg shadow-lg hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
+                        className="w-full h-16 bg-[#111827] text-white rounded-2xl font-black text-xl shadow-xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
                     >
-                        {isMissionType ? '다음으로 넘어가기' : '결과 공개하기'}
+                        {isMissionType ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
                     </button>
                 </div>
             )}

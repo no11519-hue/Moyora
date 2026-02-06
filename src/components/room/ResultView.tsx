@@ -235,15 +235,15 @@ export default function ResultView({ votes }: ResultViewProps) {
                     <div className="flex gap-3">
                         <button
                             onClick={() => alert('이미지 저장 기능은 준비중입니다!')}
-                            className="flex-1 py-3 bg-white/10 border border-white/10 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-white/20 transition backdrop-blur-sm text-sm"
+                            className="flex-1 h-14 bg-white/10 border border-white/10 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-base"
                         >
-                            <Download className="w-4 h-4" /> 이미지 저장
+                            <Download className="w-5 h-5" /> 이미지 저장
                         </button>
                         <button
                             onClick={handleShare}
-                            className="flex-1 py-3 bg-secondary rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-secondary/90 transition text-white text-sm shadow-lg shadow-secondary/20"
+                            className="flex-1 h-14 bg-secondary rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-secondary/90 active:scale-95 transition text-white text-base shadow-lg shadow-secondary/20"
                         >
-                            <Share2 className="w-4 h-4" /> 결과 공유
+                            <Share2 className="w-5 h-5" /> 결과 공유
                         </button>
                     </div>
 
@@ -251,9 +251,9 @@ export default function ResultView({ votes }: ResultViewProps) {
                         <button
                             onClick={handleNext}
                             disabled={isNextLoading}
-                            className="w-full py-4 bg-white text-gray-900 rounded-2xl font-black text-lg shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
+                            className="w-full h-16 bg-white text-gray-900 rounded-2xl font-black text-xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
                         >
-                            {isNextLoading ? '로딩 중...' : '다음 질문 (Next)'} <Play className="w-6 h-6 fill-current" />
+                            {isNextLoading ? '로딩 중...' : '다음 질문 (Next) ▶'} <Play className="w-6 h-6 fill-current" />
                         </button>
                     )}
                 </div>
