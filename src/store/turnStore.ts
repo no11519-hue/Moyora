@@ -36,7 +36,23 @@ export const useTurnStore = create<TurnState>()(
                     console.log('[TurnStore] Received data:', data);
 
                     if (data.turnData && Array.isArray(data.turnData)) {
-                        set({ queue: data.turnData, currentIndex: -1 });
+                        // 데이터 정규화 및 필터링 (관대하게 처리)
+                        const safeQueue = data.turnData.map((g: any) => ({
+                            id: g.id,
+                            theme: g.theme,
+                            type: g.type,
+                            prompt: g.prompt,
+                            timeSec: g.timeSec,
+                            A: g.A,
+                            B: g.B
+                        })).filter((g: any) => g.id && g.type && g.prompt); // 필수 필드 체크
+
+                        if (safeQueue.length > 0) {
+                            set({ queue: safeQueue, currentIndex: -1 });
+                        } else {
+                            console.warn('[TurnStore] No valid games found after filtering');
+                            throw new Error("유효한 게임 데이터가 0개입니다.");
+                        }
                     } else {
                         console.error('[TurnStore] Invalid data format:', data);
                         throw new Error("데이터 형식이 올바르지 않습니다.");
@@ -59,9 +75,10 @@ export const useTurnStore = create<TurnState>()(
                 const game = queue[nextIdx];
 
                 // 1. Sync to Supabase via Admin API (to bypass RLS)
+                let questionUUID = '';
                 try {
                     const payload = {
-                        id: game.id,
+                        id: game.id, // Sends 'IB_Q01' (code)
                         category: game.theme,
                         type: game.type,
                         content: game.prompt,
@@ -75,42 +92,38 @@ export const useTurnStore = create<TurnState>()(
                         body: JSON.stringify(payload)
                     });
 
+                    const syncData = await syncRes.json();
+
                     if (!syncRes.ok) {
-                        const errData = await syncRes.json();
-                        console.error("Sync API Error:", errData);
+                        console.error("Sync API Error:", syncData);
 
-                        if (errData.code === '22P02') {
-                            alert(`[치명적 오류] DB ID 타입 불일치\nDB는 UUID만 받는데, 게임 ID는 문자열(${game.id})입니다.\n개발자에게 문의하세요.`);
-                            return false;
-                        }
-
-                        if (syncRes.status === 500 && errData.error?.includes('Missing Service Role Key')) {
-                            alert(`[설정 오류] 서버에 Service Role Key가 없습니다.\n.env.local 파일을 확인하세요.`);
-                            return false;
-                        }
-
-                        // Code 23505 = Unique Violation (already exists) -> Ignore and proceed
-                        if (errData.code === '23505') {
-                            // Already exists, fine.
+                        if (syncData.code === '22P02') {
+                            alert(`[오류] ID 포맷 불일치 (Code vs UUID). 개발자 확인 필요.`);
+                        } else if (syncRes.status === 500 && syncData.error?.includes('Missing')) {
+                            alert(`[설정 오류] Service Role Key 누락.`);
                         } else {
-                            throw new Error(errData.error || 'Unknown Sync Error');
+                            alert(`질문 동기화 실패: ${syncData.error}`);
                         }
+                        return false;
                     }
+
+                    questionUUID = syncData.id; // API returns the UUID
+
                 } catch (e: any) {
                     console.error("Sync Exception", e);
-                    alert(`게임 질문 동기화 실패: ${e.message}`);
+                    alert(`질문 동기화 중 예외: ${e.message}`);
                     return false;
                 }
 
                 // 2. Update Room (Client should have permission to update room)
                 const { error: roomError } = await supabase.from('rooms').update({
-                    current_question_id: game.id,
+                    current_question_id: questionUUID, // Use UUID from DB
                     status: 'playing',
                 } as any).eq('id', roomId);
 
                 if (roomError) {
                     console.error("Room Update Error:", roomError);
-                    alert(`방 상태 업데이트 실패(RLS?): ${roomError.message}`);
+                    alert(`방 업데이트 실패: ${roomError.message}`);
                     return false;
                 }
 

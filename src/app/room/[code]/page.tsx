@@ -118,10 +118,32 @@ export default function RoomPage() {
             if (room?.current_question_id) {
                 const { data } = await supabase
                     .from('questions')
-                    .select('*')
+                    .select('id, category, type, content, options, timer, created_at')
                     .eq('id', room.current_question_id)
                     .single();
-                setCurrentQuestion(data);
+
+                if (data) {
+                    // Category Whitelist & Mapping
+                    let safeCategory = data.category;
+                    const allowed = new Set(["icebreaking", "dating", "drinking", "workshop", "crewmode"]);
+                    if (!allowed.has(safeCategory)) {
+                        console.warn(`Unknown category '${safeCategory}', mapping to 'workshop'`);
+                        safeCategory = 'workshop';
+                    }
+
+                    // Safe Object Construction
+                    setCurrentQuestion({
+                        id: data.id,
+                        category: safeCategory,
+                        type: data.type,
+                        content: data.content,
+                        options: data.options,
+                        timer: data.timer,
+                        created_at: data.created_at
+                    });
+                } else {
+                    setCurrentQuestion(null);
+                }
 
                 // Also fetch votes for this question
                 const { data: vData } = await supabase
