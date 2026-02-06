@@ -15,9 +15,9 @@ export const GAME_DATA: GameData = {
                     timer: 15
                 },
                 {
-                    type: "talk_tmi",
-                    question: "지금 지갑(또는 계좌)에 10억이 생긴다면 당장 하고 싶은 일 1가지는?",
-                    timer: 30
+                    type: "mission_action",
+                    question: "모두 스마트폰을 꺼내 서로의 '배경화면'을 보여주고 의미를 설명하세요!",
+                    timer: 60
                 },
                 {
                     type: "vote_image",
@@ -33,8 +33,8 @@ export const GAME_DATA: GameData = {
                 },
                 // Added Randoms
                 { type: "balance_light", question: "무인도에 딱 하나만 가져간다면?", options: ["스마트폰", "친구"], timer: 10 },
-                { type: "talk_tmi", question: "내 인생의 BGM 장르는?", timer: 30 },
-                { type: "talk_tmi", question: "투명인간이 된다면 하고 싶은 일은?", timer: 30 },
+                { type: "mission_action", question: "지금 바로 왼쪽 사람의 '장점'을 딱 하나만 찾아 칭찬해주세요!", timer: 30 },
+                { type: "mission_action", question: "오른쪽 사람과 5초 동안 눈 마주치기! 먼저 웃는 사람이 벌칙!", timer: 15 },
                 { type: "vote_blind", question: "학창시절 별명이 가장 웃길 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
                 { type: "vote_image", question: "동물로 비유하면 나무늘보일 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
                 { type: "balance_light", question: "초능력 선택!", options: ["순간이동", "마음읽기"], timer: 10 },
@@ -62,9 +62,9 @@ export const GAME_DATA: GameData = {
                     timer: 10
                 },
                 {
-                    type: "talk_deep",
-                    question: "연애할 때 '이것'만큼은 절대 안 맞으면 힘들다! 하는 것은?",
-                    timer: 45
+                    type: "mission_action",
+                    question: "오른쪽 사람과 10초 동안 눈을 마주치고(아이컨택), 먼저 웃는 사람이 벌칙!",
+                    timer: 15
                 },
                 {
                     type: "vote_blind",
@@ -95,9 +95,9 @@ export const GAME_DATA: GameData = {
                     timer: 20
                 },
                 {
-                    type: "talk_vision",
-                    question: "우리 회사가(팀이) 1년 뒤 뉴스에 나온다면 어떤 헤드라인일까요?",
-                    timer: 60
+                    type: "mission_action",
+                    question: "모두 일어나서 옆 사람과 하이파이브 3번! 가장 늦은 사람은 벌칙!",
+                    timer: 20
                 },
                 {
                     type: "mission_coop",
@@ -114,7 +114,7 @@ export const GAME_DATA: GameData = {
                 { type: "vote_praise", question: "오늘 워크숍 열정왕은 누구?", options: ["참여자 전원"], timer: 15 },
                 { type: "vote_praise", question: "업무 칼답장 스피드 레이서는?", options: ["참여자 전원"], timer: 15 },
                 { type: "vote_praise", question: "우리 팀 공식 쩝쩝박사(맛집 전문가)는?", options: ["참여자 전원"], timer: 15 },
-                { type: "talk_vision", question: "대표님께 바라는 점 딱 한 가지? (익명 보장)", timer: 45 },
+                { type: "mission_action", question: "팀원 전체가 일어나서 '파이팅' 구호 외치기! (3초 안에)", timer: 10 },
                 { type: "mission_coop", question: "팀원 칭찬 릴레이 시작! (끊키면 벌칙)", timer: 60 },
             ]
         },

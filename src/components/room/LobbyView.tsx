@@ -109,11 +109,11 @@ export default function LobbyView() {
                         onClick={handleStart}
                         disabled={participants.length < 2 || isStarting}
                         className={`
-              w-full py-4 rounded-xl font-bold text-lg shadow-xl flex items-center justify-center gap-2
+              w-full h-16 rounded-2xl font-black text-xl shadow-xl flex items-center justify-center gap-2
               transition-all duration-200
               ${participants.length < 2
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-primary text-white hover:scale-[1.02] hover:bg-primary/90'}
+                                : 'bg-primary text-white hover:scale-[1.02] active:scale-95 hover:bg-primary/90'}
             `}
                     >
                         {isStarting ? (
@@ -121,7 +121,7 @@ export default function LobbyView() {
                         ) : (
                             <>
                                 <Play className="w-6 h-6 fill-current" />
-                                게임 시작
+                                게임 시작 🎮
                             </>
                         )}
                     </button>

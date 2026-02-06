@@ -52,10 +52,14 @@ export default function ResultView({ votes }: ResultViewProps) {
             .sort((a, b) => b.count - a.count);
     }, [votes, participants, options]);
 
-    const winner = results[0];
+    // Detect tie/draw (동점 감지)
+    const isTie = results.length >= 2 && results[0].count === results[1].count;
+    const winner = isTie ? null : results[0];
 
     useEffect(() => {
-        // Fire confetti on mount
+        // Fire confetti only if not a tie
+        if (isTie) return;
+
         const duration = 3000;
         const end = Date.now() + duration;
 
@@ -79,7 +83,7 @@ export default function ResultView({ votes }: ResultViewProps) {
                 requestAnimationFrame(frame);
             }
         })();
-    }, []);
+    }, [isTie]);
 
     const handleNext = async () => {
         if (!room) return;
@@ -185,30 +189,58 @@ export default function ResultView({ votes }: ResultViewProps) {
             {/* ZONE 2: Main Body - Winner Display (Flex-1, Centered with Strong Gaps) */}
             <div className="flex-1 flex flex-col justify-center items-center px-6 py-8 gap-y-12 relative z-10 min-h-0">
 
-                {/* Winner Spotlight Block */}
-                <div className="flex-shrink-0 flex flex-col items-center">
-                    <div className="relative mb-6">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary blur-2xl opacity-60 animate-pulse-slow rounded-full"></div>
+                {isTie ? (
+                    /* TIE/DRAW Display */
+                    <div className="flex-shrink-0 flex flex-col items-center gap-6">
+                        {/* Handshake Icon */}
+                        <div className="text-8xl animate-bounce-slow">🤝</div>
 
-                        {/* Crown */}
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 animate-bounce-slow">
-                            <Crown className="w-12 h-12 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
+                        {/* Tie Message */}
+                        <div className="text-center">
+                            <h3 className="text-3xl font-black mb-2">막상막하!</h3>
+                            <p className="text-white/60 text-lg">동점이에요 (각 {results[0].count}표)</p>
                         </div>
 
-                        <div className="w-40 h-40 bg-white rounded-[2.5rem] flex items-center justify-center text-[3.5rem] font-black text-gray-900 shadow-2xl relative z-10 border-[6px] border-white/20">
-                            {winner?.avatar}
-                        </div>
-
-                        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full font-black text-xl shadow-lg whitespace-nowrap z-20 border-2 border-white/20">
-                            {winner?.label}
+                        {/* Tied Options */}
+                        <div className="flex gap-4 mt-4">
+                            {results.filter(r => r.count === results[0].count).map((res, idx) => (
+                                <div key={res.targetId} className="flex flex-col items-center gap-2 bg-white/10 border border-white/20 rounded-2xl p-4 backdrop-blur-md">
+                                    <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center text-4xl font-black text-gray-900 shadow-xl">
+                                        {res.avatar}
+                                    </div>
+                                    <span className="font-bold text-base text-center break-keep">{res.label}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
+                ) : (
+                    /* Winner Spotlight Block */
+                    <div className="flex-shrink-0 flex flex-col items-center gap-6">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary blur-2xl opacity-60 animate-pulse-slow rounded-full"></div>
 
-                    <p className="text-white/80 font-bold text-lg mt-8 flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-yellow-400" />
-                        총 <span className="text-yellow-400 text-2xl">{winner?.count}</span>표 획득!
-                    </p>
-                </div>
+                            {/* Crown - More space from avatar */}
+                            <div className="absolute -top-14 left-1/2 -translate-x-1/2 animate-bounce-slow">
+                                <Crown className="w-12 h-12 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
+                            </div>
+
+                            <div className="w-40 h-40 bg-white rounded-[2.5rem] flex items-center justify-center text-[3.5rem] font-black text-gray-900 shadow-2xl relative z-10 border-[6px] border-white/20">
+                                {winner?.avatar}
+                            </div>
+
+                            {/* Badge - More space from avatar */}
+                            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full font-black text-xl shadow-lg whitespace-nowrap z-20 border-2 border-white/20 break-keep">
+                                {winner?.label}
+                            </div>
+                        </div>
+
+                        {/* Vote count - Clear separation */}
+                        <p className="text-white/80 font-bold text-lg mt-4 flex items-center gap-2">
+                            <Trophy className="w-5 h-5 text-yellow-400" />
+                            총 <span className="text-yellow-400 text-2xl">{winner?.count}</span>표 획득!
+                        </p>
+                    </div>
+                )}
 
                 {/* Others List Block */}
                 <div className="flex-shrink-0 w-full max-w-sm space-y-3">
