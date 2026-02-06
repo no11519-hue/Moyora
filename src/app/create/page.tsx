@@ -180,7 +180,7 @@ export default function CreateRoomPage() {
                         className={[
                             'w-full h-[52px] rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-lg',
                             isValid
-                                ? 'bg-[#111827] text-white hover:bg-black active:scale-[0.98]'
+                                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 active:scale-[0.98]'
                                 : 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed',
                         ].join(' ')}
                     >
