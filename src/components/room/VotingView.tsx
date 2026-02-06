@@ -94,10 +94,8 @@ export default function VotingView({ votes }: VotingViewProps) {
                         />
                     </div>
                 )}
-                <div className="px-4 py-3 flex justify-between items-center relative">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-black text-primary tracking-widest uppercase bg-primary/10 px-2.5 py-1 rounded-full whitespace-nowrap">
-                        {currentQuestion.type?.replace(/_/g, ' ').toUpperCase()}
-                    </span>
+                <div className="px-4 py-3 flex justify-end items-center relative">
+                    {/* Header Text Removed */}
 
                     {currentQuestion.timer && (
                         <span className={`font-mono font-bold text-lg ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
