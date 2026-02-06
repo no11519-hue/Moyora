@@ -171,8 +171,8 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         disabled={isInteractionDisabled}
                                         className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:cursor-not-allowed"
                                     >
-                                        <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep">
-                                            {p.nickname}<span className="text-lg font-bold text-gray-400">님</span>
+                                        <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep" style={{ fontSize: '1.5rem' }}>
+                                            {p.nickname}<span className="text-lg font-bold text-gray-400" style={{ fontSize: '1.125rem' }}>님</span>
                                         </span>
                                     </button>
                                 ))}
@@ -197,7 +197,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                                 : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-300'}
                                 `}
                                     >
-                                        <span className="text-center leading-tight text-5xl md:text-6xl font-black break-keep text-gray-900 drop-shadow-sm">{opt}</span>
+                                        <span className="text-center leading-tight text-5xl md:text-6xl font-black break-keep text-gray-900 drop-shadow-sm" style={{ fontSize: '3.5rem' }}>{opt}</span>
                                     </button>
                                 ))}
                             </div>
@@ -274,7 +274,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                     )}
 
                     {/* 3. FOOTER AREA (Timer + Controls) */}
-                    <div className={`fixed bottom-0 left-0 w-full z-50 px-6 pb-[calc(20px+env(safe-area-inset-bottom))] pt-6 transition-all duration-300 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ${isTimeOver ? 'bg-gray-900/95 backdrop-blur-xl border-t border-white/10' : 'bg-white/95 backdrop-blur-xl border-t border-gray-100'}`}>
+                    <div className={`fixed bottom-0 left-0 w-full z-50 px-6 pb-[calc(20px+env(safe-area-inset-bottom))] pt-6 transition-all duration-300 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ${isTimeOver ? 'bg-gray-900/95 backdrop-blur-xl border-t border-white/10' : 'bg-white/95 backdrop-blur-xl border-t border-gray-100'}`} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999 }}>
                         {/* Timer Display */}
                         {currentQuestion.timer && (
                             <div className="flex justify-center w-full">
@@ -288,7 +288,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         <div className={`p-2 rounded-full ${timeLeft <= 10 ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-500'}`}>
                                             <Timer className="w-8 h-8" />
                                         </div>
-                                        <span className={`text-7xl font-black font-mono tabular-nums leading-none tracking-tight ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                                        <span className={`text-7xl font-black font-mono tabular-nums leading-none tracking-tight ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`} style={{ fontSize: '5rem', lineHeight: 1 }}>
                                             {timeLeft}
                                         </span>
                                     </div>
