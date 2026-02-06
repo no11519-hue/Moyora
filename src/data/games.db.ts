@@ -42,12 +42,12 @@ export const GAME_DB: Game[] = [
 
     // 아이스브레이킹: 선택형 20
     { id: "IB_C01", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "첫대화", A: "먼저 말함", B: "먼저 웃음" },
-    { id: "IB_C02", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "소개스타", A: "한줄", B: "TMI" },
+    { id: "IB_C02", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "소개 스타일", A: "한줄", B: "TMI" },
     { id: "IB_C03", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "친해짐", A: "공통", B: "드립" },
     { id: "IB_C04", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "사진타입", A: "셀카", B: "단체" },
     { id: "IB_C05", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "리액션", A: "끄덕", B: "박수" },
     { id: "IB_C06", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "메뉴픽", A: "빠른", B: "고민" },
-    { id: "IB_C07", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "말스타", A: "짧게", B: "길게" },
+    { id: "IB_C07", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "말하는 스타일", A: "짧게", B: "길게" },
     { id: "IB_C08", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "기분표현", A: "표정", B: "말로" },
     { id: "IB_C09", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "취미공유", A: "바로", B: "천천히" },
     { id: "IB_C10", theme: "아이스브레이킹", type: "C", timeSec: 10, prompt: "이모지", A: "많이", B: "적게" },
@@ -65,8 +65,8 @@ export const GAME_DB: Game[] = [
     // ------------------------------------------------------------
     // 소개팅·미팅: 질문형 10 (가볍고 3~4글자 답 유도)
     // ------------------------------------------------------------
-    { id: "DM_Q01", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "호감포 3~4글자!" },
-    { id: "DM_Q02", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "설렘포 3~4글자!" },
+    { id: "DM_Q01", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "호감 포인트 3~4글자!" },
+    { id: "DM_Q02", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "설렘 포인트 3~4글자!" },
     { id: "DM_Q03", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "데이트픽 3~4글자!" },
     { id: "DM_Q04", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "대화톤 3~4글자!" },
     { id: "DM_Q05", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "연락톤 3~4글자!" },
@@ -106,11 +106,11 @@ export const GAME_DB: Game[] = [
     { id: "DR_Q03", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "건배사 3~4글자!" },
     { id: "DR_Q04", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "내주량 3~4글자!" },
     { id: "DR_Q05", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "술버릇 3~4글자!" },
-    { id: "DR_Q06", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "2차픽 3~4글자!" },
+    { id: "DR_Q06", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "2차 장소 3~4글자!" },
     { id: "DR_Q07", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "텐션송 3~4글자!" },
     { id: "DR_Q08", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "벌칙명 3~4글자!" },
-    { id: "DR_Q09", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "웃참법 3~4글자!" },
-    { id: "DR_Q10", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "오늘레전 3~4글자!" },
+    { id: "DR_Q09", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "웃음 참는 법 3~4글자!" },
+    { id: "DR_Q10", theme: "회식·술자리", type: "Q", timeSec: 20, prompt: "오늘의 레전드 3~4글자!" },
 
     // 회식·술자리: 선택형 20
     { id: "DR_C01", theme: "회식·술자리", type: "C", timeSec: 10, prompt: "술픽", A: "소주", B: "맥주" },
@@ -137,14 +137,14 @@ export const GAME_DB: Game[] = [
     // ------------------------------------------------------------
     // 크루모드: 질문형 10
     // ------------------------------------------------------------
-    { id: "CR_Q01", theme: "크루모드", type: "Q", timeSec: 20, prompt: "우리팀별 3~4글자!" },
+    { id: "CR_Q01", theme: "크루모드", type: "Q", timeSec: 20, prompt: "우리 팀 별명 3~4글자!" },
     { id: "CR_Q02", theme: "크루모드", type: "Q", timeSec: 20, prompt: "팀무드 3~4글자!" },
     { id: "CR_Q03", theme: "크루모드", type: "Q", timeSec: 20, prompt: "오늘MVP 3~4글자!" },
     { id: "CR_Q04", theme: "크루모드", type: "Q", timeSec: 20, prompt: "내역할 3~4글자!" },
     { id: "CR_Q05", theme: "크루모드", type: "Q", timeSec: 20, prompt: "협업팁 3~4글자!" },
     { id: "CR_Q06", theme: "크루모드", type: "Q", timeSec: 20, prompt: "업무밈 3~4글자!" },
-    { id: "CR_Q07", theme: "크루모드", type: "Q", timeSec: 20, prompt: "칭찬한마 3~4글자!" },
-    { id: "CR_Q08", theme: "크루모드", type: "Q", timeSec: 20, prompt: "고생포 3~4글자!" },
+    { id: "CR_Q07", theme: "크루모드", type: "Q", timeSec: 20, prompt: "칭찬 한마디 3~4글자!" },
+    { id: "CR_Q08", theme: "크루모드", type: "Q", timeSec: 20, prompt: "고생 포인트 3~4글자!" },
     { id: "CR_Q09", theme: "크루모드", type: "Q", timeSec: 20, prompt: "다음목표 3~4글자!" },
     { id: "CR_Q10", theme: "크루모드", type: "Q", timeSec: 20, prompt: "한줄회고 3~4글자!" },
 

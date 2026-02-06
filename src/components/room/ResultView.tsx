@@ -15,6 +15,25 @@ interface ResultViewProps {
 export default function ResultView({ votes }: ResultViewProps) {
     const { room, participants, currentUser, currentQuestion } = useGameStore();
     const [isNextLoading, setIsNextLoading] = useState(false);
+    const [missionMessages, setMissionMessages] = useState<any[]>([]);
+
+    const isMissionType = currentQuestion?.type?.startsWith('mission_') ||
+        currentQuestion?.type?.startsWith('talk_') ||
+        currentQuestion?.type === 'Q';
+
+    // Fetch Messages for Mission Type
+    useEffect(() => {
+        if (isMissionType && room?.id && currentQuestion?.id) {
+            supabase.from('room_messages' as any)
+                .select('*')
+                .eq('room_id', room.id)
+                .eq('question_id', currentQuestion.id)
+                .order('created_at', { ascending: true })
+                .then(({ data }) => {
+                    if (data) setMissionMessages(data);
+                });
+        }
+    }, [isMissionType, room?.id, currentQuestion?.id]);
 
     // Parse options
     let options: string[] = [];
@@ -88,9 +107,7 @@ export default function ResultView({ votes }: ResultViewProps) {
 
     const { playNextGame, fetchTurn } = useTurnStore();
 
-    const isMissionType = currentQuestion?.type?.startsWith('mission_') ||
-        currentQuestion?.type?.startsWith('talk_') ||
-        currentQuestion?.type === 'Q';
+    // Type definition moved to top for Hook dependency
 
     const handleNext = async () => {
         if (!room) return;
@@ -163,11 +180,27 @@ export default function ResultView({ votes }: ResultViewProps) {
             <div className="flex-1 flex flex-col items-center px-6 pt-16 pb-64 gap-y-12 relative z-10 min-h-0 overflow-y-auto w-full">
 
                 {isMissionType ? (
-                    <div className="flex-1 flex flex-col items-center justify-center gap-6 animate-slide-up text-center">
-                        <div className="text-8xl drop-shadow-2xl filter brightness-110">💭</div>
-                        <div>
-                            <h3 className="text-3xl font-black mb-2 drop-shadow-md">대화 시간 종료!</h3>
-                            <p className="text-white/60 text-lg">즐거운 대화 나누셨나요?</p>
+                    <div className="flex-1 flex flex-col items-center w-full max-w-md animate-slide-up">
+                        <div className="text-center mb-8">
+                            <h3 className="text-3xl font-black mb-2 drop-shadow-md">답변 결과</h3>
+                            <p className="text-white/60 text-lg">참여자들의 생각입니다</p>
+                        </div>
+
+                        <div className="w-full flex flex-col gap-3 pb-8">
+                            {missionMessages.length > 0 ? (
+                                missionMessages.map((msg, idx) => (
+                                    <div key={idx} className="bg-white/10 border border-white/20 p-5 rounded-2xl backdrop-blur-md flex flex-col gap-1 shadow-lg">
+                                        <span className="font-bold text-yellow-400 text-sm">{msg.nickname}</span>
+                                        <span className="text-white text-lg font-medium break-words leading-relaxed">
+                                            {msg.message}
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-white/40 text-center py-10">
+                                    등록된 답변이 없습니다.
+                                </div>
+                            )}
                         </div>
                     </div>
                 ) : isTie ? (

@@ -14,6 +14,19 @@ interface VotingViewProps {
 export default function VotingView({ votes }: VotingViewProps) {
     const { room, participants, currentUser, currentQuestion } = useGameStore();
     const [isVoting, setIsVoting] = useState(false);
+    const [isNextLoading, setIsNextLoading] = useState(false);
+
+    // Type Definitions (Moved to top level)
+    const isVoteType = currentQuestion?.type?.startsWith('vote_');
+    const isBalanceType = currentQuestion?.type?.startsWith('balance_') || currentQuestion?.type === 'C';
+    const isRouletteType = currentQuestion?.type?.startsWith('roulette_');
+    const isMissionType = !isRouletteType && (
+        currentQuestion?.type?.startsWith('mission_') ||
+        currentQuestion?.type?.startsWith('talk_') ||
+        currentQuestion?.type === 'Q'
+    );
+
+
     const [chatMessages, setChatMessages] = useState<{ sender: string, text: string }[]>([]);
     const [chatInput, setChatInput] = useState('');
 
@@ -39,6 +52,16 @@ export default function VotingView({ votes }: VotingViewProps) {
             payload
         });
         setChatInput('');
+
+        // DB Insert for Result View (Persistence)
+        supabase.from('room_messages' as any).insert({
+            room_id: room.id,
+            question_id: currentQuestion?.id,
+            nickname: currentUser?.nickname || '익명',
+            message: chatInput
+        }).then(({ error }) => {
+            if (error) console.error('Message save failed:', error);
+        });
     };
 
     // Timer Logic using useCountdown Hook
@@ -93,14 +116,7 @@ export default function VotingView({ votes }: VotingViewProps) {
         options = currentQuestion.options as string[];
     }
 
-    const isVoteType = currentQuestion?.type?.startsWith('vote_');
-    const isBalanceType = currentQuestion?.type?.startsWith('balance_') || currentQuestion?.type === 'C';
-    const isRouletteType = currentQuestion?.type?.startsWith('roulette_');
-    const isMissionType = !isRouletteType && (
-        currentQuestion?.type?.startsWith('mission_') ||
-        currentQuestion?.type?.startsWith('talk_') ||
-        currentQuestion?.type === 'Q'
-    );
+    // Type definitions moved to top
 
     if (!currentQuestion) return <div className="p-10 text-center flex flex-col items-center gap-4"><Loader2 className="animate-spin text-primary w-8 h-8" /><span>문제 출제 중...</span></div>;
 
