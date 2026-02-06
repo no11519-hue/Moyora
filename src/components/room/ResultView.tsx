@@ -156,7 +156,7 @@ export default function ResultView({ votes }: ResultViewProps) {
             {/* ZONE 2: Main Body - Winner Display (Flex-1, Centered with Strong Gaps) */}
             {/* ZONE 2: Main Body - Winner Display (Flex-1, Centered with Strong Gaps) */}
             {/* Added pb-48 for safe scroll area above fixed footer */}
-            <div className="flex-1 flex flex-col items-center px-6 pt-10 pb-48 gap-y-12 relative z-10 min-h-0 overflow-y-auto w-full">
+            <div className="flex-1 flex flex-col items-center px-6 pt-16 pb-64 gap-y-12 relative z-10 min-h-0 overflow-y-auto w-full">
 
                 {isTie ? (
                     /* TIE/DRAW Display */

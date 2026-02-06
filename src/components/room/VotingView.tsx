@@ -85,7 +85,7 @@ export default function VotingView({ votes }: VotingViewProps) {
 
             {/* 1. Header & Progress Timer */}
             {/* 1. Header & Progress Timer - FIXED TOP */}
-            <div className="fixed top-0 left-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm pt-safe-top">
+            <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md border-b border-gray-100 pt-safe-top">
                 {currentQuestion.timer && (
                     <div className="h-1.5 w-full bg-gray-100 overflow-hidden">
                         <div
@@ -208,6 +208,22 @@ export default function VotingView({ votes }: VotingViewProps) {
                             )}
                         </div>
                     )}
+
+                    {/* 5. Mission / Talk Game (Input Field) */}
+                    {isMissionType && (
+                        <div className="flex-1 w-full flex flex-col items-center justify-center p-4 animate-slide-up">
+                            <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-lg border border-gray-100 flex flex-col gap-4">
+                                <h3 className="text-center text-gray-500 font-bold">✍️ 답변 메모장</h3>
+                                <textarea
+                                    className="w-full h-40 p-4 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-primary focus:bg-white transition-all resize-none text-gray-800 placeholder:text-gray-400 outline-none"
+                                    placeholder="주제에 대한 나의 생각을 자유롭게 적어보세요..."
+                                />
+                                <p className="text-xs text-center text-gray-400">
+                                    대화를 나누며 자유롭게 메모하세요! (저장되지 않음)
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -218,7 +234,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                 <div className="fixed bottom-0 left-0 z-50 w-full p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 pb-[calc(20px+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
                     <button
                         onClick={handleShowResult}
-                        className="w-full h-16 bg-[#111827] text-white rounded-2xl font-black text-xl shadow-xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
+                        className="w-full h-16 bg-primary text-white rounded-2xl font-black text-xl shadow-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
                     >
                         {isMissionType ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
                     </button>
