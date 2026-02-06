@@ -46,32 +46,43 @@ export default function JoinForm({ roomId, onJoin }: JoinFormProps) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] p-6 text-center animate-slide-up">
-            <div className="w-full max-w-xs space-y-6">
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">닉네임을 알려주세요!</h2>
-                    <p className="text-gray-500">게임에서 사용할 이름입니다.</p>
+        <div className="flex flex-col items-center justify-center min-h-[100dvh] px-6 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="w-full max-w-md space-y-6 animate-slide-up">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-black mb-3 text-gray-900">닉네임을 알려주세요!</h2>
+                    <p className="text-gray-500 text-base">게임에서 사용할 이름입니다.</p>
                 </div>
 
+                {/* Input Field - LARGE & FULL WIDTH */}
                 <input
                     type="text"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
                     placeholder="별명 입력 (예: 개발왕)"
-                    className="w-full text-center px-4 py-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-lg outline-none transition-all"
+                    className="w-full h-16 text-center px-6 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 text-xl font-medium outline-none transition-all bg-white shadow-sm"
+                    autoFocus
+                    maxLength={20}
                 />
 
+                {/* Submit Button - LARGE & FULL WIDTH */}
                 <button
                     onClick={handleJoin}
-                    disabled={!nickname || isJoining}
-                    className="w-full py-4 text-white bg-primary rounded-xl font-bold text-lg shadow-lg hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                    disabled={!nickname.trim() || isJoining}
+                    className="w-full h-16 text-white bg-indigo-600 rounded-xl font-bold text-lg shadow-lg hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600 flex justify-center items-center gap-2"
                 >
                     {isJoining ? (
-                        <Loader2 className="animate-spin w-5 h-5" />
+                        <Loader2 className="animate-spin w-6 h-6" />
                     ) : (
-                        '입장하기'
+                        '입장하기 🚀'
                     )}
                 </button>
+
+                {/* Helper Text */}
+                <p className="text-center text-sm text-gray-400 mt-4">
+                    엔터키를 눌러도 입장할 수 있어요
+                </p>
             </div>
         </div>
     );

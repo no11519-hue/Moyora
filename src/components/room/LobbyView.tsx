@@ -72,20 +72,32 @@ export default function LobbyView() {
                 <p className="text-gray-500 text-sm">QR코드를 스캔해서 입장하세요!</p>
             </div>
 
-            {/* Participants Grid */}
-            <div className="w-full max-w-sm grid grid-cols-4 gap-4 mb-20 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            {/* Participants Grid - 3 COLUMN CARD LAYOUT */}
+            <div className="w-full max-w-md grid grid-cols-3 gap-4 mb-20 animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 {participants.map((p) => (
-                    <div key={p.id} className="flex flex-col items-center gap-1">
-                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-xl shadow-inner relative overflow-hidden">
-                            {/* Simple avatar generation based on nickname */}
-                            <span className="z-10">{p.nickname[0]}</span>
+                    <div
+                        key={p.id}
+                        className="bg-white shadow-md rounded-lg p-3 flex flex-col items-center gap-2 relative border border-gray-100 hover:shadow-lg transition-shadow"
+                    >
+                        {/* Avatar Circle */}
+                        <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center text-2xl shadow-sm relative overflow-hidden">
+                            <span className="z-10 font-bold text-indigo-700">{p.nickname[0]}</span>
                             {p.is_host && (
-                                <div className="absolute inset-0 bg-yellow-100 opacity-50 border-2 border-yellow-400 rounded-full" />
+                                <div className="absolute inset-0 bg-yellow-200 opacity-60 border-2 border-yellow-400 rounded-full animate-pulse" />
                             )}
                         </div>
-                        <span className="text-xs text-gray-700 truncate w-full text-center font-medium">
+
+                        {/* Nickname with Truncate */}
+                        <span className="text-sm text-gray-800 truncate w-full text-center font-medium px-1">
                             {p.nickname}
                         </span>
+
+                        {/* Host Badge */}
+                        {p.is_host && (
+                            <span className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                                방장
+                            </span>
+                        )}
                     </div>
                 ))}
             </div>
