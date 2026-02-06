@@ -123,11 +123,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                 <div className="px-4 py-3 flex justify-end items-center relative">
                     {/* Header Text Removed */}
 
-                    {currentQuestion.timer && (
-                        <span className={`font-mono font-bold text-lg ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
-                            {timeLeft}
-                        </span>
-                    )}
+                    {/* Timer moved to bottom */}
                 </div>
             </div>
 
@@ -281,6 +277,18 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         <Send className="w-5 h-5" />
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* BIG TIMER (Bottom) */}
+                    {currentQuestion.timer && (
+                        <div className="flex-shrink-0 w-full flex justify-center py-6 animate-fade-in">
+                            <div className="bg-white rounded-3xl px-8 py-3 shadow-lg border-2 border-gray-100 flex items-center gap-4">
+                                <Timer className="w-6 h-6 text-gray-400" />
+                                <span className={`text-4xl font-black font-mono tabular-nums ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                                    {timeLeft}
+                                </span>
                             </div>
                         </div>
                     )}

@@ -121,8 +121,8 @@ export default function CreateRoomPage() {
                         모임 성격 선택
                     </label>
 
-                    {/* ✅ 세로 길이 줄이기: 2열 그리드 + desc는 선택했을 때만 아래에서 보여줌 */}
-                    <div className="grid grid-cols-2 gap-2">
+                    {/* Vertical List for easier touch */}
+                    <div className="flex flex-col gap-3">
                         {CATEGORIES.map((cat) => {
                             const isSelected = selectedCategory === cat.id;
                             return (
@@ -131,34 +131,30 @@ export default function CreateRoomPage() {
                                     type="button"
                                     onClick={() => setSelectedCategory(cat.id)}
                                     className={[
-                                        'w-full rounded-xl border p-3 flex items-center gap-2 text-left transition-all active:scale-[0.98]',
+                                        'w-full rounded-2xl border-2 p-4 flex items-center gap-4 text-left transition-all active:scale-[0.98] shadow-sm',
                                         isSelected
-                                            ? 'border-black bg-gray-50 ring-1 ring-black shadow-sm'
+                                            ? 'border-black bg-gray-50 ring-1 ring-black'
                                             : 'border-gray-100 bg-white hover:border-gray-300',
                                     ].join(' ')}
                                 >
-                                    <span className="text-xl w-7 text-center">{cat.emoji}</span>
-                                    <div className="flex-1 min-w-0">
-                                        <span className="block text-[13px] font-semibold text-gray-800">
+                                    <span className="text-3xl shrink-0">{cat.emoji}</span>
+                                    <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                                        <span className="text-base font-bold text-gray-900">
                                             {cat.label}
+                                        </span>
+                                        <span className="text-xs text-gray-500">
+                                            {cat.desc}
                                         </span>
                                     </div>
                                     {isSelected && (
-                                        <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center shrink-0">
-                                            <Check className="w-3 h-3 text-white" />
+                                        <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center shrink-0 animate-fade-in">
+                                            <Check className="w-4 h-4 text-white" />
                                         </div>
                                     )}
                                 </button>
                             );
                         })}
                     </div>
-
-                    {/* 선택된 테마 설명을 한 줄로만 */}
-                    {selectedDesc && (
-                        <p className="mt-2 text-[11px] text-gray-500 leading-4">
-                            {selectedDesc}
-                        </p>
-                    )}
                 </section>
 
                 {/* Guide Text */}
