@@ -181,13 +181,13 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         key={idx}
                                         onClick={() => handleVote(idx === 0 ? 'A' : 'B')}
                                         disabled={isInteractionDisabled}
-                                        className={`flex-1 min-h-[140px] rounded-2xl font-bold border-4 shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-6 disabled:opacity-50 disabled:grayscale hover:shadow-lg
+                                        className={`flex-1 min-h-[160px] rounded-3xl font-bold border-4 shadow-lg active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-8 disabled:opacity-50 disabled:grayscale hover:shadow-xl
                                     ${idx === 0
                                                 ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
                                                 : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-300'}
                                 `}
                                     >
-                                        <span className="text-center leading-tight text-4xl font-black break-keep text-gray-900 drop-shadow-sm">{opt}</span>
+                                        <span className="text-center leading-tight text-5xl md:text-6xl font-black break-keep text-gray-900 drop-shadow-sm">{opt}</span>
                                     </button>
                                 ))}
                             </div>

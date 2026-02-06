@@ -97,11 +97,11 @@ export default function LobbyView() {
                         onClick={handleStart}
                         disabled={participants.length < 2 || isStarting}
                         className={`
-              w-full h-16 rounded-2xl font-black text-xl shadow-xl flex items-center justify-center gap-2
-              transition-all duration-200
+              w-full h-24 rounded-3xl font-black text-3xl shadow-2xl flex items-center justify-center gap-3 mb-4
+              transition-all duration-200 border-4
               ${participants.length < 2
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-primary text-white hover:scale-[1.02] active:scale-95 hover:bg-primary/90'}
+                                ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed'
+                                : 'bg-primary border-primary-foreground/20 text-white hover:scale-[1.02] active:scale-95 hover:bg-primary/90'}
             `}
                     >
                         {isStarting ? (
