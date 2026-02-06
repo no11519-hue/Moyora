@@ -52,15 +52,13 @@ export const useTurnStore = create<TurnState>()(
                 const nextIdx = currentIndex + 1;
 
                 if (nextIdx >= queue.length) {
-                    // Turn Ended (No more games in queue)
+                    // Turn Ended
                     return false;
                 }
 
                 const game = queue[nextIdx];
 
-                // Sync to Supabase
-                // 1. Upsert question to DB
-                // Note: 'id' in questions table is 'text' (string). If it's uuid in real DB, this might fail.
+                // 1. Sync to Supabase via Admin API (to bypass RLS)
                 try {
                     const payload = {
                         id: game.id,
@@ -71,32 +69,50 @@ export const useTurnStore = create<TurnState>()(
                         options: game.type === 'C' ? JSON.stringify([game.A, game.B]) : null
                     };
 
-                    // @ts-ignore
-                    const { error } = await supabase.from('questions').upsert(payload);
+                    const syncRes = await fetch('/api/game/sync', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
 
-                    if (error) {
-                        console.error("Question Upsert Error:", error);
-                        // If error is code 23505 (unique violation), it's fine for upsert, but other errors like UUID format?
-                        if (error.code === '22P02') { // invalid input syntax for type uuid
-                            alert(`DB 오류: ID 포맷이 UUID가 아닙니다. (${game.id})`);
+                    if (!syncRes.ok) {
+                        const errData = await syncRes.json();
+                        console.error("Sync API Error:", errData);
+
+                        if (errData.code === '22P02') {
+                            alert(`[치명적 오류] DB ID 타입 불일치\nDB는 UUID만 받는데, 게임 ID는 문자열(${game.id})입니다.\n개발자에게 문의하세요.`);
                             return false;
                         }
-                        alert(`질문 등록 실패: ${error.message} (${error.code})`);
-                        // Don't return false here, try to proceed? No, FK will fail.
-                        return false;
+
+                        if (syncRes.status === 500 && errData.error?.includes('Missing Service Role Key')) {
+                            alert(`[설정 오류] 서버에 Service Role Key가 없습니다.\n.env.local 파일을 확인하세요.`);
+                            return false;
+                        }
+
+                        // Code 23505 = Unique Violation (already exists) -> Ignore and proceed
+                        if (errData.code === '23505') {
+                            // Already exists, fine.
+                        } else {
+                            throw new Error(errData.error || 'Unknown Sync Error');
+                        }
                     }
                 } catch (e: any) {
-                    console.error("Upsert Exception", e);
-                    alert(`질문 등록 중 예외 발생: ${e.message}`);
+                    console.error("Sync Exception", e);
+                    alert(`게임 질문 동기화 실패: ${e.message}`);
                     return false;
                 }
 
-                // 2. Update Room
-                await supabase.from('rooms').update({
+                // 2. Update Room (Client should have permission to update room)
+                const { error: roomError } = await supabase.from('rooms').update({
                     current_question_id: game.id,
                     status: 'playing',
-                    // We can also store round info if room table had columns, but we don't.
                 } as any).eq('id', roomId);
+
+                if (roomError) {
+                    console.error("Room Update Error:", roomError);
+                    alert(`방 상태 업데이트 실패(RLS?): ${roomError.message}`);
+                    return false;
+                }
 
                 set({ currentIndex: nextIdx });
                 return true;
@@ -105,7 +121,7 @@ export const useTurnStore = create<TurnState>()(
             reset: () => set({ queue: [], currentIndex: -1 })
         }),
         {
-            name: 'moyora-turn-engine', // storage key
+            name: 'moyora-turn-engine',
         }
     )
 );
