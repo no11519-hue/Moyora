@@ -167,86 +167,96 @@ export default function ResultView({ votes }: ResultViewProps) {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-900 text-white p-6 pb-32 text-center relative overflow-hidden">
+        <div className="flex flex-col min-h-[100dvh] bg-gray-900 text-white relative overflow-hidden">
             {/* Background Gradients */}
             <div className="absolute top-[-20%] left-[-20%] w-80 h-80 bg-primary/30 rounded-full blur-[100px] pointer-events-none"></div>
             <div className="absolute bottom-[-20%] right-[-20%] w-80 h-80 bg-secondary/30 rounded-full blur-[100px] pointer-events-none"></div>
 
-            {/* Header */}
-            <h3 className="text-white/50 text-xs font-bold mb-3 uppercase tracking-widest border border-white/10 inline-block px-3 py-1 rounded-full backdrop-blur-sm">
-                Vote Result
-            </h3>
-            <h2 className="text-xl font-bold mb-10 text-balance leading-snug drop-shadow-md">
-                {currentQuestion?.content}
-            </h2>
-
-            {/* Winner Spotlight */}
-            <div className="flex-1 flex flex-col items-center justify-center animate-slide-up relative z-10 w-full mb-8">
-                <div className="relative mb-6">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary blur-2xl opacity-60 animate-pulse-slow rounded-full"></div>
-
-                    {/* Crown */}
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 animate-bounce-slow">
-                        <Crown className="w-12 h-12 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
-                    </div>
-
-                    <div className="w-40 h-40 bg-white rounded-[2.5rem] flex items-center justify-center text-[3.5rem] font-black text-gray-900 shadow-2xl relative z-10 border-[6px] border-white/20 bg-clip-padding backdrop-filter">
-                        {winner?.avatar}
-                    </div>
-
-                    <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full font-black text-xl shadow-lg whitespace-nowrap z-20 border-2 border-white/20">
-                        {winner?.label}
-                    </div>
-                </div>
-
-                <p className="text-white/80 font-bold text-lg mt-4 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    총 <span className="text-yellow-400 text-2xl">{winner?.count}</span>표 획득!
-                </p>
+            {/* ZONE 1: Header - Question Text (Fixed Top) */}
+            <div className="flex-shrink-0 pt-safe-top px-6 pt-6 pb-4 text-center relative z-20">
+                <h3 className="text-white/50 text-xs font-bold mb-3 uppercase tracking-widest border border-white/10 inline-block px-3 py-1 rounded-full backdrop-blur-sm">
+                    Vote Result
+                </h3>
+                <h2 className="text-lg font-bold text-balance leading-snug drop-shadow-md max-w-md mx-auto">
+                    {currentQuestion?.content}
+                </h2>
             </div>
 
-            {/* Others List */}
-            <div className="w-full max-w-sm mx-auto space-y-3 z-10 relative">
-                {results.slice(1).map((res, idx) => (
-                    <div key={res.participant?.id} className="flex items-center justify-between bg-white/5 border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-md">
-                        <div className="flex items-center gap-4">
-                            <span className="text-white/40 font-mono text-sm font-bold w-6">#{idx + 2}</span>
-                            <span className="font-bold text-lg">{res.label}</span>
+            {/* ZONE 2: Main Body - Winner Display (Flex-1, Centered with Strong Gaps) */}
+            <div className="flex-1 flex flex-col justify-center items-center px-6 py-8 gap-y-12 relative z-10 min-h-0">
+
+                {/* Winner Spotlight Block */}
+                <div className="flex-shrink-0 flex flex-col items-center">
+                    <div className="relative mb-6">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary blur-2xl opacity-60 animate-pulse-slow rounded-full"></div>
+
+                        {/* Crown */}
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 animate-bounce-slow">
+                            <Crown className="w-12 h-12 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
                         </div>
-                        <span className="font-bold text-white/60">{res.count}표</span>
-                    </div>
-                ))}
-                {results.length === 1 && (
-                    <div className="text-white/30 text-sm py-4">
-                        만장일치거나 혼자 투표했군요! 😮
-                    </div>
-                )}
-            </div>
 
-            {/* Controls */}
-            <div className="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-gray-900 via-gray-900/90 to-transparent z-30 flex flex-col gap-3">
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => alert('이미지 저장 기능은 준비중입니다!')}
-                        className="flex-1 py-4 bg-white/10 border border-white/10 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-white/20 transition backdrop-blur-sm text-sm">
-                        <Download className="w-4 h-4" /> 이미지 저장
-                    </button>
-                    <button
-                        onClick={handleShare}
-                        className="flex-1 py-4 bg-secondary rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-secondary/90 transition text-white text-sm shadow-lg shadow-secondary/20">
-                        <Share2 className="w-4 h-4" /> 결과 공유
-                    </button>
+                        <div className="w-40 h-40 bg-white rounded-[2.5rem] flex items-center justify-center text-[3.5rem] font-black text-gray-900 shadow-2xl relative z-10 border-[6px] border-white/20">
+                            {winner?.avatar}
+                        </div>
+
+                        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full font-black text-xl shadow-lg whitespace-nowrap z-20 border-2 border-white/20">
+                            {winner?.label}
+                        </div>
+                    </div>
+
+                    <p className="text-white/80 font-bold text-lg mt-8 flex items-center gap-2">
+                        <Trophy className="w-5 h-5 text-yellow-400" />
+                        총 <span className="text-yellow-400 text-2xl">{winner?.count}</span>표 획득!
+                    </p>
                 </div>
 
-                {currentUser?.is_host && (
-                    <button
-                        onClick={handleNext}
-                        disabled={isNextLoading}
-                        className="w-full py-5 bg-white text-gray-900 rounded-3xl font-black text-xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
-                    >
-                        {isNextLoading ? '로딩 중...' : '다음 질문 (Next)'} <Play className="w-6 h-6 fill-current" />
-                    </button>
-                )}
+                {/* Others List Block */}
+                <div className="flex-shrink-0 w-full max-w-sm space-y-3">
+                    {results.slice(1).map((res, idx) => (
+                        <div key={res.targetId || idx} className="flex items-center justify-between bg-white/5 border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-md">
+                            <div className="flex items-center gap-4">
+                                <span className="text-white/40 font-mono text-sm font-bold w-6">#{idx + 2}</span>
+                                <span className="font-bold text-lg">{res.label}</span>
+                            </div>
+                            <span className="font-bold text-white/60">{res.count}표</span>
+                        </div>
+                    ))}
+                    {results.length === 1 && (
+                        <div className="text-white/30 text-sm py-4">
+                            만장일치거나 혼자 투표했군요! 😮
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* ZONE 3: Footer - Controls (Fixed Bottom) */}
+            <div className="flex-shrink-0 fixed bottom-0 left-0 w-full p-4 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent z-30 pb-[calc(16px+env(safe-area-inset-bottom))]">
+                <div className="max-w-lg mx-auto flex flex-col gap-3">
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => alert('이미지 저장 기능은 준비중입니다!')}
+                            className="flex-1 py-3 bg-white/10 border border-white/10 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-white/20 transition backdrop-blur-sm text-sm"
+                        >
+                            <Download className="w-4 h-4" /> 이미지 저장
+                        </button>
+                        <button
+                            onClick={handleShare}
+                            className="flex-1 py-3 bg-secondary rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-secondary/90 transition text-white text-sm shadow-lg shadow-secondary/20"
+                        >
+                            <Share2 className="w-4 h-4" /> 결과 공유
+                        </button>
+                    </div>
+
+                    {currentUser?.is_host && (
+                        <button
+                            onClick={handleNext}
+                            disabled={isNextLoading}
+                            className="w-full py-4 bg-white text-gray-900 rounded-2xl font-black text-lg shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
+                        >
+                            {isNextLoading ? '로딩 중...' : '다음 질문 (Next)'} <Play className="w-6 h-6 fill-current" />
+                        </button>
+                    )}
+                </div>
             </div>
 
         </div>
