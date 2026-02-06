@@ -19,19 +19,37 @@ export async function GET(request: Request) {
         return NextResponse.json({ message: 'Session reset' });
     }
 
-    // 턴 생성
-    const turn = generateTurn(mockSession);
+    try {
+        console.log(`[API] Generating turn... Seed: ${mockSession.rngSeed}, Used: ${mockSession.usedIds.size}`);
 
-    // DB 모두 소진 시 리셋
-    if (turn.length < 12) {
-        mockSession.usedIds.clear();
-        // 남은 개수 부족하면 리셋 후 다시 시도 로직 필요하지만 여기선 생략
+        if (!GAME_DB || GAME_DB.length === 0) {
+            throw new Error("GAME_DB is empty or undefined");
+        }
+
+        // 턴 생성 (12개 게임: 3라운드 * 4개)
+        const turn = generateTurn(mockSession);
+
+        console.log(`[API] Turn generated with ${turn?.length} games`);
+
+        if (!turn) {
+            throw new Error("generateTurn returned null/undefined");
+        }
+
+        // DB 소진 시 (12개 미만으로 뽑힌 경우)
+        if (turn.length < 12) {
+            mockSession.usedIds.clear();
+            // 실제로는 여기서 다시 뽑거나, 사용자에게 "다음 턴에 리셋됩니다" 알림
+        }
+
+        // 포맷팅된 텍스트와 원본 JSON 모두 반환
+        return NextResponse.json({
+            turnData: turn,
+            displayText: formatTurn(turn),
+            remaining: GAME_DB.length - mockSession.usedIds.size
+        });
+    } catch (e: any) {
+        console.error("[API] Error generating turn:", e);
+        // 에러 상황 명시
+        return NextResponse.json({ error: e.message, stack: e.stack }, { status: 500 });
     }
-
-    // 포맷팅된 텍스트와 원본 JSON 모두 반환
-    return NextResponse.json({
-        turnData: turn,
-        displayText: formatTurn(turn),
-        remaining: GAME_DB.length - mockSession.usedIds.size
-    });
 }
