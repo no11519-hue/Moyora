@@ -193,14 +193,13 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         key={idx}
                                         onClick={() => handleVote(idx === 0 ? 'A' : 'B')}
                                         disabled={isVoting}
-                                        className={`flex-1 min-h-[100px] rounded-xl font-bold border-[3px] shadow-sm active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 px-4 py-4 disabled:opacity-50 hover:shadow-md
+                                        className={`flex-1 min-h-[140px] rounded-2xl font-bold border-4 shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-6 disabled:opacity-50 hover:shadow-lg
                                     ${idx === 0
                                                 ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
                                                 : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-300'}
                                 `}
                                     >
-                                        <span className="text-2xl">{idx === 0 ? '🅰️' : '🅱️'}</span>
-                                        <span className="text-center leading-tight text-3xl font-black break-keep text-gray-800">{opt}</span>
+                                        <span className="text-center leading-tight text-4xl font-black break-keep text-gray-900 drop-shadow-sm">{opt}</span>
                                     </button>
                                 ))}
                             </div>
@@ -278,8 +277,8 @@ export default function VotingView({ votes }: VotingViewProps) {
                     {currentQuestion.timer && (
                         <div className="flex-shrink-0 w-full flex justify-center py-6 animate-fade-in">
                             <div className="bg-white rounded-3xl px-8 py-3 shadow-lg border-2 border-gray-100 flex items-center gap-4">
-                                <Timer className="w-6 h-6 text-gray-400" />
-                                <span className={`text-6xl font-black font-mono tabular-nums ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                                <Timer className="w-8 h-8 text-gray-300" />
+                                <span className={`text-8xl font-black font-mono tabular-nums leading-none ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
                                     {timeLeft}
                                 </span>
                             </div>
