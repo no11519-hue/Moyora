@@ -46,6 +46,16 @@ export default function VotingView({ votes }: VotingViewProps) {
 
     const isInteractionDisabled = isVoting || isTimeOver;
 
+    // Auto-transition: When time is over, Host triggers 'Show Result' automatically after 1 second
+    useEffect(() => {
+        if (isTimeOver && currentUser?.is_host) {
+            const timeout = setTimeout(() => {
+                handleShowResult();
+            }, 1000); // 1초 뒤 자동 이동 (시간 종료 메시지 노출용)
+            return () => clearTimeout(timeout);
+        }
+    }, [isTimeOver, currentUser?.is_host]);
+
 
     // Check if I voted
     const myVote = votes.find(v => v.voter_id === currentUser?.id && v.question_id === room?.current_question_id);
@@ -116,7 +126,7 @@ export default function VotingView({ votes }: VotingViewProps) {
             </div>
 
             {/* 2. Main Content Area - Refined Spacing */}
-            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto px-6 pt-10 pb-32 flex flex-col gap-8">
+            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto px-6 pt-24 pb-64 flex flex-col gap-8 no-scrollbar">
 
                 {/* Question Card Block - COMPACT (40% space) */}
                 <div className="flex-shrink-0">
@@ -159,7 +169,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         key={p.id}
                                         onClick={() => handleVote(p.id)}
                                         disabled={isInteractionDisabled}
-                                        className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:opacity-50 disabled:grayscale"
+                                        className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:cursor-not-allowed"
                                     >
                                         <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep">
                                             {p.nickname}<span className="text-lg font-bold text-gray-400">님</span>
@@ -181,7 +191,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         key={idx}
                                         onClick={() => handleVote(idx === 0 ? 'A' : 'B')}
                                         disabled={isInteractionDisabled}
-                                        className={`flex-1 min-h-[160px] rounded-3xl font-bold border-4 shadow-lg active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-8 disabled:opacity-50 disabled:grayscale hover:shadow-xl
+                                        className={`flex-1 min-h-[160px] rounded-3xl font-bold border-4 shadow-lg active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-8 disabled:cursor-not-allowed hover:shadow-xl
                                     ${idx === 0
                                                 ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
                                                 : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-300'}
@@ -264,40 +274,41 @@ export default function VotingView({ votes }: VotingViewProps) {
                     )}
 
                     {/* 3. FOOTER AREA (Timer + Controls) */}
-                    <div className={`fixed bottom-0 left-0 w-full z-40 px-4 pb-[calc(16px+env(safe-area-inset-bottom))] pt-4 transition-all duration-300 ${isTimeOver ? 'bg-gray-900/90 backdrop-blur-md' : 'bg-gradient-to-t from-white via-white/90 to-transparent'}`}>
+                    <div className={`fixed bottom-0 left-0 w-full z-50 px-6 pb-[calc(20px+env(safe-area-inset-bottom))] pt-6 transition-all duration-300 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ${isTimeOver ? 'bg-gray-900/95 backdrop-blur-xl border-t border-white/10' : 'bg-white/95 backdrop-blur-xl border-t border-gray-100'}`}>
                         {/* Timer Display */}
                         {currentQuestion.timer && (
-                            <div className="flex justify-center mb-3">
+                            <div className="flex justify-center w-full">
                                 {isTimeOver ? (
-                                    <div className="flex items-center gap-2 text-white animate-pulse">
+                                    <div className="flex items-center gap-3 text-white animate-pulse bg-red-500/20 px-6 py-2 rounded-full">
                                         <Lock className="w-6 h-6" />
                                         <span className="text-2xl font-black">시간 종료!</span>
                                     </div>
                                 ) : (
-                                    <div className="flex  items-center gap-2">
-                                        <Timer className="w-8 h-8 text-gray-400" />
-                                        <span className={`text-7xl font-black font-mono tabular-nums leading-none ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-full ${timeLeft <= 10 ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-500'}`}>
+                                            <Timer className="w-8 h-8" />
+                                        </div>
+                                        <span className={`text-7xl font-black font-mono tabular-nums leading-none tracking-tight ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
                                             {timeLeft}
                                         </span>
                                     </div>
                                 )}
                             </div>
                         )}
+
+                        {/* Host Controls INSIDE Footer */}
+                        {currentUser?.is_host && (isMissionType || totalVotes > 0) && (
+                            <div className="w-full">
+                                <button
+                                    onClick={handleShowResult}
+                                    className="w-full h-16 bg-primary text-white rounded-2xl font-black text-2xl shadow-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-3"
+                                >
+                                    {isMissionType ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
-
-                {/* 3. Bottom Control Bar (Sticky) */}
-                {/* 3. Bottom Control Bar - FIXED BOTTOM */}
-                {/* Host Controls (If Timer is footer, this stacks above or replaces?) */}
-                {/* Merging into Footer container */}
-                {currentUser?.is_host && (isMissionType || totalVotes > 0) && (
-                    <button
-                        onClick={handleShowResult}
-                        className="w-full h-14 bg-primary text-white rounded-2xl font-black text-xl shadow-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
-                    >
-                        {isMissionType ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
-                    </button>
-                )}
             </div>
         </div>
     );
