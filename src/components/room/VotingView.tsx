@@ -126,7 +126,7 @@ export default function VotingView({ votes }: VotingViewProps) {
             </div>
 
             {/* 2. Main Content Area - Refined Spacing */}
-            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto px-6 pt-24 pb-64 flex flex-col gap-8 no-scrollbar">
+            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto px-6 pt-24 pb-80 flex flex-col gap-8 no-scrollbar">
 
                 {/* Question Card Block - COMPACT (40% space) */}
                 <div className="flex-shrink-0">
@@ -249,32 +249,34 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         })
                                     )}
                                 </div>
-
-                                {/* Chat Input */}
-                                <div className="flex gap-2 mt-2">
-                                    <input
-                                        type="text"
-                                        value={chatInput}
-                                        onChange={(e) => setChatInput(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && !isInteractionDisabled && handleSendChat()}
-                                        disabled={isInteractionDisabled}
-                                        className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm disabled:bg-gray-100 disabled:text-gray-400"
-                                        placeholder={isTimeOver ? "시간이 종료되었습니다" : "답변을 입력하세요..."}
-                                    />
-                                    <button
-                                        onClick={handleSendChat}
-                                        disabled={isInteractionDisabled}
-                                        className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 active:scale-95 transition-all shadow-md flex items-center justify-center disabled:bg-gray-300"
-                                    >
-                                        <Send className="w-5 h-5" />
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     )}
 
-                    {/* 3. FOOTER AREA (Timer + Controls) */}
-                    <div className={`fixed bottom-0 left-0 w-full z-50 px-6 pb-[calc(20px+env(safe-area-inset-bottom))] pt-6 transition-all duration-300 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ${isTimeOver ? 'bg-gray-900/95 backdrop-blur-xl border-t border-white/10' : 'bg-white/95 backdrop-blur-xl border-t border-gray-100'}`} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999 }}>
+                    {/* 3. FOOTER AREA (Timer + Controls + Chat Input) */}
+                    <div className={`fixed bottom-0 left-0 w-full z-50 px-6 pb-[calc(20px+env(safe-area-inset-bottom))] pt-4 transition-all duration-300 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ${isTimeOver ? 'bg-gray-900/95 backdrop-blur-xl border-t border-white/10' : 'bg-white/95 backdrop-blur-xl border-t border-gray-100'}`} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999 }}>
+                        {/* Chat Input moved to Footer */}
+                        {isMissionType && (
+                            <div className="w-full max-w-lg mx-auto flex gap-2">
+                                <input
+                                    type="text"
+                                    value={chatInput}
+                                    onChange={(e) => setChatInput(e.target.value)}
+                                    // Enter triggers Chat OR Host Next? Chat is safer.
+                                    onKeyDown={(e) => e.key === 'Enter' && !isInteractionDisabled && handleSendChat()}
+                                    disabled={isInteractionDisabled}
+                                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm disabled:bg-gray-100 disabled:text-gray-400"
+                                    placeholder={isTimeOver ? "시간이 종료되었습니다" : "답변을 입력하세요..."}
+                                />
+                                <button
+                                    onClick={handleSendChat}
+                                    disabled={isInteractionDisabled}
+                                    className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 active:scale-95 transition-all shadow-md flex items-center justify-center disabled:bg-gray-300"
+                                >
+                                    <Send className="w-5 h-5" />
+                                </button>
+                            </div>
+                        )}
                         {/* Timer Display */}
                         {currentQuestion.timer && (
                             <div className="flex justify-center w-full">
