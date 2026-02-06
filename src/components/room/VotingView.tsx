@@ -70,9 +70,13 @@ export default function VotingView({ votes }: VotingViewProps) {
     }
 
     const isVoteType = currentQuestion?.type?.startsWith('vote_');
-    const isBalanceType = currentQuestion?.type?.startsWith('balance_');
+    const isBalanceType = currentQuestion?.type?.startsWith('balance_') || currentQuestion?.type === 'C';
     const isRouletteType = currentQuestion?.type?.startsWith('roulette_');
-    const isMissionType = !isRouletteType && (currentQuestion?.type?.startsWith('mission_') || currentQuestion?.type?.startsWith('talk_'));
+    const isMissionType = !isRouletteType && (
+        currentQuestion?.type?.startsWith('mission_') ||
+        currentQuestion?.type?.startsWith('talk_') ||
+        currentQuestion?.type === 'Q'
+    );
 
     if (!currentQuestion) return <div className="p-10 text-center flex flex-col items-center gap-4"><Loader2 className="animate-spin text-primary w-8 h-8" /><span>문제 출제 중...</span></div>;
 
@@ -80,7 +84,8 @@ export default function VotingView({ votes }: VotingViewProps) {
         <div className="flex flex-col min-h-[100dvh] bg-gradient-to-br from-indigo-50 via-white to-purple-50 pb-[100px] relative overflow-hidden">
 
             {/* 1. Header & Progress Timer */}
-            <div className="pt-safe-top sticky top-0 z-30 w-full bg-white/80 backdrop-blur-md border-b border-gray-100/50">
+            {/* 1. Header & Progress Timer - FIXED TOP */}
+            <div className="fixed top-0 left-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm pt-safe-top">
                 {currentQuestion.timer && (
                     <div className="h-1.5 w-full bg-gray-100 overflow-hidden">
                         <div
@@ -90,7 +95,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                     </div>
                 )}
                 <div className="px-4 py-3 flex justify-between items-center relative">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-black text-primary tracking-widest uppercase bg-primary/10 px-2.5 py-1 rounded-full">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-black text-primary tracking-widest uppercase bg-primary/10 px-2.5 py-1 rounded-full whitespace-nowrap">
                         {currentQuestion.type?.replace(/_/g, ' ').toUpperCase()}
                     </span>
 
@@ -102,8 +107,9 @@ export default function VotingView({ votes }: VotingViewProps) {
                 </div>
             </div>
 
-            {/* 2. Main Content Area - 40:60 SPLIT (Question:Voting) */}
-            <div className="flex-1 flex flex-col gap-y-6 px-6 py-6 w-full max-w-lg mx-auto overflow-y-auto">
+            {/* 2. Main Content Area - SAFE AREA PADDED */}
+            {/* pt-32 to clear fixed header, pb-32 to clear fixed footer */}
+            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto pt-24 pb-32 px-6 flex flex-col gap-6">
 
                 {/* Question Card Block - COMPACT (40% space) */}
                 <div className="flex-shrink-0">
@@ -208,9 +214,10 @@ export default function VotingView({ votes }: VotingViewProps) {
             </div>
 
             {/* 3. Bottom Control Bar (Sticky) */}
+            {/* 3. Bottom Control Bar - FIXED BOTTOM */}
             {/* Host Only Button */}
             {currentUser?.is_host && (isMissionType || totalVotes > 0) && (
-                <div className="fixed bottom-0 left-0 z-50 w-full p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 pb-[calc(16px+env(safe-area-inset-bottom))]">
+                <div className="fixed bottom-0 left-0 z-50 w-full p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 pb-[calc(20px+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
                     <button
                         onClick={handleShowResult}
                         className="w-full h-16 bg-[#111827] text-white rounded-2xl font-black text-xl shadow-xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"

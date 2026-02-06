@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useState, useEffect, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { Play, Download, Share2, Crown, Trophy } from 'lucide-react';
+import { useTurnStore } from '@/store/turnStore';
 
 interface ResultViewProps {
     votes: any[];
@@ -85,67 +86,33 @@ export default function ResultView({ votes }: ResultViewProps) {
         })();
     }, [isTie]);
 
+    const { playNextGame, fetchTurn } = useTurnStore();
+
     const handleNext = async () => {
         if (!room) return;
         setIsNextLoading(true);
 
         try {
-            // 1. Get latest room data for used_question_ids (to be safe)
-            const { data: latestRoom } = await supabase.from('rooms').select('used_question_ids').eq('id', room.id).single();
-            const usedIds = (latestRoom as any)?.used_question_ids || [];
+            // Try to play next game from queue
+            let success = await playNextGame(room.id);
 
-            // Add current to used
-            if (room.current_question_id) usedIds.push(room.current_question_id);
+            if (!success) {
+                // Queue exhausted or empty?
+                // Auto-generate NEW TURN (Round 1~3 again)
+                // User requirement: "3 rounds ended -> Declare Turn End -> Ready for Next Turn"
+                // Ideally we show a 'Turn End' summary, but here we just auto-start new turn for seamless play.
 
-            // 2. Fetch questions excluding used
-            // Supabase `.not` with `in` is tricky with empty array.
-            let query = supabase.from('questions').select('id').eq('category', room.category);
+                await fetchTurn(); // Fetch new 12 games
+                success = await playNextGame(room.id);
 
-            if (usedIds.length > 0) {
-                // Must convert array to tuple string for PostgREST: (id1,id2)
-                // Actually .not('id', 'in', `(${usedIds.join(',')})`)
-                query = query.not('id', 'in', `(${usedIds.join(',')})`);
-            }
-
-            const { data: questions } = await query;
-
-            if (!questions || questions.length === 0) {
-                // Reset used questions if all used? Or Game Over?
-                // Let's reset for infinite play but show alert.
-                const confirmReset = confirm('모든 질문을 다 풀었어요! 처음부터 다시 할까요?');
-                if (confirmReset) {
-                    await supabase.from('rooms').update({ used_question_ids: [] } as any).eq('id', room.id);
-                    handleNext(); // Retry
-                    return;
+                if (!success) {
+                    alert('새로운 턴을 시작할 수 없습니다. (DB 오류 등)');
                 }
-                setIsNextLoading(false);
-                return;
             }
-
-            const randomQ = questions[Math.floor(Math.random() * questions.length)];
-
-            // 3. Update Room
-            await supabase
-                .from('rooms')
-                .update({
-                    status: 'playing',
-                    current_question_id: randomQ.id,
-                    used_question_ids: [...usedIds, randomQ.id] // Optimistic update
-                } as any)
-                .eq('id', room.id);
-
-            // Clean up previous votes? 
-            // Ideally we should keep history but for current Logic `VotingView` filters by `question_id`.
-            // So old votes in `votes` table are fine.
-            // But `page.tsx`'s `votes` state accumulates ALL votes from subscription.
-            // We need to clear `votes` state in `page.tsx` when question changes. 
-            // Handled in page.tsx: "Fetch votes for THIS question" -> sets state. 
-            // But subscription APPNEDS. 
-            // So if I am in ResultView, and Next is clicked -> Room updates -> Page Re-renders -> Effect runs -> Fetches emptiness -> SetVotes([]).
-            // Looks correct.
-
         } catch (e) {
             console.error(e);
+            alert('오류가 발생했습니다.');
+        } finally {
             setIsNextLoading(false);
         }
     };
@@ -187,7 +154,9 @@ export default function ResultView({ votes }: ResultViewProps) {
             </div>
 
             {/* ZONE 2: Main Body - Winner Display (Flex-1, Centered with Strong Gaps) */}
-            <div className="flex-1 flex flex-col justify-center items-center px-6 py-8 gap-y-12 relative z-10 min-h-0">
+            {/* ZONE 2: Main Body - Winner Display (Flex-1, Centered with Strong Gaps) */}
+            {/* Added pb-48 for safe scroll area above fixed footer */}
+            <div className="flex-1 flex flex-col items-center px-6 pt-10 pb-48 gap-y-12 relative z-10 min-h-0 overflow-y-auto w-full">
 
                 {isTie ? (
                     /* TIE/DRAW Display */
@@ -244,15 +213,32 @@ export default function ResultView({ votes }: ResultViewProps) {
 
                 {/* Others List Block */}
                 <div className="flex-shrink-0 w-full max-w-sm space-y-3">
-                    {results.slice(1).map((res, idx) => (
-                        <div key={res.targetId || idx} className="flex items-center justify-between bg-white/5 border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-md">
-                            <div className="flex items-center gap-4">
-                                <span className="text-white/40 font-mono text-sm font-bold w-6">#{idx + 2}</span>
-                                <span className="font-bold text-lg">{res.label}</span>
+                    {results.slice(1).map((res, idx) => {
+                        const totalVotes = results.reduce((acc, curr) => acc + curr.count, 0);
+                        const percentage = Math.round((res.count / totalVotes) * 100);
+
+                        return (
+                            <div key={res.targetId || idx} className="relative w-full h-14 bg-white/10 rounded-full overflow-hidden border border-white/5">
+                                {/* Progress Bar Fill */}
+                                <div
+                                    className="absolute top-0 left-0 h-full bg-secondary/80 transition-all duration-1000 ease-out"
+                                    style={{ width: `${percentage}%` }}
+                                />
+
+                                {/* Content Overlay */}
+                                <div className="absolute inset-0 flex items-center justify-between px-6">
+                                    <div className="flex items-center gap-3 relative z-10">
+                                        <span className="text-white/50 font-mono text-sm font-bold">#{idx + 2}</span>
+                                        <span className="font-bold text-lg text-shadow-sm truncate max-w-[140px]">{res.label}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 relative z-10">
+                                        <span className="font-bold text-xl">{res.count}표</span>
+                                        <span className="text-xs font-medium text-white/50">({percentage}%)</span>
+                                    </div>
+                                </div>
                             </div>
-                            <span className="font-bold text-white/60">{res.count}표</span>
-                        </div>
-                    ))}
+                        );
+                    })}
                     {results.length === 1 && (
                         <div className="text-white/30 text-sm py-4">
                             만장일치거나 혼자 투표했군요! 😮

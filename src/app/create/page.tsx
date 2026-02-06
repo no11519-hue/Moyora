@@ -100,7 +100,7 @@ export default function CreateRoomPage() {
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
                         placeholder="MC 닉네임 정하기"
-                        className="w-full h-[48px] px-4 rounded-2xl bg-gray-50 border border-gray-200 text-[16px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+                        className="w-full h-16 px-6 rounded-2xl bg-gray-50 border-2 border-gray-200 text-lg font-bold text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-0 outline-none transition-all shadow-sm"
                         autoFocus
                         inputMode="text"
                         autoCapitalize="off"

@@ -7,40 +7,28 @@ import { Loader2, Play, Users, Share2 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { useState } from 'react';
 
+import { useTurnStore } from '@/store/turnStore';
+
 export default function LobbyView() {
     const { room, participants, currentUser } = useGameStore();
     const [isStarting, setIsStarting] = useState(false);
+    const { fetchTurn, playNextGame } = useTurnStore();
 
     if (!room) return <div className="p-10 text-center">Loading...</div>;
 
     const handleStart = async () => {
         setIsStarting(true);
         try {
-            // 1. Fetch questions for category
-            const { data: questions } = await supabase
-                .from('questions')
-                .select('id')
-                .eq('category', room.category);
+            // 1. Fetch New Turn (Reset)
+            await fetchTurn(true);
 
-            if (!questions || questions.length === 0) {
-                alert('질문이 없습니다!');
+            // 2. Play First Game
+            const success = await playNextGame(room.id);
+
+            if (!success) {
+                alert('게임을 불러오지 못했습니다.');
                 setIsStarting(false);
-                return;
             }
-
-            // 2. Pick random/first question
-            const randomQ = questions[Math.floor(Math.random() * questions.length)];
-
-            // 3. Update Room
-            await supabase
-                .from('rooms')
-                .update({
-                    status: 'playing',
-                    current_question_id: randomQ.id,
-                    used_question_ids: [randomQ.id]
-                } as any)
-                .eq('id', room.id);
-
         } catch (e) {
             console.error(e);
             setIsStarting(false);
@@ -72,30 +60,30 @@ export default function LobbyView() {
                 <p className="text-gray-500 text-sm">QR코드를 스캔해서 입장하세요!</p>
             </div>
 
-            {/* Participants Grid - 3 COLUMN CARD LAYOUT */}
-            <div className="w-full max-w-md grid grid-cols-3 gap-4 mb-20 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            {/* Participants Grid - 2 COLUMN CHUNKY CARD LAYOUT */}
+            <div className="w-full max-w-md grid grid-cols-2 gap-3 mb-32 animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 {participants.map((p) => (
                     <div
                         key={p.id}
-                        className="bg-white shadow-md rounded-lg p-3 flex flex-col items-center gap-2 relative border border-gray-100 hover:shadow-lg transition-shadow"
+                        className="bg-white shadow-sm rounded-xl p-4 flex flex-col items-center gap-3 relative border-2 border-gray-100 hover:border-indigo-100 transition-colors"
                     >
                         {/* Avatar Circle */}
-                        <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center text-2xl shadow-sm relative overflow-hidden">
-                            <span className="z-10 font-bold text-indigo-700">{p.nickname[0]}</span>
+                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-full flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
+                            <span className="z-10 font-black text-indigo-600">{p.nickname[0]}</span>
                             {p.is_host && (
-                                <div className="absolute inset-0 bg-yellow-200 opacity-60 border-2 border-yellow-400 rounded-full animate-pulse" />
+                                <div className="absolute inset-0 bg-yellow-100 opacity-40 border-4 border-yellow-300 rounded-full animate-pulse" />
                             )}
                         </div>
 
                         {/* Nickname with Truncate */}
-                        <span className="text-sm text-gray-800 truncate w-full text-center font-medium px-1">
+                        <span className="text-lg font-bold text-gray-900 truncate w-full text-center px-1">
                             {p.nickname}
                         </span>
 
                         {/* Host Badge */}
                         {p.is_host && (
-                            <span className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
-                                방장
+                            <span className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                                👑
                             </span>
                         )}
                     </div>
