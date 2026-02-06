@@ -127,9 +127,8 @@ export default function VotingView({ votes }: VotingViewProps) {
                 </div>
             </div>
 
-            {/* 2. Main Content Area - SAFE AREA PADDED */}
-            {/* pt-32 to clear fixed header, pb-32 to clear fixed footer */}
-            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto pt-24 pb-32 px-6 flex flex-col gap-6">
+            {/* 2. Main Content Area - Refined Spacing */}
+            <div className="flex-1 w-full max-w-lg mx-auto overflow-y-auto px-6 pt-10 pb-32 flex flex-col gap-8">
 
                 {/* Question Card Block - COMPACT (40% space) */}
                 <div className="flex-shrink-0">
@@ -174,10 +173,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         disabled={isVoting}
                                         className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:opacity-50"
                                     >
-                                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center text-2xl font-black text-indigo-700">
-                                            {p.nickname[0]}
-                                        </div>
-                                        <span className="font-bold text-gray-900 text-base text-center leading-tight">
+                                        <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep">
                                             {p.nickname}
                                         </span>
                                     </button>
@@ -197,14 +193,14 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         key={idx}
                                         onClick={() => handleVote(idx === 0 ? 'A' : 'B')}
                                         disabled={isVoting}
-                                        className={`flex-1 min-h-[120px] rounded-3xl text-2xl font-black border-4 shadow-xl active:scale-95 transition-all flex flex-col items-center justify-center gap-3 px-6 disabled:opacity-50
+                                        className={`flex-1 min-h-[100px] rounded-xl text-xl font-bold border-[3px] shadow-sm active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-2 px-6 py-4 disabled:opacity-50 hover:shadow-md
                                     ${idx === 0
-                                                ? 'bg-gradient-to-br from-red-50 to-red-100 border-red-300 text-red-700 hover:from-red-100 hover:to-red-200 hover:border-red-400'
-                                                : 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-300 text-blue-700 hover:from-blue-100 hover:to-blue-200 hover:border-blue-400'}
+                                                ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
+                                                : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-300'}
                                 `}
                                     >
-                                        <span className="text-5xl">{idx === 0 ? '🅰️' : '🅱️'}</span>
-                                        <span className="text-center leading-tight text-3xl font-black break-keep">{opt}</span>
+                                        <span className="text-3xl">{idx === 0 ? '🅰️' : '🅱️'}</span>
+                                        <span className="text-center leading-tight text-2xl font-black break-keep text-gray-800">{opt}</span>
                                     </button>
                                 ))}
                             </div>

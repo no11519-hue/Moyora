@@ -195,31 +195,26 @@ export default function ResultView({ votes }: ResultViewProps) {
                         </div>
                     </div>
                 ) : (
-                    /* Winner Spotlight Block */
-                    <div className="flex-shrink-0 flex flex-col items-center gap-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary blur-2xl opacity-60 animate-pulse-slow rounded-full"></div>
+                    /* Winner Spotlight Block - Refactored to Flex Stack */
+                    <div className="flex-shrink-0 flex flex-col items-center gap-2 animate-slide-up">
+                        {/* 1. Crown */}
+                        <Crown className="w-10 h-10 text-yellow-400 fill-yellow-400 drop-shadow-lg mb-1 animate-bounce-slow" />
 
-                            {/* Crown - More space from avatar */}
-                            <div className="absolute -top-14 left-1/2 -translate-x-1/2 animate-bounce-slow">
-                                <Crown className="w-12 h-12 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
-                            </div>
-
-                            <div className="w-40 h-40 bg-white rounded-[2.5rem] flex items-center justify-center text-[3.5rem] font-black text-gray-900 shadow-2xl relative z-10 border-[6px] border-white/20">
-                                {winner?.avatar}
-                            </div>
-
-                            {/* Badge - More space from avatar */}
-                            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full font-black text-xl shadow-lg whitespace-nowrap z-20 border-2 border-white/20 break-keep">
-                                {winner?.label}
-                            </div>
+                        {/* 2. Avatar Box */}
+                        <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center text-[3rem] font-black text-gray-900 shadow-xl border-4 border-white/20">
+                            {winner?.avatar}
                         </div>
 
-                        {/* Vote count - Clear separation */}
-                        <p className="text-white/80 font-bold text-lg mt-4 flex items-center gap-2">
-                            <Trophy className="w-5 h-5 text-yellow-400" />
-                            총 <span className="text-yellow-400 text-2xl">{winner?.count}</span>표 획득!
-                        </p>
+                        {/* 3. Badge (Name) */}
+                        <div className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-xl font-bold text-lg shadow-md break-keep text-center mt-2 border border-white/20">
+                            {winner?.label || '익명'}
+                        </div>
+
+                        {/* 4. Count */}
+                        <div className="flex items-center gap-2 text-white/80 font-bold text-base mt-1">
+                            <Trophy className="w-4 h-4 text-yellow-400" />
+                            총 <span className="text-yellow-400 text-xl">{winner?.count}</span>표
+                        </div>
                     </div>
                 )}
 
