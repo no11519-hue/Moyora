@@ -86,28 +86,48 @@ export default function ResultView({ votes }: ResultViewProps) {
         setIsNextLoading(true);
 
         try {
-            // Fetch random question from category, trying to exclude current
-            // Ideally use RPC for random, but client-side random row is fine for small scale
-            const { data: questions } = await supabase
-                .from('questions')
-                .select('id')
-                .eq('category', room.category)
-                .neq('id', room.current_question_id || ''); // Exclude current
+            // 1. Get latest room data for used_question_ids (to be safe)
+            const { data: latestRoom } = await supabase.from('rooms').select('used_question_ids').eq('id', room.id).single();
+            const usedIds = (latestRoom as any)?.used_question_ids || [];
+
+            // Add current to used
+            if (room.current_question_id) usedIds.push(room.current_question_id);
+
+            // 2. Fetch questions excluding used
+            // Supabase `.not` with `in` is tricky with empty array.
+            let query = supabase.from('questions').select('id').eq('category', room.category);
+
+            if (usedIds.length > 0) {
+                // Must convert array to tuple string for PostgREST: (id1,id2)
+                // Actually .not('id', 'in', `(${usedIds.join(',')})`)
+                query = query.not('id', 'in', `(${usedIds.join(',')})`);
+            }
+
+            const { data: questions } = await query;
 
             if (!questions || questions.length === 0) {
-                alert('질문 데이터가 부족합니다!');
+                // Reset used questions if all used? Or Game Over?
+                // Let's reset for infinite play but show alert.
+                const confirmReset = confirm('모든 질문을 다 풀었어요! 처음부터 다시 할까요?');
+                if (confirmReset) {
+                    await supabase.from('rooms').update({ used_question_ids: [] } as any).eq('id', room.id);
+                    handleNext(); // Retry
+                    return;
+                }
                 setIsNextLoading(false);
                 return;
             }
 
             const randomQ = questions[Math.floor(Math.random() * questions.length)];
 
+            // 3. Update Room
             await supabase
                 .from('rooms')
                 .update({
                     status: 'playing',
                     current_question_id: randomQ.id,
-                })
+                    used_question_ids: [...usedIds, randomQ.id] // Optimistic update
+                } as any)
                 .eq('id', room.id);
 
             // Clean up previous votes? 

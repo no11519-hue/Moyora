@@ -37,7 +37,8 @@ export default function LobbyView() {
                 .update({
                     status: 'playing',
                     current_question_id: randomQ.id,
-                })
+                    used_question_ids: [randomQ.id]
+                } as any)
                 .eq('id', room.id);
 
         } catch (e) {
