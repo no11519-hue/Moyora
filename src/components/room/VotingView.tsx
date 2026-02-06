@@ -4,7 +4,7 @@
 import { useGameStore } from '@/store/gameStore';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
-import { Loader2, Zap, Timer, Check, Info } from 'lucide-react';
+import { Loader2, Zap, Timer, Check, Info, Send } from 'lucide-react';
 
 interface VotingViewProps {
     votes: any[];
@@ -13,6 +13,32 @@ interface VotingViewProps {
 export default function VotingView({ votes }: VotingViewProps) {
     const { room, participants, currentUser, currentQuestion } = useGameStore();
     const [isVoting, setIsVoting] = useState(false);
+    const [chatMessages, setChatMessages] = useState<{ sender: string, text: string }[]>([]);
+    const [chatInput, setChatInput] = useState('');
+
+    useEffect(() => {
+        if (!room) return;
+        const channel = supabase.channel(`room:${room.id}`);
+        channel
+            .on('broadcast', { event: 'chat' }, ({ payload }: { payload: { sender: string, text: string } }) => {
+                setChatMessages(prev => [...prev, payload]);
+            })
+            .subscribe();
+        return () => { supabase.removeChannel(channel); };
+    }, [room]);
+
+    const handleSendChat = async () => {
+        if (!chatInput.trim() || !room) return;
+        const payload = { sender: currentUser?.nickname || '익명', text: chatInput };
+        setChatMessages(prev => [...prev, payload]);
+
+        await supabase.channel(`room:${room.id}`).send({
+            type: 'broadcast',
+            event: 'chat',
+            payload
+        });
+        setChatInput('');
+    };
 
     // Timer for non-voting types or visual aid
     const [timeLeft, setTimeLeft] = useState(currentQuestion?.timer || 30);
@@ -182,7 +208,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                 `}
                                     >
                                         <span className="text-5xl">{idx === 0 ? '🅰️' : '🅱️'}</span>
-                                        <span className="text-center leading-tight">{opt}</span>
+                                        <span className="text-center leading-tight text-3xl font-black break-keep">{opt}</span>
                                     </button>
                                 ))}
                             </div>
@@ -209,18 +235,52 @@ export default function VotingView({ votes }: VotingViewProps) {
                         </div>
                     )}
 
-                    {/* 5. Mission / Talk Game (Input Field) */}
+                    {/* 5. Mission / Talk Game (Realtime Chat) */}
                     {isMissionType && (
-                        <div className="flex-1 w-full flex flex-col items-center justify-center p-4 animate-slide-up">
-                            <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-lg border border-gray-100 flex flex-col gap-4">
-                                <h3 className="text-center text-gray-500 font-bold">✍️ 답변 메모장</h3>
-                                <textarea
-                                    className="w-full h-40 p-4 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-primary focus:bg-white transition-all resize-none text-gray-800 placeholder:text-gray-400 outline-none"
-                                    placeholder="주제에 대한 나의 생각을 자유롭게 적어보세요..."
-                                />
-                                <p className="text-xs text-center text-gray-400">
-                                    대화를 나누며 자유롭게 메모하세요! (저장되지 않음)
-                                </p>
+                        <div className="flex-1 w-full flex flex-col p-4 h-full min-h-0">
+                            <div className="flex-1 w-full max-w-sm mx-auto bg-white/50 backdrop-blur-sm rounded-3xl p-4 shadow-sm border border-white/50 flex flex-col gap-2 overflow-hidden">
+                                {/* Chat List */}
+                                <div className="flex-1 overflow-y-auto flex flex-col gap-3 p-2 scrollbar-hide">
+                                    {chatMessages.length === 0 ? (
+                                        <div className="flex-1 flex flex-col items-center justify-center text-gray-400 opacity-50">
+                                            <div className="text-4xl mb-2">💬</div>
+                                            <p className="text-sm">첫 번째 메시지를 남겨보세요!</p>
+                                        </div>
+                                    ) : (
+                                        chatMessages.map((msg, idx) => {
+                                            const isMe = msg.sender === currentUser?.nickname;
+                                            return (
+                                                <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-slide-up`}>
+                                                    <span className="text-[10px] text-gray-500 mb-1 px-1">{msg.sender}</span>
+                                                    <div className={`px-4 py-2 rounded-2xl max-w-[90%] break-words ${isMe
+                                                        ? 'bg-primary text-white rounded-tr-none'
+                                                        : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none shadow-sm'
+                                                        }`}>
+                                                        {msg.text}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                </div>
+
+                                {/* Chat Input */}
+                                <div className="flex gap-2 mt-2">
+                                    <input
+                                        type="text"
+                                        value={chatInput}
+                                        onChange={(e) => setChatInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
+                                        className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm"
+                                        placeholder="답변을 입력하세요..."
+                                    />
+                                    <button
+                                        onClick={handleSendChat}
+                                        className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 active:scale-95 transition-all shadow-md flex items-center justify-center"
+                                    >
+                                        <Send className="w-5 h-5" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}

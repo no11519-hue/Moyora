@@ -88,6 +88,10 @@ export default function ResultView({ votes }: ResultViewProps) {
 
     const { playNextGame, fetchTurn } = useTurnStore();
 
+    const isMissionType = currentQuestion?.type?.startsWith('mission_') ||
+        currentQuestion?.type?.startsWith('talk_') ||
+        currentQuestion?.type === 'Q';
+
     const handleNext = async () => {
         if (!room) return;
         setIsNextLoading(true);
@@ -158,7 +162,15 @@ export default function ResultView({ votes }: ResultViewProps) {
             {/* Added pb-48 for safe scroll area above fixed footer */}
             <div className="flex-1 flex flex-col items-center px-6 pt-16 pb-64 gap-y-12 relative z-10 min-h-0 overflow-y-auto w-full">
 
-                {isTie ? (
+                {isMissionType ? (
+                    <div className="flex-1 flex flex-col items-center justify-center gap-6 animate-slide-up text-center">
+                        <div className="text-8xl drop-shadow-2xl filter brightness-110">💭</div>
+                        <div>
+                            <h3 className="text-3xl font-black mb-2 drop-shadow-md">대화 시간 종료!</h3>
+                            <p className="text-white/60 text-lg">즐거운 대화 나누셨나요?</p>
+                        </div>
+                    </div>
+                ) : isTie ? (
                     /* TIE/DRAW Display */
                     <div className="flex-shrink-0 flex flex-col items-center gap-6">
                         {/* Handshake Icon */}
