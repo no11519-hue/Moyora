@@ -9,6 +9,8 @@ let mockSession = {
     rngSeed: Date.now()
 };
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const reset = searchParams.get('reset');
@@ -16,7 +18,7 @@ export async function GET(request: Request) {
     if (reset) {
         mockSession.usedIds.clear();
         mockSession.rngSeed = Date.now();
-        return NextResponse.json({ message: 'Session reset' });
+        // proceed to generate new turn
     }
 
     try {
