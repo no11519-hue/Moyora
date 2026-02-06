@@ -4,7 +4,8 @@
 import { useGameStore } from '@/store/gameStore';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
-import { Loader2, Zap, Timer, Check, Info, Send } from 'lucide-react';
+import { Loader2, Zap, Timer, Check, Info, Send, Lock } from 'lucide-react';
+import { useCountdown } from '@/hooks/useCountdown';
 
 interface VotingViewProps {
     votes: any[];
@@ -40,23 +41,10 @@ export default function VotingView({ votes }: VotingViewProps) {
         setChatInput('');
     };
 
-    // Timer for non-voting types or visual aid
-    const [timeLeft, setTimeLeft] = useState(currentQuestion?.timer || 30);
+    // Timer Logic using useCountdown Hook
+    const { timeLeft, isTimeOver } = useCountdown(currentQuestion?.timer || 30);
 
-    useEffect(() => {
-        if (!currentQuestion?.timer) return;
-        setTimeLeft(currentQuestion.timer);
-        const interval = setInterval(() => {
-            setTimeLeft(prev => {
-                if (prev <= 1) {
-                    clearInterval(interval);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [currentQuestion]);
+    const isInteractionDisabled = isVoting || isTimeOver;
 
 
     // Check if I voted
@@ -65,7 +53,7 @@ export default function VotingView({ votes }: VotingViewProps) {
     const totalParticipants = participants.length;
 
     const handleVote = async (targetId: string) => {
-        if (isVoting || myVote || !room || !currentQuestion || !currentUser) return;
+        if (isInteractionDisabled || myVote || !room || !currentQuestion || !currentUser) return;
         setIsVoting(true);
 
         try {
@@ -170,11 +158,11 @@ export default function VotingView({ votes }: VotingViewProps) {
                                     <button
                                         key={p.id}
                                         onClick={() => handleVote(p.id)}
-                                        disabled={isVoting}
-                                        className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:opacity-50"
+                                        disabled={isInteractionDisabled}
+                                        className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:opacity-50 disabled:grayscale"
                                     >
                                         <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep">
-                                            {p.nickname}
+                                            {p.nickname}<span className="text-lg font-bold text-gray-400">님</span>
                                         </span>
                                     </button>
                                 ))}
@@ -192,8 +180,8 @@ export default function VotingView({ votes }: VotingViewProps) {
                                     <button
                                         key={idx}
                                         onClick={() => handleVote(idx === 0 ? 'A' : 'B')}
-                                        disabled={isVoting}
-                                        className={`flex-1 min-h-[140px] rounded-2xl font-bold border-4 shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-6 disabled:opacity-50 hover:shadow-lg
+                                        disabled={isInteractionDisabled}
+                                        className={`flex-1 min-h-[140px] rounded-2xl font-bold border-4 shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 px-4 py-6 disabled:opacity-50 disabled:grayscale hover:shadow-lg
                                     ${idx === 0
                                                 ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
                                                 : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-300'}
@@ -258,13 +246,15 @@ export default function VotingView({ votes }: VotingViewProps) {
                                         type="text"
                                         value={chatInput}
                                         onChange={(e) => setChatInput(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
-                                        className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm"
-                                        placeholder="답변을 입력하세요..."
+                                        onKeyDown={(e) => e.key === 'Enter' && !isInteractionDisabled && handleSendChat()}
+                                        disabled={isInteractionDisabled}
+                                        className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm disabled:bg-gray-100 disabled:text-gray-400"
+                                        placeholder={isTimeOver ? "시간이 종료되었습니다" : "답변을 입력하세요..."}
                                     />
                                     <button
                                         onClick={handleSendChat}
-                                        className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 active:scale-95 transition-all shadow-md flex items-center justify-center"
+                                        disabled={isInteractionDisabled}
+                                        className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 active:scale-95 transition-all shadow-md flex items-center justify-center disabled:bg-gray-300"
                                     >
                                         <Send className="w-5 h-5" />
                                     </button>
@@ -273,33 +263,42 @@ export default function VotingView({ votes }: VotingViewProps) {
                         </div>
                     )}
 
-                    {/* BIG TIMER (Bottom) */}
-                    {currentQuestion.timer && (
-                        <div className="flex-shrink-0 w-full flex justify-center py-6 animate-fade-in">
-                            <div className="bg-white rounded-3xl px-8 py-3 shadow-lg border-2 border-gray-100 flex items-center gap-4">
-                                <Timer className="w-8 h-8 text-gray-300" />
-                                <span className={`text-8xl font-black font-mono tabular-nums leading-none ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
-                                    {timeLeft}
-                                </span>
+                    {/* 3. FOOTER AREA (Timer + Controls) */}
+                    <div className={`fixed bottom-0 left-0 w-full z-40 px-4 pb-[calc(16px+env(safe-area-inset-bottom))] pt-4 transition-all duration-300 ${isTimeOver ? 'bg-gray-900/90 backdrop-blur-md' : 'bg-gradient-to-t from-white via-white/90 to-transparent'}`}>
+                        {/* Timer Display */}
+                        {currentQuestion.timer && (
+                            <div className="flex justify-center mb-3">
+                                {isTimeOver ? (
+                                    <div className="flex items-center gap-2 text-white animate-pulse">
+                                        <Lock className="w-6 h-6" />
+                                        <span className="text-2xl font-black">시간 종료!</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex  items-center gap-2">
+                                        <Timer className="w-8 h-8 text-gray-400" />
+                                        <span className={`text-7xl font-black font-mono tabular-nums leading-none ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                                            {timeLeft}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {/* 3. Bottom Control Bar (Sticky) */}
-            {/* 3. Bottom Control Bar - FIXED BOTTOM */}
-            {/* Host Only Button */}
-            {currentUser?.is_host && (isMissionType || totalVotes > 0) && (
-                <div className="fixed bottom-0 left-0 z-50 w-full p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 pb-[calc(20px+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+                {/* 3. Bottom Control Bar (Sticky) */}
+                {/* 3. Bottom Control Bar - FIXED BOTTOM */}
+                {/* Host Controls (If Timer is footer, this stacks above or replaces?) */}
+                {/* Merging into Footer container */}
+                {currentUser?.is_host && (isMissionType || totalVotes > 0) && (
                     <button
                         onClick={handleShowResult}
-                        className="w-full h-16 bg-primary text-white rounded-2xl font-black text-xl shadow-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
+                        className="w-full h-14 bg-primary text-white rounded-2xl font-black text-xl shadow-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 max-w-lg mx-auto"
                     >
                         {isMissionType ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
                     </button>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

@@ -47,11 +47,11 @@ export default function JoinForm({ roomId, onJoin }: JoinFormProps) {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[100dvh] px-6 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-            <div className="w-full max-w-md space-y-6 animate-slide-up">
+            <div className="w-full max-w-md space-y-8 animate-slide-up">
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-black mb-3 text-gray-900">닉네임을 알려주세요!</h2>
-                    <p className="text-gray-500 text-base">게임에서 사용할 이름입니다.</p>
+                <div className="text-center mb-10">
+                    <h2 className="text-4xl font-black mb-4 text-gray-900 break-keep">닉네임 정하기</h2>
+                    <p className="text-gray-500 text-lg">게임에서 사용할 이름을 알려주세요.</p>
                 </div>
 
                 {/* Input Field - LARGE & FULL WIDTH */}
@@ -61,16 +61,16 @@ export default function JoinForm({ roomId, onJoin }: JoinFormProps) {
                     onChange={(e) => setNickname(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
                     placeholder="별명 입력 (예: 개발왕)"
-                    className="w-full h-16 text-center px-6 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 text-xl font-medium outline-none transition-all bg-white shadow-sm"
+                    className="w-full h-[60px] text-center px-6 rounded-2xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 text-2xl font-bold outline-none transition-all bg-white shadow-sm placeholder:text-gray-300"
                     autoFocus
-                    maxLength={20}
+                    maxLength={12}
                 />
 
                 {/* Submit Button - LARGE & FULL WIDTH */}
                 <button
                     onClick={handleJoin}
                     disabled={!nickname.trim() || isJoining}
-                    className="w-full h-16 text-white bg-indigo-600 rounded-xl font-bold text-lg shadow-lg hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600 flex justify-center items-center gap-2"
+                    className="w-full h-[60px] text-white bg-indigo-600 rounded-2xl font-black text-xl shadow-xl hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600 flex justify-center items-center gap-2"
                 >
                     {isJoining ? (
                         <Loader2 className="animate-spin w-6 h-6" />
@@ -80,8 +80,8 @@ export default function JoinForm({ roomId, onJoin }: JoinFormProps) {
                 </button>
 
                 {/* Helper Text */}
-                <p className="text-center text-sm text-gray-400 mt-4">
-                    엔터키를 눌러도 입장할 수 있어요
+                <p className="text-center text-sm text-gray-400 mt-6 font-medium">
+                    20초 뒤에 자동으로 시작될 수도 있어요! (Time Limit)
                 </p>
             </div>
         </div>
