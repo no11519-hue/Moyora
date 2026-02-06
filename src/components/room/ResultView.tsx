@@ -15,6 +15,14 @@ export default function ResultView({ votes }: ResultViewProps) {
     const { room, participants, currentUser, currentQuestion } = useGameStore();
     const [isNextLoading, setIsNextLoading] = useState(false);
 
+    // Parse options
+    let options: string[] = [];
+    if (currentQuestion?.options && typeof currentQuestion.options === 'string') {
+        try { options = JSON.parse(currentQuestion.options); } catch (e) { }
+    } else if (Array.isArray(currentQuestion?.options)) {
+        options = currentQuestion.options as string[];
+    }
+
     // Aggregate votes
     const results = useMemo(() => {
         const counts: Record<string, number> = {};
@@ -25,10 +33,24 @@ export default function ResultView({ votes }: ResultViewProps) {
         return Object.entries(counts)
             .map(([targetId, count]) => {
                 const participant = participants.find(p => p.id === targetId);
-                return { participant, count };
+                let label = participant?.nickname || targetId;
+                let avatar = participant?.nickname?.[0]; // Default avatar char
+
+                // Handle Balance Game (A/B)
+                if (!participant) {
+                    if (targetId === 'A' && options[0]) {
+                        label = options[0];
+                        avatar = '🅰️';
+                    } else if (targetId === 'B' && options[1]) {
+                        label = options[1];
+                        avatar = '🅱️';
+                    }
+                }
+
+                return { participant, label, avatar, count, targetId };
             })
             .sort((a, b) => b.count - a.count);
-    }, [votes, participants]);
+    }, [votes, participants, options]);
 
     const winner = results[0];
 
@@ -106,7 +128,7 @@ export default function ResultView({ votes }: ResultViewProps) {
 
     const handleShare = async () => {
         const title = '모여라 투표 결과';
-        const text = `Q. ${currentQuestion?.content}\n\n🏆 1등: ${winner?.participant?.nickname} (${winner?.count}표)`;
+        const text = `Q. ${currentQuestion?.content}\n\n🏆 1등: ${winner?.label} (${winner?.count}표)`;
 
         if (typeof navigator !== 'undefined' && navigator.share) {
             try {
@@ -149,11 +171,11 @@ export default function ResultView({ votes }: ResultViewProps) {
                     </div>
 
                     <div className="w-40 h-40 bg-white rounded-[2.5rem] flex items-center justify-center text-[3.5rem] font-black text-gray-900 shadow-2xl relative z-10 border-[6px] border-white/20 bg-clip-padding backdrop-filter">
-                        {winner?.participant?.nickname[0]}
+                        {winner?.avatar}
                     </div>
 
                     <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full font-black text-xl shadow-lg whitespace-nowrap z-20 border-2 border-white/20">
-                        {winner?.participant?.nickname}
+                        {winner?.label}
                     </div>
                 </div>
 
@@ -169,7 +191,7 @@ export default function ResultView({ votes }: ResultViewProps) {
                     <div key={res.participant?.id} className="flex items-center justify-between bg-white/5 border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-md">
                         <div className="flex items-center gap-4">
                             <span className="text-white/40 font-mono text-sm font-bold w-6">#{idx + 2}</span>
-                            <span className="font-bold text-lg">{res.participant?.nickname}</span>
+                            <span className="font-bold text-lg">{res.label}</span>
                         </div>
                         <span className="font-bold text-white/60">{res.count}표</span>
                     </div>

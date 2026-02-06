@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Check, Loader2, Info } from 'lucide-react';
 
 const CATEGORIES = [
-    { id: 'introduction', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
+    { id: 'icebreaking', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
     { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
     { id: 'workshop', label: '워크숍/팀빌딩', emoji: '📢', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
     { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
