@@ -2,11 +2,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Game } from '@/data/games.db';
+import { GameType as MixerGameType } from '@/types/game';
+import { getRuleType, RuleType } from '@/utils/GameMixer';
 import { supabase } from '@/lib/supabase';
 
 interface TurnState {
     queue: Game[];
     currentIndex: number; // 0 to 11
+    recentTypes: RuleType[];
+    recentIds: string[];
 
     // Actions
     fetchTurn: (theme: string, participantsCount?: number, reset?: boolean) => Promise<void>;
@@ -19,14 +23,19 @@ export const useTurnStore = create<TurnState>()(
         (set, get) => ({
             queue: [],
             currentIndex: -1,
+            recentTypes: [],
+            recentIds: [],
 
             fetchTurn: async (theme: string = 'icebreaking', participantsCount: number = 4, reset = false) => {
                 try {
+                    const { recentTypes, recentIds } = get();
                     const params = new URLSearchParams({
                         theme,
                         count: participantsCount.toString()
                     });
                     if (reset) params.append('reset', 'true');
+                    if (recentTypes.length > 0) params.append('recentTypes', JSON.stringify(recentTypes));
+                    if (recentIds.length > 0) params.append('recentIds', JSON.stringify(recentIds));
 
                     const url = `/api/game/turn?${params.toString()}`;
                     console.log(`[TurnStore] Fetching turn from ${url}...`);
@@ -101,11 +110,20 @@ export const useTurnStore = create<TurnState>()(
                     return false;
                 }
 
-                set({ currentIndex: nextIdx });
+                const { recentTypes, recentIds } = get();
+                const ruleType = getRuleType(game.type as MixerGameType);
+                const nextRecentTypes = ruleType ? [...recentTypes, ruleType] : [...recentTypes];
+                const nextRecentIds = [...recentIds, gameId];
+
+                set({
+                    currentIndex: nextIdx,
+                    recentTypes: nextRecentTypes.slice(-10),
+                    recentIds: nextRecentIds.slice(-10)
+                });
                 return true;
             },
 
-            reset: () => set({ queue: [], currentIndex: -1 })
+            reset: () => set({ queue: [], currentIndex: -1, recentTypes: [], recentIds: [] })
         }),
         {
             name: 'moyora-turn-engine',

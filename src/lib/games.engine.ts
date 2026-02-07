@@ -2,11 +2,51 @@
 // 게임 진행 엔진 (로직)
 // ==========================
 import { GAME_DB, Game, GameType, QuestionGame, ChoiceGame } from '@/data/games.db';
+import { GameCategory, GameItem } from '@/types/game';
+import { RuleType } from '@/utils/GameMixer';
 
 export type SessionState = {
     usedIds: Set<string>;
     rngSeed: number;
 };
+
+export type MixPreset = {
+    weights: Record<RuleType, number>;
+};
+
+const DEFAULT_PRESET: MixPreset = {
+    weights: {
+        choice_ab: 0.75,
+        pick_person: 0.15,
+        action_game: 0.1
+    }
+};
+
+const PARTY_PRESET: MixPreset = {
+    weights: {
+        choice_ab: 0.6,
+        pick_person: 0.2,
+        action_game: 0.2
+    }
+};
+
+const EXCLUDE_COMMON_THEMES = new Set(['retro7080', 'goldenlife']);
+
+export function getThemeMixPreset(themeId: string): MixPreset {
+    const basePreset = themeId === 'party' ? PARTY_PRESET : DEFAULT_PRESET;
+    const weights = { ...basePreset.weights };
+    if (EXCLUDE_COMMON_THEMES.has(themeId)) {
+        weights.action_game = 0;
+    }
+    return { weights };
+}
+
+export function buildMixPool(theme: GameCategory, common?: GameCategory): GameItem[] {
+    if (theme.excludeCommon) {
+        return [...theme.games];
+    }
+    return [...theme.games, ...(common?.games ?? [])];
+}
 
 // ==========================
 // 유틸: 시드 랜덤 & 헬퍼

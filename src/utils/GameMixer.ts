@@ -1,12 +1,115 @@
 
 import { GameItem, GameType } from '@/types/game';
 
+export type RuleType = 'choice_ab' | 'pick_person' | 'action_game';
+
+export type MixConfig = {
+    weights: Record<RuleType, number>;
+    playerCount: number;
+    random?: () => number;
+};
+
+export type MixContext = {
+    recentTypes: RuleType[];
+    recentIds: string[];
+};
+
 // Define the logical mapping between requested rules and existing types
-const TYPE_MAPPING: Record<string, GameType[]> = {
+const TYPE_MAPPING: Record<RuleType, GameType[]> = {
     choice_ab: ['balance_light', 'balance_love', 'balance_spicy'],
     pick_person: ['vote_image', 'vote_praise', 'vote_blind', 'vote_signal', 'vote_fun'],
     action_game: ['mission_action', 'mission_coop', 'roulette_punishment']
 };
+
+const RULE_TYPES: RuleType[] = ['choice_ab', 'pick_person', 'action_game'];
+
+export function getRuleType(type: GameType): RuleType | null {
+    for (const [key, types] of Object.entries(TYPE_MAPPING)) {
+        if (types.includes(type)) return key as RuleType;
+    }
+    return null;
+}
+
+function getItemId(item: GameItem): string {
+    return item.id ?? item.question;
+}
+
+function trimRecent<T>(items: T[], max = 10): T[] {
+    if (items.length <= max) return items;
+    return items.slice(items.length - max);
+}
+
+function pickWeightedType(
+    types: RuleType[],
+    weights: Record<RuleType, number>,
+    rnd: () => number
+): RuleType | null {
+    const total = types.reduce((sum, type) => sum + Math.max(0, weights[type] ?? 0), 0);
+    if (total <= 0) return null;
+    let roll = rnd() * total;
+    for (const type of types) {
+        roll -= Math.max(0, weights[type] ?? 0);
+        if (roll <= 0) return type;
+    }
+    return types[types.length - 1] ?? null;
+}
+
+export function pickNextGame(games: GameItem[], config: MixConfig, ctx: MixContext): GameItem | null {
+    const rnd = config.random ?? Math.random;
+    const pools: Record<RuleType, GameItem[]> = {
+        choice_ab: [],
+        pick_person: [],
+        action_game: []
+    };
+
+    games.forEach(game => {
+        const ruleType = getRuleType(game.type);
+        if (ruleType) {
+            pools[ruleType].push(game);
+        }
+    });
+
+    const recentIds = new Set(ctx.recentIds);
+    const lastType = ctx.recentTypes.at(-1) ?? null;
+    const pickPersonOnCooldown = ctx.recentTypes.slice(-2).includes('pick_person');
+
+    const bannedTypes = new Set<RuleType>();
+    if (config.playerCount < 3) bannedTypes.add('pick_person');
+    if (lastType) bannedTypes.add(lastType);
+    if (pickPersonOnCooldown) bannedTypes.add('pick_person');
+
+    const filteredPools: Record<RuleType, GameItem[]> = {
+        choice_ab: pools.choice_ab.filter(item => !recentIds.has(getItemId(item))),
+        pick_person: pools.pick_person.filter(item => !recentIds.has(getItemId(item))),
+        action_game: pools.action_game.filter(item => !recentIds.has(getItemId(item)))
+    };
+
+    const availableTypes = RULE_TYPES.filter(
+        type => !bannedTypes.has(type) && filteredPools[type].length > 0 && (config.weights[type] ?? 0) > 0
+    );
+
+    let selectedType = pickWeightedType(availableTypes, config.weights, rnd);
+
+    if (!selectedType || filteredPools[selectedType].length === 0) {
+        selectedType = !bannedTypes.has('choice_ab') && filteredPools.choice_ab.length > 0 ? 'choice_ab' : null;
+    }
+
+    if (!selectedType) return null;
+
+    const pool = filteredPools[selectedType];
+    if (pool.length === 0) return null;
+
+    const picked = pool[Math.floor(rnd() * pool.length)];
+    if (!picked) return null;
+
+    ctx.recentIds = trimRecent([...ctx.recentIds, getItemId(picked)], 10);
+    ctx.recentTypes = trimRecent(
+        [...ctx.recentTypes, selectedType],
+        10
+    );
+
+    return picked;
+}
 
 export class GameMixer {
     private validThemePool: GameItem[];
@@ -36,11 +139,8 @@ export class GameMixer {
         });
     }
 
-    private getRuleType(type: GameType): string | null {
-        for (const [key, types] of Object.entries(TYPE_MAPPING)) {
-            if (types.includes(type)) return key;
-        }
-        return null;
+    private getRuleType(type: GameType): RuleType | null {
+        return getRuleType(type);
     }
 
     /**
