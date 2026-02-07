@@ -41,7 +41,7 @@ export default function LobbyView() {
         <div className="flex flex-col items-center p-6 min-h-screen bg-white">
             {/* Header */}
             <div className="w-full flex justify-between items-center mb-8">
-                <span className="font-bold text-lg text-primary">#{room.code}</span>
+                <span className="font-bold text-lg text-primary hidden">#{room.code}</span>
                 <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full">
                     <Users className="w-4 h-4 text-gray-500" />
                     <span className="text-sm font-bold">{participants.length}명</span>
