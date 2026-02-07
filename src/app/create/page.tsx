@@ -11,7 +11,6 @@ const CATEGORIES = [
     { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
     { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
     { id: 'crewmode', label: '크루모드(동호회)', emoji: '🔥', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
-    { id: 'common', label: '공통 행동게임', emoji: '🎲', desc: '모두 함께 즐기는 액션 미션과 벌칙!' },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]['id'];

@@ -9,7 +9,7 @@ interface TurnState {
     currentIndex: number; // 0 to 11
 
     // Actions
-    fetchTurn: (reset?: boolean) => Promise<void>;
+    fetchTurn: (theme: string, participantsCount?: number, reset?: boolean) => Promise<void>;
     playNextGame: (roomId: string) => Promise<boolean>; // Returns false if turn ended
     reset: () => void;
 }
@@ -20,9 +20,15 @@ export const useTurnStore = create<TurnState>()(
             queue: [],
             currentIndex: -1,
 
-            fetchTurn: async (reset = false) => {
+            fetchTurn: async (theme: string = 'icebreaking', participantsCount: number = 4, reset = false) => {
                 try {
-                    const url = reset ? '/api/game/turn?reset=true' : '/api/game/turn';
+                    const params = new URLSearchParams({
+                        theme,
+                        count: participantsCount.toString()
+                    });
+                    if (reset) params.append('reset', 'true');
+
+                    const url = `/api/game/turn?${params.toString()}`;
                     console.log(`[TurnStore] Fetching turn from ${url}...`);
                     const res = await fetch(url);
 
@@ -36,16 +42,15 @@ export const useTurnStore = create<TurnState>()(
                     console.log('[TurnStore] Received data:', data);
 
                     if (data.turnData && Array.isArray(data.turnData)) {
-                        // 데이터 정규화 및 필터링 (관대하게 처리)
                         const safeQueue = data.turnData.map((g: any) => ({
-                            id: g.id,
-                            theme: g.theme,
+                            id: g.id || `temp-${Math.random()}`, // Fallback ID if missing
+                            theme: g.theme || theme,
                             type: g.type,
-                            prompt: g.prompt,
-                            timeSec: g.timeSec,
-                            A: g.A,
-                            B: g.B
-                        })).filter((g: any) => g.id && g.type && g.prompt); // 필수 필드 체크
+                            prompt: g.question, // Map GameItem.question to prompt
+                            timeSec: g.timer,   // Map GameItem.timer to timeSec
+                            A: g.options ? g.options[0] : null,
+                            B: g.options ? g.options[1] : null
+                        })).filter((g: any) => g.type && g.prompt);
 
                         if (safeQueue.length > 0) {
                             set({ queue: safeQueue, currentIndex: -1 });

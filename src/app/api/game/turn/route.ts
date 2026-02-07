@@ -1,57 +1,70 @@
 import { NextResponse } from 'next/server';
-import { generateTurn, formatTurn } from '@/lib/games.engine';
-import { GAME_DB } from '@/data/games.db';
+import { GAME_DATA } from '@/data/gameData';
+import { GameMixer } from '@/utils/GameMixer';
 
-// 간단한 인-메모리 세션 (서버리스 환경에서는 완벽하지 않지만 데모용)
-// 실제로는 DB나 Redis에 저장해야 함
-let mockSession = {
-    usedIds: new Set<string>(),
-    rngSeed: Date.now()
-};
+// Simple in-memory session (Not ideal for serverless but sufficient for MVP/Demo)
+let mixerInstance: GameMixer | null = null;
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const reset = searchParams.get('reset');
-
-    if (reset) {
-        mockSession.usedIds.clear();
-        mockSession.rngSeed = Date.now();
-        // proceed to generate new turn
-    }
+    const themeId = searchParams.get('theme') || 'icebreaking';
+    const countStr = searchParams.get('count') || '4';
+    const reset = searchParams.get('reset') === 'true';
+    const playerCount = parseInt(countStr, 10);
 
     try {
-        console.log(`[API] Generating turn... Seed: ${mockSession.rngSeed}, Used: ${mockSession.usedIds.size}`);
+        console.log(`[API] Generating turn for Theme: ${themeId}, Players: ${playerCount}, Reset: ${reset}`);
 
-        if (!GAME_DB || GAME_DB.length === 0) {
-            throw new Error("GAME_DB is empty or undefined");
+        // 1. Get Theme Data
+        const themeCategory = GAME_DATA.categories.find(c => c.id === themeId);
+        const commonCategory = GAME_DATA.categories.find(c => c.id === 'common');
+
+        if (!themeCategory) {
+            throw new Error(`Theme '${themeId}' not found`);
         }
 
-        // 턴 생성 (12개 게임: 3라운드 * 4개)
-        const turn = generateTurn(mockSession);
+        // 2. Initialize Mixer (Singleton-ish for demo, or per request if stateless desired)
+        // Since GameMixer is stateful (history), we should technically persist it per room.
+        // However, this API is called once per 'Turn' (batch of games). 
+        // We can just instantiate a new Mixer and generate a batch, but history won't persist across turns.
+        // Given the requirement for '10 round cooldown', we need persistence.
+        // For MVP without Redis, we'll use the global variable but reset it if 'reset=true' is passed.
+        // NOTE: In serverless (Vercel), global variables may reset. But for now this follows the previous pattern.
 
-        console.log(`[API] Turn generated with ${turn?.length} games`);
-
-        if (!turn) {
-            throw new Error("generateTurn returned null/undefined");
+        if (reset || !mixerInstance) {
+            mixerInstance = new GameMixer(
+                themeCategory.games,
+                commonCategory ? commonCategory.games : []
+            );
+            console.log(`[API] New Mixer initialized`);
         }
 
-        // DB 소진 시 (12개 미만으로 뽑힌 경우)
-        if (turn.length < 12) {
-            mockSession.usedIds.clear();
-            // 실제로는 여기서 다시 뽑거나, 사용자에게 "다음 턴에 리셋됩니다" 알림
+        // 3. Generate 12 Games (3 Rounds * 4 Games)
+        const turnData = [];
+        for (let i = 0; i < 12; i++) {
+            const game = mixerInstance!.getNextGame(playerCount, themeId);
+            if (game) {
+                // Add an ID if missing (GameItem usually doesn't have ID in gameData.ts)
+                // We'll use a simple hash or random ID.
+                const gameWithId = {
+                    ...game,
+                    id: game.question ? Buffer.from(game.question).toString('base64').substring(0, 8) : Math.random().toString(36).substring(7),
+                    theme: themeId // Tag with current theme for context
+                };
+                turnData.push(gameWithId);
+            }
         }
 
-        // 포맷팅된 텍스트와 원본 JSON 모두 반환
+        console.log(`[API] Turn generated with ${turnData.length} games`);
+
         return NextResponse.json({
-            turnData: turn,
-            displayText: formatTurn(turn),
-            remaining: GAME_DB.length - mockSession.usedIds.size
+            turnData
         });
+
     } catch (e: any) {
         console.error("[API] Error generating turn:", e);
-        // 에러 상황 명시
-        return NextResponse.json({ error: e.message, stack: e.stack }, { status: 500 });
+        return NextResponse.json({ error: e.message }, { status: 500 });
     }
 }

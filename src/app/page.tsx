@@ -146,11 +146,4 @@ const THEME_CARDS = [
     icon: "🔥",
     examples: ["우리 모임의 숨은 해결사는?", "가장 먼저 유튜버로 대박날 사람?"]
   },
-  {
-    id: "common",
-    title: "공통 행동게임",
-    sub: "액션 & 벌칙",
-    icon: "🎲",
-    examples: ["3분 동안 영어 쓰지 않기", "웃음 참기 미션"]
-  },
 ];

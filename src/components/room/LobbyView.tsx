@@ -20,7 +20,7 @@ export default function LobbyView() {
         setIsStarting(true);
         try {
             // 1. Fetch New Turn (Reset)
-            await fetchTurn(true);
+            await fetchTurn(room.category, participants.length, true);
 
             // 2. Play First Game
             const success = await playNextGame(room.id);
