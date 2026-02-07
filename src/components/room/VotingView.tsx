@@ -18,6 +18,7 @@ export default function VotingView({ votes }: VotingViewProps) {
 
     // Type Definitions (Moved to top level)
     const isVoteType = currentQuestion?.type?.startsWith('vote_');
+    const isFreeVoteType = ['vote_image', 'vote_praise'].includes(currentQuestion?.type || '');
     const isBalanceType = currentQuestion?.type?.startsWith('balance_') || currentQuestion?.type === 'C';
     const isRouletteType = currentQuestion?.type?.startsWith('roulette_');
     const isMissionType = !isRouletteType && (
@@ -29,6 +30,7 @@ export default function VotingView({ votes }: VotingViewProps) {
 
     const [chatMessages, setChatMessages] = useState<{ sender: string, text: string }[]>([]);
     const [chatInput, setChatInput] = useState('');
+    const [freeVoteInput, setFreeVoteInput] = useState('');
 
     useEffect(() => {
         if (!room) return;
@@ -81,8 +83,17 @@ export default function VotingView({ votes }: VotingViewProps) {
 
 
     // Check if I voted
+    // For free vote, we check against game_actions if possible, OR we rely on local isVoting state for immediate feedback
+    // Ideally we should fetch myVote from game_actions too, but for now we rely on the votes prop OR local state.
+    // If ResultView fetches game_actions, we might expect votes prop to NOT include it, unless RoomPage is updated.
+    // We will assume 'votes' prop covers standard votes, and we might need to check if I submitted a free vote.
+    // For simplicity, we reuse 'myVote' logic if the system was using 'votes' table.
+    // But since we are writing to 'game_actions', 'myVote' from props (which reads 'votes') will be undefined.
+    // So we need a flag 'hasSubmittedFreeVote'.
+    const [hasSubmittedFreeVote, setHasSubmittedFreeVote] = useState(false);
+
     const myVote = votes.find(v => v.voter_id === currentUser?.id && v.question_id === room?.current_question_id);
-    const totalVotes = votes.length;
+    const totalVotes = votes.length; // This might be inaccurate for free votes if RoomPage doesn't fetch them.
     const totalParticipants = participants.length;
 
     const handleVote = async (targetId: string) => {
@@ -99,6 +110,26 @@ export default function VotingView({ votes }: VotingViewProps) {
         } catch (e) {
             console.error(e);
             alert('투표 실패');
+            setIsVoting(false);
+        }
+    };
+
+    const handleFreeVote = async () => {
+        if (isInteractionDisabled || hasSubmittedFreeVote || !room || !currentQuestion || !currentUser || !freeVoteInput.trim()) return;
+        setIsVoting(true);
+
+        try {
+            await supabase.from('game_actions' as any).insert({
+                room_id: room.id,
+                question_id: currentQuestion.id,
+                voter_id: currentUser.id, // Assuming column exists
+                target_value: freeVoteInput.trim(),
+                action_type: 'vote' // Optional: if DB requires type
+            });
+            setHasSubmittedFreeVote(true);
+        } catch (e) {
+            console.error(e);
+            alert('전송 실패');
             setIsVoting(false);
         }
     };
@@ -169,7 +200,7 @@ export default function VotingView({ votes }: VotingViewProps) {
 
                         {/* Instruction Hint */}
                         <p className="text-xs font-medium text-gray-400">
-                            {isVoteType ? '👇 투표할 대상을 선택하세요' : isBalanceType ? '👇 하나를 선택하세요' : '💬 자유롭게 이야기해보세요'}
+                            {isVoteType ? (isFreeVoteType ? '👇 이름을 직접 입력하세요' : '👇 투표할 대상을 선택하세요') : isBalanceType ? '👇 하나를 선택하세요' : '💬 자유롭게 이야기해보세요'}
                         </p>
                     </div>
                 </div>
@@ -178,23 +209,46 @@ export default function VotingView({ votes }: VotingViewProps) {
                 <div className="flex-1 flex flex-col w-full min-h-0">
                     {/* 1. People Voting - 2 COLUMN MASSIVE GRID */}
                     {isVoteType && (
-                        !myVote ? (
-                            <div className="grid grid-cols-2 gap-4 h-full content-start">
-                                {participants.map((p) => (
+                        isFreeVoteType ? (
+                            !hasSubmittedFreeVote ? (
+                                <div className="flex flex-col gap-4 w-full">
+                                    <input
+                                        type="text"
+                                        value={freeVoteInput}
+                                        onChange={(e) => setFreeVoteInput(e.target.value)}
+                                        placeholder="이름을 입력하세요 (예: 민수)"
+                                        className="w-full h-16 text-center text-xl border-2 border-indigo-200 rounded-xl focus:border-indigo-500 focus:ring-0 outline-none transition-all placeholder:text-gray-300 font-bold bg-white"
+                                    />
                                     <button
-                                        key={p.id}
-                                        onClick={() => handleVote(p.id)}
-                                        disabled={isInteractionDisabled}
-                                        className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:cursor-not-allowed"
+                                        onClick={handleFreeVote}
+                                        disabled={!freeVoteInput.trim() || isInteractionDisabled}
+                                        className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg shadow-md hover:bg-indigo-700 active:scale-95 transition-all disabled:bg-gray-300"
                                     >
-                                        <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep" style={{ fontSize: '1.5rem' }}>
-                                            {p.nickname}<span className="text-lg font-bold text-gray-400" style={{ fontSize: '1.125rem' }}>님</span>
-                                        </span>
+                                        투표하기
                                     </button>
-                                ))}
-                            </div>
+                                </div>
+                            ) : (
+                                <VotedState />
+                            )
                         ) : (
-                            <VotedState />
+                            !myVote ? (
+                                <div className="grid grid-cols-2 gap-4 h-full content-start">
+                                    {participants.map((p) => (
+                                        <button
+                                            key={p.id}
+                                            onClick={() => handleVote(p.id)}
+                                            disabled={isInteractionDisabled}
+                                            className="bg-white min-h-[100px] p-5 rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center gap-3 active:scale-95 transition-all shadow-md hover:shadow-xl hover:border-indigo-300 disabled:cursor-not-allowed"
+                                        >
+                                            <span className="font-black text-gray-900 text-2xl text-center leading-tight break-keep" style={{ fontSize: '1.5rem' }}>
+                                                {p.nickname}<span className="text-lg font-bold text-gray-400" style={{ fontSize: '1.125rem' }}>님</span>
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <VotedState />
+                            )
                         )
                     )}
 

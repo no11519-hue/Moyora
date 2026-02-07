@@ -21,6 +21,9 @@ export default function ResultView({ votes }: ResultViewProps) {
         currentQuestion?.type?.startsWith('talk_') ||
         currentQuestion?.type === 'Q';
 
+    const isFreeVoteType = ['vote_image', 'vote_praise'].includes(currentQuestion?.type || '');
+    const [freeVotes, setFreeVotes] = useState<any[]>([]);
+
     // Fetch Messages for Mission Type
     useEffect(() => {
         if (isMissionType && room?.id && currentQuestion?.id) {
@@ -35,6 +38,19 @@ export default function ResultView({ votes }: ResultViewProps) {
         }
     }, [isMissionType, room?.id, currentQuestion?.id]);
 
+    // Fetch Free Votes for Free Vote Type
+    useEffect(() => {
+        if (isFreeVoteType && room?.id && currentQuestion?.id) {
+            supabase.from('game_actions' as any)
+                .select('*')
+                .eq('room_id', room.id)
+                .eq('question_id', currentQuestion.id)
+                .then(({ data }) => {
+                    if (data) setFreeVotes(data);
+                });
+        }
+    }, [isFreeVoteType, room?.id, currentQuestion?.id]);
+
     // Parse options
     let options: string[] = [];
     if (currentQuestion?.options && typeof currentQuestion.options === 'string') {
@@ -43,8 +59,9 @@ export default function ResultView({ votes }: ResultViewProps) {
         options = currentQuestion.options as string[];
     }
 
-    // Aggregate votes
+    // Aggregate votes (Standard)
     const results = useMemo(() => {
+        if (isFreeVoteType) return [];
         const counts: Record<string, number> = {};
         votes.forEach(v => {
             counts[v.target_id] = (counts[v.target_id] || 0) + 1;
@@ -70,15 +87,30 @@ export default function ResultView({ votes }: ResultViewProps) {
                 return { participant, label, avatar, count, targetId };
             })
             .sort((a, b) => b.count - a.count);
-    }, [votes, participants, options]);
+    }, [votes, participants, options, isFreeVoteType]);
+
+    // Aggregate Free Votes
+    const freeVoteResults = useMemo(() => {
+        if (!isFreeVoteType) return [];
+        const counts: Record<string, number> = {};
+        freeVotes.forEach(vote => {
+            const name = vote.target_value || 'Unknown';
+            counts[name] = (counts[name] || 0) + 1;
+        });
+        return Object.entries(counts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }, [freeVotes, isFreeVoteType]);
+
 
     // Detect tie/draw (동점 감지)
-    const isTie = results.length >= 2 && results[0].count === results[1].count;
-    const winner = isTie ? null : results[0];
+    const isTie = !isFreeVoteType && results.length >= 2 && results[0].count === results[1].count;
+    const winner = !isFreeVoteType && !isTie ? results[0] : null;
 
     useEffect(() => {
-        // Fire confetti only if not a tie
+        // Fire confetti only if not a tie (and handled for free votes separately if needed, but keeping existing logic for now)
         if (isTie) return;
+        if (isFreeVoteType && freeVoteResults.length > 0) return; // Maybe handle confetti for free votes too?
 
         const duration = 3000;
         const end = Date.now() + duration;
@@ -103,7 +135,7 @@ export default function ResultView({ votes }: ResultViewProps) {
                 requestAnimationFrame(frame);
             }
         })();
-    }, [isTie]);
+    }, [isTie, isFreeVoteType, freeVoteResults.length]);
 
     const { playNextGame, fetchTurn } = useTurnStore();
 
@@ -140,7 +172,7 @@ export default function ResultView({ votes }: ResultViewProps) {
 
     const handleShare = async () => {
         const title = '모여라 투표 결과';
-        const text = `Q. ${currentQuestion?.content}\n\n🏆 1등: ${winner?.label} (${winner?.count}표)`;
+        const text = `Q. ${currentQuestion?.content}\n\n🏆 1등: ${winner?.label || freeVoteResults[0]?.name} (${winner?.count || freeVoteResults[0]?.count}표)`;
 
         if (typeof navigator !== 'undefined' && navigator.share) {
             try {
@@ -202,6 +234,27 @@ export default function ResultView({ votes }: ResultViewProps) {
                                 </div>
                             )}
                         </div>
+                    </div>
+                ) : isFreeVoteType ? (
+                    /* Free Vote Result - Ranking List */
+                    <div className="w-full max-w-md flex flex-col gap-3 animate-slide-up">
+                        {freeVoteResults.length > 0 ? (
+                            freeVoteResults.map((item, idx) => (
+                                <div key={idx} className="flex justify-between items-center bg-white p-4 rounded-lg shadow mb-2 text-gray-900">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${idx === 0 ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-100 text-gray-500'}`}>
+                                            {idx + 1}
+                                        </div>
+                                        <span className="text-lg font-bold">{item.name}</span>
+                                    </div>
+                                    <span className="text-indigo-600 font-bold">{item.count}표</span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-white/40 text-center py-10">
+                                아직 등록된 답변이 없습니다.
+                            </div>
+                        )}
                     </div>
                 ) : isTie ? (
                     /* TIE/DRAW Display */

@@ -8,151 +8,178 @@ export const GAME_DATA: GameData = {
             title: "🧊 아이스브레이킹",
             description: "어색한 공기를 3초 만에 깨부수는 가벼운 질문",
             games: [
-                {
-                    type: "vote_blind",
-                    question: "학창 시절에 선생님 몰래 딴짓을 가장 많이 했을 것 같은 사람은?",
-                    options: ["참여자 전원"],
-                    timer: 15
-                },
-                {
-                    type: "mission_action",
-                    question: "모두 스마트폰을 꺼내 서로의 '배경화면'을 보여주고 의미를 설명하세요!",
-                    timer: 60
-                },
-                {
-                    type: "vote_image",
-                    question: "오늘의 '베스트 드레서'는 누구인가요? (패션 센스 투표)",
-                    options: ["참여자 전원"],
-                    timer: 20
-                },
-                {
-                    type: "balance_light",
-                    question: "평생 한 가지 음식만 먹어야 한다면?",
-                    options: ["라면", "치킨"],
-                    timer: 10
-                },
-                // Added Randoms
-                { type: "balance_light", question: "무인도에 딱 하나만 가져간다면?", options: ["스마트폰", "친구"], timer: 10 },
-                { type: "mission_action", question: "지금 바로 왼쪽 사람의 '장점'을 딱 하나만 찾아 칭찬해주세요!", timer: 30 },
-                { type: "mission_action", question: "오른쪽 사람과 5초 동안 눈 마주치기! 먼저 웃는 사람이 벌칙!", timer: 15 },
-                { type: "vote_blind", question: "학창시절 별명이 가장 웃길 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
-                { type: "vote_image", question: "동물로 비유하면 나무늘보일 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
-                { type: "balance_light", question: "초능력 선택!", options: ["순간이동", "마음읽기"], timer: 10 },
-                { type: "balance_light", question: "여름에 겨울옷 vs 겨울에 여름옷", options: ["쪄죽음", "얼어죽음"], timer: 10 },
-                { type: "balance_light", question: "평생 커피 끊기 vs 평생 라면 끊기", options: ["No 커피", "No 라면"], timer: 10 },
-                { type: "balance_light", question: "민트초코?", options: ["호", "불호"], timer: 10 },
-                { type: "balance_light", question: "탕수육은?", options: ["부먹", "찍먹"], timer: 10 },
+                { type: "balance_light", question: "첫 만남 대화 시작은?", options: ["질문 먼저 (궁금해!)", "자기소개 먼저 (나부터!)"], timer: 10 },
+                { type: "balance_light", question: "평소 대화 속도는?", options: ["빠른 티키타카", "느긋한 대화"], timer: 10 },
+                { type: "balance_light", question: "낯가림 해제 시간?", options: ["금방 풀림 (E)", "천천히 스며듦 (I)"], timer: 10 },
+                { type: "balance_light", question: "사람 이름 외우기?", options: ["한 번 들으면 기억!", "자주 까먹음..."], timer: 10 },
+                { type: "balance_light", question: "모임에서의 역할은?", options: ["분위기 메이커", "상황 정리 담당"], timer: 10 },
+                { type: "balance_light", question: "대화할 때 나는?", options: ["질문봇 (궁금해!)", "경청봇 (끄덕끄덕)"], timer: 10 },
+                { type: "balance_light", question: "리액션 스타일?", options: ["크게 호응! (물개박수)", "조용히 미소 (은은함)"], timer: 10 },
+                { type: "balance_light", question: "사진 찍을 때?", options: ["찍는 게 좋아", "찍히는 게 좋아"], timer: 10 },
+                { type: "balance_light", question: "식당 메뉴 고를 때?", options: ["새로운 메뉴 도전!", "실패 없는 아는 맛"], timer: 10 },
+                { type: "balance_light", question: "카톡 답장 속도?", options: ["읽자마자 바로 답장", "여유 생기면 답장"], timer: 10 },
+                { type: "balance_light", question: "약속 시간?", options: ["미리 도착해서 대기", "정각에 딱 맞춰 도착"], timer: 10 },
+                { type: "balance_light", question: "대화 주제 선호?", options: ["넓고 다양한 주제", "하나를 깊게 파기"], timer: 10 },
+                { type: "balance_light", question: "결정 내릴 때?", options: ["직감으로 빠르게!", "신중하게 비교 분석!"], timer: 10 },
+                { type: "balance_light", question: "스트레스 해소법?", options: ["산책하며 멍때리기", "맛있는 거 먹기"], timer: 10 },
+                { type: "balance_light", question: "소소한 행복?", options: ["맛있는 거 한 입", "좋아하는 노래 듣기"], timer: 10 },
+                { type: "balance_light", question: "모임 후에는?", options: ["바로 연락 (잘 들어갔어?)", "가끔 생각나면 연락"], timer: 10 },
+                { type: "balance_light", question: "말이 끊겼을 때?", options: ["새로운 주제 던지기", "어색하게 웃어넘기기"], timer: 10 },
+                { type: "balance_light", question: "낯선 자리에서?", options: ["먼저 말 거는 편", "상대방이 걸어주길 기다림"], timer: 10 },
+                { type: "balance_light", question: "간식 취향?", options: ["달달한 디저트", "짭짤한 과자"], timer: 10 },
+                { type: "balance_light", question: "선호하는 장소?", options: ["분위기 좋은 카페", "탁 트인 야외"], timer: 10 },
+                { type: "balance_light", question: "모임 끝나고?", options: ["2차 가야지!", "이제 집으로!"], timer: 10 },
+                { type: "balance_light", question: "다음 약속은?", options: ["헤어지면서 바로 잡기", "나중에 연락해서 잡기"], timer: 10 },
+
+                { type: "vote_image", question: "가장 먼저 말문을 트는 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "리액션이 가장 좋은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "분위기를 제일 잘 살릴 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "상황 정리를 가장 잘할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "매너가 가장 좋을 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "도움이 필요할 때 바로 도와줄 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "단톡방에 적절한 짤을 잘 보낼 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "첫인상이 가장 좋았던 사람은?", options: ["참여자 전원"], timer: 15 }
             ]
         },
         {
             id: "dating",
-            title: "💕 두근두근 소개팅",
+            title: "💕 미팅/소개팅",
             description: "서로의 호감과 가치관을 은근슬쩍 확인하는 질문",
             games: [
-                {
-                    type: "vote_signal",
-                    question: "첫인상이 가장 내 이상형에 가까웠던 사람은? (익명 보장)",
-                    options: ["이성 참여자만 노출"],
-                    timer: 15
-                },
-                {
-                    type: "balance_love",
-                    question: "더 용서할 수 없는 애인의 행동은?",
-                    options: ["이성친구와 단둘이 술", "전 애인과 안부 연락"],
-                    timer: 10
-                },
-                {
-                    type: "mission_action",
-                    question: "오른쪽 사람과 10초 동안 눈을 마주치고(아이컨택), 먼저 웃는 사람이 벌칙!",
-                    timer: 15
-                },
-                {
-                    type: "vote_blind",
-                    question: "오늘 이 자리에서 애프터 신청을 받을 것 같은 인기쟁이는?",
-                    options: ["참여자 전원"],
-                    timer: 15
-                },
-                // Added Randoms
-                { type: "balance_love", question: "연락 문제, 뭐가 더 최악?", options: ["잠수 타기", "1분마다 카톡"], timer: 10 },
-                { type: "balance_love", question: "기념일 선물 취향은?", options: ["서프라이즈", "대놓고 묻기"], timer: 10 },
-                { type: "balance_love", question: "깻잎 논쟁?", options: ["상관없음", "절대 안됨"], timer: 10 },
-                { type: "balance_love", question: "이별 후 친구 가능?", options: ["가능", "불가능"], timer: 10 },
-                { type: "vote_signal", question: "눈빛이 가장 매력적인 사람은?", options: ["이성 참여자만 노출"], timer: 15 },
-                { type: "vote_signal", question: "목소리가 가장 설레는 사람은?", options: ["이성 참여자만 노출"], timer: 15 },
-                { type: "balance_love", question: "데이트 비용은?", options: ["데이트 통장", "번갈아 내기"], timer: 10 },
-                { type: "balance_love", question: "사내 연애(CC)?", options: ["찬성", "절대 반대"], timer: 10 },
-            ]
-        },
-        {
-            id: "workshop",
-            title: "🔥 으쌰으쌰 워크숍",
-            description: "팀워크를 다지고 칭찬으로 훈훈하게 마무리",
-            games: [
-                {
-                    type: "vote_praise",
-                    question: "우리 팀의 '숨은 해결사'는 누구인가요? (가장 의지되는 사람)",
-                    options: ["참여자 전원"],
-                    timer: 20
-                },
-                {
-                    type: "mission_action",
-                    question: "모두 일어나서 옆 사람과 하이파이브 3번! 가장 늦은 사람은 벌칙!",
-                    timer: 20
-                },
-                {
-                    type: "mission_coop",
-                    question: "지금 바로 왼쪽 사람의 어깨를 10초간 안마해주고 칭찬 한마디 건네세요!",
-                    timer: 15
-                },
-                {
-                    type: "vote_fun",
-                    question: "나중에 회사를 그만두고 유튜버로 대박날 것 같은 사람은?",
-                    options: ["참여자 전원"],
-                    timer: 15
-                },
-                // Added
-                { type: "vote_praise", question: "오늘 워크숍 열정왕은 누구?", options: ["참여자 전원"], timer: 15 },
-                { type: "vote_praise", question: "업무 칼답장 스피드 레이서는?", options: ["참여자 전원"], timer: 15 },
-                { type: "vote_praise", question: "우리 팀 공식 쩝쩝박사(맛집 전문가)는?", options: ["참여자 전원"], timer: 15 },
-                { type: "mission_action", question: "팀원 전체가 일어나서 '파이팅' 구호 외치기! (3초 안에)", timer: 10 },
-                { type: "mission_coop", question: "팀원 칭찬 릴레이 시작! (끊키면 벌칙)", timer: 60 },
+                { type: "balance_love", question: "첫 인사 타이밍은?", options: ["들어가자마자 인사", "눈 마주치면 인사"], timer: 10 },
+                { type: "balance_love", question: "선호하는 자리 위치?", options: ["주목받는 중앙", "관찰하는 끝쪽"], timer: 10 },
+                { type: "balance_love", question: "선호하는 대화 주제?", options: ["가볍고 즐거운 대화", "깊고 진지한 대화"], timer: 10 },
+                { type: "balance_love", question: "편한 말투는?", options: ["예의 바른 존댓말", "친근한 반말/편한말"], timer: 10 },
+                { type: "balance_love", question: "이성의 호감 포인트?", options: ["세심한 매너", "유쾌한 유머 감각"], timer: 10 },
+                { type: "balance_love", question: "리액션 스타일?", options: ["크게 호응 (물개박수)", "조용히 경청 (끄덕끄덕)"], timer: 10 },
+                { type: "balance_love", question: "대화가 끊겼을 때?", options: ["새로운 질문 던지기", "자기소개/화제 전환"], timer: 10 },
+                { type: "balance_love", question: "대화 방식 선호?", options: ["다 같이 왁자지껄", "1:1 소규모 대화"], timer: 10 },
+                { type: "balance_love", question: "메뉴 고를 때?", options: ["실패 없는 무난한 메뉴", "새로운 도전 메뉴"], timer: 10 },
+                { type: "balance_love", question: "술 한잔?", options: ["분위기 타게 한잔!", "술 없이도 OK (무알콜)"], timer: 10 },
+                { type: "balance_love", question: "단체 사진 촬영?", options: ["추억이니 한 장!", "사진은 부끄러워..."], timer: 10 },
+                { type: "balance_love", question: "연락처 교환 후?", options: ["단톡방 먼저 개설", "마음에 드는 사람 따로"], timer: 10 },
+                { type: "balance_love", question: "대화 속도?", options: ["빠른 티키타카", "천천히 여유롭게"], timer: 10 },
+                { type: "balance_love", question: "자기소개 스타일?", options: ["임팩트 있게 짧게", "자세하게 길게"], timer: 10 },
+                { type: "balance_love", question: "낯가림 해제?", options: ["만나자마자 해제", "시간이 좀 필요해"], timer: 10 },
+                { type: "balance_love", question: "대화 리드?", options: ["내가 리드하는 편", "상대방이 리드해주길"], timer: 10 },
+                { type: "balance_love", question: "마무리 멘트?", options: ["다음에 또 봐요!", "조심히 들어가세요!"], timer: 10 },
+                { type: "balance_love", question: "다음 약속?", options: ["헤어지기 전에 바로", "나중에 천천히"], timer: 10 },
+                { type: "balance_love", question: "공통점 찾기?", options: ["적극적으로 빨리 찾기", "천천히 알아가기"], timer: 10 },
+                { type: "balance_love", question: "분위기 선호?", options: ["밝고 에너지 넘치는", "차분하고 진솔한"], timer: 10 },
+                { type: "balance_love", question: "대화 비중?", options: ["주로 듣는 편 (경청)", "주로 말하는 편 (주도)"], timer: 10 },
+                { type: "balance_love", question: "모임 후기 공유?", options: ["끝나고 바로 공유", "나중에 생각나면"], timer: 10 },
+
+                { type: "vote_image", question: "오늘 대화를 가장 잘 이끌 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "질문을 가장 센스 있게 잘할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "배려심이 가장 깊어 보이는 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "가장 유머러스할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "리액션이 가장 혜자일 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "오늘의 메뉴 선정을 가장 잘할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "오늘의 베스트 드레서(패션왕)는 누구?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "첫인상이 가장 호감이었던 사람은?", options: ["참여자 전원"], timer: 15 }
             ]
         },
         {
             id: "drinking",
-            title: "🍻 술자리 게임",
+            title: "🍻 술자리/회식",
             description: "텐션 UP! 벌칙과 밸런스가 난무하는 매운맛",
             games: [
-                {
-                    type: "balance_spicy",
-                    question: "100% 확률로 1억 받기 vs 50% 확률로 100억 받기 (실패시 0원)",
-                    options: ["무조건 1억", "인생 한방 100억"],
-                    timer: 5
-                },
-                {
-                    type: "roulette_punishment",
-                    question: "러시안 룰렛! 걸린 사람은 '건배사' 제창하고 원샷",
-                    options: ["랜덤 1인 지목"],
-                    timer: 10
-                },
-                {
-                    type: "vote_image",
-                    question: "취하면 가장 먼저 집에 갈 것 같은(혹은 흑역사 생성할) 사람은?",
-                    options: ["참여자 전원"],
-                    timer: 15
-                },
-                {
-                    type: "mission_action",
-                    question: "지금부터 3분간 영어 금지! (쓰는 순간 벌주)",
-                    timer: 180
-                },
-                // Added
-                { type: "balance_spicy", question: "통장 잔고 공개 vs 흑역사 사진 공개", options: ["잔고 공개", "흑역사 공개"], timer: 10 },
-                { type: "balance_spicy", question: "전 애인 이름 크게 외치기 vs 소주 원샷", options: ["이름 외치기", "소주 원샷"], timer: 5 },
-                { type: "mission_action", question: "지금 쓰고 있는 모자/안경 벗기 (안하면 한잔)", timer: 10 },
-                { type: "mission_action", question: "왼쪽 사람 칭찬 3가지 하기 (못하면 한잔)", timer: 20 },
-                { type: "vote_image", question: "가장 변태(?)일 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
-                { type: "vote_image", question: "오늘 집에 안 들어갈 것 같은 멤버는?", options: ["참여자 전원"], timer: 15 },
+                { type: "balance_spicy", question: "회식 시작은?", options: ["든든하게 밥 먼저", "신나게 술 먼저"], timer: 10 },
+                { type: "balance_spicy", question: "오늘의 안주 취향?", options: ["육즙 가득 고기", "신선한 해물"], timer: 10 },
+                { type: "balance_spicy", question: "선호하는 분위기?", options: ["시끌벅적 파티", "조용한 대화"], timer: 10 },
+                { type: "balance_spicy", question: "술 마시는 속도?", options: ["천천히 음미", "빠르게 텐션 업"], timer: 10 },
+                { type: "balance_spicy", question: "건배사 스타일?", options: ["짧고 굵게!", "재밌고 유쾌하게!"], timer: 10 },
+                { type: "balance_spicy", question: "술자리 업무 얘기?", options: ["절대 금지 (퇴근했잖아)", "조금은 OK (공감대)"], timer: 10 },
+                { type: "balance_spicy", question: "자리 이동?", options: ["여기저기 옮겨다니기", "내 자리는 고정석"], timer: 10 },
+                { type: "balance_spicy", question: "2차 갈까 말까?", options: ["무조건 가야지!", "깔끔하게 1차만"], timer: 10 },
+                { type: "balance_spicy", question: "노래방 가면?", options: ["내가 가수다 (부르기)", "관객 모드 (듣기)"], timer: 10 },
+                { type: "balance_spicy", question: "술자리 게임?", options: ["게임 좋아! (술게임)", "대화 좋아! (토크)"], timer: 10 },
+                { type: "balance_spicy", question: "단체 사진?", options: ["남는 건 사진뿐!", "사진은 패스~"], timer: 10 },
+                { type: "balance_spicy", question: "안주 주문?", options: ["메인 메뉴 하나 집중", "이것저것 다양하게"], timer: 10 },
+                { type: "balance_spicy", question: "선호 주종?", options: ["시원한 소맥/맥주", "달달한 하이볼/칵테일"], timer: 10 },
+                { type: "balance_spicy", question: "마무리 시간?", options: ["적당히 놀고 귀가", "끝까지 달린다 (막차/첫차)"], timer: 10 },
+                { type: "balance_spicy", question: "귀가 스타일?", options: ["쿨하게 각자 귀가", "방향 같으면 같이"], timer: 10 },
+                { type: "balance_spicy", question: "다음 날 해장은?", options: ["늦잠으로 체력 충전", "해장국/산책으로 회복"], timer: 10 },
+                { type: "balance_spicy", question: "해장 메뉴 픽?", options: ["얼큰/시원한 국물", "달달/느끼한 음식"], timer: 10 },
+                { type: "balance_spicy", question: "다음 날 일정?", options: ["집콕 휴식 (약속 X)", "가벼운 외출/약속"], timer: 10 },
+                { type: "balance_spicy", question: "회식의 목적?", options: ["맛있는 음식 먹기", "사람들과 친목 도모"], timer: 10 },
+                { type: "balance_spicy", question: "술 강요 없는 분위기?", options: ["완전 환영!", "그래도 조금은 마셔야..."], timer: 10 },
+                { type: "balance_spicy", question: "헤어질 때 인사?", options: ["고생했어! (격려)", "조심히 가요! (배려)"], timer: 10 },
+                { type: "balance_spicy", question: "회식 후 단톡방?", options: ["사진 공유/후기 남김", "조용히 확인만 함"], timer: 10 },
+
+                { type: "vote_image", question: "오늘 건배사를 가장 잘할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "메뉴 주문을 센스 있게 잘할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "오늘 분위기를 가장 잘 띄울 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "맛있는 안주를 기가 막히게 고를 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "노래방에서 첫 곡을 시원하게 뽑을 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "술게임 룰을 가장 잘 알고 있을 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "집에 가는 길을 가장 잘 챙겨줄 것 같은 든든한 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "알고 보니 헬스 고인물(운동광)일 것 같은 사람은?", options: ["참여자 전원"], timer: 15 }
+            ]
+        },
+        {
+            id: "crewmode",
+            title: "🔥 크루모드(동호회,모임)",
+            description: "팀워크를 다지고 칭찬으로 훈훈하게 마무리",
+            games: [
+                { type: "balance_light", question: "첫 모임 자기소개?", options: ["짧고 굵게 (이름/직업만)", "자세하게 (TMI 대방출)"], timer: 10 },
+                { type: "balance_light", question: "선호하는 활동?", options: ["활동적인 운동/액티비티", "정적인 문화/예술 관람"], timer: 10 },
+                { type: "balance_light", question: "정모 참여 빈도?", options: ["매주 참여 (개근상)", "시간 날 때 가끔 (자유)"], timer: 10 },
+                { type: "balance_light", question: "번개 모임(즉흥)?", options: ["언제든 환영! (지금?)", "계획된 만남이 좋아"], timer: 10 },
+                { type: "balance_light", question: "회비 운영 방식?", options: ["회비 걷어서 운영", "그때그때 더치페이"], timer: 10 },
+                { type: "balance_light", question: "역할 분담?", options: ["하고 싶어서 자원!", "정해주는 게 편해"], timer: 10 },
+                { type: "balance_light", question: "단톡방 스타일?", options: ["활발한 수다방", "필요한 공지 위주"], timer: 10 },
+                { type: "balance_light", question: "신입 멤버 케어?", options: ["적극적으로 챙겨주기", "자연스럽게 어울리게 두기"], timer: 10 },
+                { type: "balance_light", question: "모임 후 뒷풀이?", options: ["뒷풀이는 필수!", "깔끔하게 활동만 끝!"], timer: 10 },
+                { type: "balance_light", question: "활동 사진 공유?", options: ["적극 공유 (남는 건 사진)", "공유는 부담스러워"], timer: 10 },
+                { type: "balance_light", question: "모임 장소 거리?", options: ["가까운 동네가 최고", "멀어도 핫플이라면 OK"], timer: 10 },
+                { type: "balance_light", question: "선호 시간대?", options: ["여유로운 주말", "퇴근 후 평일 저녁"], timer: 10 },
+                { type: "balance_light", question: "모임 규칙?", options: ["체계적인 규칙 필요", "자유로운 분위기 선호"], timer: 10 },
+                { type: "balance_light", question: "새로운 활동 도전?", options: ["무조건 도전! (New!)", "익숙한 게 좋아"], timer: 10 },
+                { type: "balance_light", question: "리더의 존재?", options: ["리더가 이끌어줘야 해", "모두가 같이 만들어가야 해"], timer: 10 },
+                { type: "balance_light", question: "실력 차이?", options: ["상관없음 (즐기는 게 우선)", "비슷한 실력끼리 (성장)"], timer: 10 },
+                { type: "balance_light", question: "친해지는 속도?", options: ["만나자마자 바로 절친", "시간을 두고 천천히"], timer: 10 },
+                { type: "balance_light", question: "공지 확인?", options: ["올라오면 바로 확인", "나중에 몰아서 확인"], timer: 10 },
+                { type: "balance_light", question: "준비물 챙기기?", options: ["전날 미리 준비", "당일 급하게 준비"], timer: 10 },
+                { type: "balance_light", question: "비용 정산?", options: ["칼같이 1/N 정산", "대표가 쏘거나 뭉뚱그려"], timer: 10 },
+                { type: "balance_light", question: "다음 일정?", options: ["헤어지면서 바로 잡기", "단톡방 투표로 결정"], timer: 10 },
+                { type: "balance_light", question: "모임 이름?", options: ["우리만의 이름 짓기", "그냥 모이면 되지"], timer: 10 },
+
+                { type: "vote_image", question: "번개 모임을 가장 자주 제안할 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "정모에 빠지지 않고 나올 것 같은 성실한 멤버는?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "공지사항을 가장 꼼꼼하게 챙길 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "새로운 멤버가 오면 가장 잘 챙겨줄 것 같은 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "회비/비용 정산을 가장 깔끔하게 할 것 같은 총무감은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "금손! 사진을 가장 잘 찍어줄 것 같은 인생샷 제조기는?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "활동을 앞장서서 리드할 것 같은 리더십 있는 사람은?", options: ["참여자 전원"], timer: 15 },
+                { type: "vote_image", question: "우리 모임의 분위기 메이커가 될 것 같은 사람은?", options: ["참여자 전원"], timer: 15 }
+            ]
+        },
+        {
+            id: "common",
+            title: "🎲 공통 행동게임",
+            description: "모두 함께 즐기는 액션 미션과 벌칙!",
+            games: [
+                { type: "mission_action", question: "3분 동안 영어(알파벳/영단어) 사용 금지. 실수하면 즉시 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "3분 동안 누구 이름도 부르면 안 됨. 말하면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "4분 동안 휴대폰 만지면 벌칙. 알림 와도 참기. (벌칙: 한잔)", timer: 240 },
+                { type: "mission_action", question: "끝말잇기 1라운드. 2초 안에 못 잇거나 금칙어 말하면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "2분 안에 옆사람에게 '엄지척+눈인사' 하기. 못 하면 벌칙. (벌칙: 한잔)", timer: 120 },
+                { type: "mission_action", question: "3분 동안 누군가와 눈이 마주치면 반드시 가볍게 인사하기. 안 하면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "30초 동안 웃음/미소 금지. 웃으면 벌칙. (벌칙: 한잔)", timer: 30 },
+                { type: "mission_action", question: "시계방향으로 한 명씩 바로 옆 사람에게 칭찬 1개씩. 막히면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "진행자가 '하나 둘 셋' 하면 '둘'에만 손 들기. 틀리면 벌칙. (벌칙: 한잔)", timer: 120 },
+                { type: "mission_action", question: "3분 동안 존댓말/존대표현 금지(요/습니다/드릴게요 등). 말하면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "2분 동안 '와/헐/대박/미쳤다' 같은 감탄사 금지. 나오면 벌칙. (벌칙: 한잔)", timer: 120 },
+                { type: "mission_action", question: "1분 동안 질문 금지. 오직 '대답'만 가능. 질문하면 벌칙. (벌칙: 한잔)", timer: 60 },
+                { type: "mission_action", question: "다 같이 금칙어 1개 정하기(예: '진짜'). 3분 동안 말하면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "2분 동안 제스처(손동작) 크게 쓰지 않기. 들키면 벌칙. (벌칙: 한잔)", timer: 120 },
+                { type: "mission_action", question: "1~10 순서대로 '겹치지 않게' 한 명씩만 말하기. 겹치면 리셋, 3번 리셋 시 전원 벌칙. (벌칙: 한잔)", timer: 120 },
+                { type: "mission_action", question: "1분 동안 '안/못/싫어/별로' 같은 부정어 금지. 나오면 벌칙. (벌칙: 한잔)", timer: 60 },
+                { type: "mission_action", question: "3분 동안 질문 받으면 3초 안에 대답 시작. 늦으면 벌칙. (벌칙: 한잔)", timer: 180 },
+                { type: "mission_action", question: "1분 동안 칭찬 표현 금지(멋지다/좋다/예쁘다 등). 나오면 벌칙. (벌칙: 한잔)", timer: 60 },
+                { type: "mission_action", question: "1분 동안 대답 금지, 질문만 가능. 질문 못 하면 벌칙. (벌칙: 한잔)", timer: 60 },
+                { type: "mission_action", question: "3분 동안 한 손만 사용(컵/휴지/식기 등). 두 손 쓰면 벌칙. (벌칙: 한잔)", timer: 180 }
             ]
         }
     ]
