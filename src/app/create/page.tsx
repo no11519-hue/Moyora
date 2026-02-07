@@ -11,6 +11,8 @@ const CATEGORIES = [
     { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
     { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
     { id: 'crewmode', label: '크루모드(동호회)', emoji: '🔥', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
+    { id: 'retro7080', label: '응답하라 7080', emoji: '📼', desc: '추억의 동창회/동호회 토크 (공통게임X)' },
+    { id: 'goldenlife', label: '브라보 마이 라이프', emoji: '🌟', desc: '골든에이지 취향/건강/여행 토크 (공통게임X)' },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]['id'];

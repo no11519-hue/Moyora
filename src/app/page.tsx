@@ -146,4 +146,18 @@ const THEME_CARDS = [
     icon: "🔥",
     examples: ["우리 모임의 숨은 해결사는?", "가장 먼저 유튜버로 대박날 사람?"]
   },
+  {
+    id: "retro7080",
+    title: "응답하라 7080",
+    sub: "추억의 동창회",
+    icon: "📼",
+    examples: ["학창시절 추억은?", "첫사랑의 기억"]
+  },
+  {
+    id: "goldenlife",
+    title: "브라보 마이 라이프",
+    sub: "골든에이지 취향",
+    icon: "🌟",
+    examples: ["버킷리스트 뭐할래?", "건강 vs 지혜"]
+  },
 ];

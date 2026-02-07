@@ -12,6 +12,8 @@ interface GameState {
     currentUser: Participant | null;
     currentQuestion: Question | null;
 
+    isSeniorMode: boolean; // Derived from room.category
+
     setRoom: (room: Room) => void;
     setParticipants: (participants: Participant[]) => void;
     setCurrentUser: (user: Participant) => void;
@@ -24,10 +26,15 @@ export const useGameStore = create<GameState>((set) => ({
     participants: [],
     currentUser: null,
     currentQuestion: null,
+    isSeniorMode: false,
 
-    setRoom: (room) => set({ room }),
+    setRoom: (room) => {
+        const seniorThemes = ['retro7080', 'goldenlife'];
+        const isSenior = seniorThemes.includes(room.category);
+        set({ room, isSeniorMode: isSenior });
+    },
     setParticipants: (participants) => set({ participants }),
     setCurrentUser: (currentUser) => set({ currentUser }),
     setCurrentQuestion: (currentQuestion) => set({ currentQuestion }),
-    reset: () => set({ room: null, participants: [], currentUser: null, currentQuestion: null }),
+    reset: () => set({ room: null, participants: [], currentUser: null, currentQuestion: null, isSeniorMode: false }),
 }));
