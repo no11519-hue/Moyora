@@ -42,7 +42,7 @@ export const GAME_DATA: GameData = {
             ]
         },
         {
-            id: "dating",
+            id: "meeting",
             title: "💕 미팅/소개팅",
             description: "서로의 호감과 가치관을 은근슬쩍 확인하는 질문",
             games: [
@@ -119,7 +119,7 @@ export const GAME_DATA: GameData = {
         },
         {
             id: "crewmode",
-            title: "🔥 크루모드(동호회,모임)",
+            title: "⚡ 팀 빌딩/워크숍",
             description: "팀워크를 다지고 칭찬으로 훈훈하게 마무리",
             games: [
                 { type: "balance_light", question: "첫 모임 자기소개?", options: ["짧고 굵게 (이름/직업만)", "자세하게 (TMI 대방출)"], timer: 10 },
@@ -183,7 +183,7 @@ export const GAME_DATA: GameData = {
             ]
         },
         {
-            id: "retro7080",
+            id: "reply7080",
             title: "📼 응답하라 7080",
             description: "동창회/동호회 분위기의 추억 토크 테마",
             excludeCommon: true,
@@ -222,7 +222,7 @@ export const GAME_DATA: GameData = {
             ]
         },
         {
-            id: "goldenlife",
+            id: "bravo_life",
             title: "🌟 브라보 마이 라이프",
             description: "골든에이지 취향(건강/여행/배움/일상)을 가볍게 나누는 테마",
             excludeCommon: true,

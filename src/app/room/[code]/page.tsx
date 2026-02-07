@@ -111,41 +111,33 @@ export default function RoomPage() {
     // Subscription handles updates. 
     // This effect is reserved for other sync needs if any.
 
-
-    // Effect: Fetch Question when `room.current_question_id` changes
+    // Effect: Fetch Question from LOCAL JSON
     useEffect(() => {
         const fetchQuestion = async () => {
             if (room?.current_question_id) {
-                const { data } = await supabase
-                    .from('questions')
-                    .select('id, category, type, content, options, timer, created_at')
-                    .eq('id', room.current_question_id)
-                    .single();
+                // Look up game in LOCAL Data
+                // Dynamic import to avoid cycles if needed, but standard import is fine
+                const { findGameById } = await import('@/utils/gameLookup');
+                const localGame = findGameById(room.current_question_id);
 
-                if (data) {
-                    // Category Whitelist & Mapping
-                    let safeCategory = data.category;
-                    const allowed = new Set(["icebreaking", "dating", "drinking", "workshop", "crewmode"]);
-                    if (!allowed.has(safeCategory)) {
-                        console.warn(`Unknown category '${safeCategory}', mapping to 'workshop'`);
-                        safeCategory = 'workshop';
-                    }
-
-                    // Safe Object Construction
+                if (localGame) {
                     setCurrentQuestion({
-                        id: data.id,
-                        category: safeCategory,
-                        type: data.type,
-                        content: data.content,
-                        options: data.options,
-                        timer: data.timer,
-                        created_at: data.created_at
+                        id: localGame.id || room.current_question_id, // Ensure ID exists
+                        category: localGame.category,
+                        type: localGame.type,
+                        content: localGame.question,
+                        options: localGame.options || null, // Handle undefined
+                        timer: localGame.timer,
+                        created_at: new Date().toISOString() // Mock
                     });
                 } else {
-                    setCurrentQuestion(null);
+                    console.warn(`Game not found in local pack: ${room.current_question_id}`);
+                    // Fallback: If not found, maybe invalid ID or custom game? 
+                    // Render Empty or Error
+                    // setCurrentQuestion(null);
                 }
 
-                // Also fetch votes for this question
+                // Still fetch votes from DB (Votes are user data, not static)
                 const { data: vData } = await supabase
                     .from('votes')
                     .select('*')

@@ -16,6 +16,7 @@ export type GameType =
     | 'mission_action';
 
 export interface GameItem {
+    id?: string;
     type: GameType;
     question: string;
     options?: string[];

@@ -8,11 +8,11 @@ import { ArrowLeft, Check, Loader2, Info } from 'lucide-react';
 
 const CATEGORIES = [
     { id: 'icebreaking', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
-    { id: 'dating', label: '소개팅/미팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
+    { id: 'meeting', label: '미팅/소개팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
     { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
-    { id: 'crewmode', label: '크루모드(동호회)', emoji: '🔥', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
-    { id: 'retro7080', label: '응답하라 7080', emoji: '📼', desc: '추억의 동창회/동호회 토크 (공통게임X)' },
-    { id: 'goldenlife', label: '브라보 마이 라이프', emoji: '🌟', desc: '골든에이지 취향/건강/여행 토크 (공통게임X)' },
+    { id: 'crewmode', label: '팀 빌딩/워크숍', emoji: '⚡', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
+    { id: 'reply7080', label: '응답하라 7080', emoji: '📼', desc: '추억의 동창회/동호회 토크 (공통게임X)' },
+    { id: 'bravo_life', label: '브라보 마이 라이프', emoji: '🌟', desc: '골든에이지 취향/건강/여행 토크 (공통게임X)' },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]['id'];
@@ -24,15 +24,21 @@ function CreateRoomContent() {
     // Initialize state from URL param 'theme'
     const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(() => {
         const theme = searchParams.get('theme');
+        if (theme === 'dating') return 'meeting';
+        if (theme === 'retro7080') return 'reply7080';
+        if (theme === 'goldenlife') return 'bravo_life';
+
         const isValid = CATEGORIES.some(c => c.id === theme);
-        return isValid ? (theme as CategoryId) : null;
+        return isValid ? (theme as CategoryId) : 'icebreaking';
     });
 
     const [nickname, setNickname] = useState('');
     const [isCreating, setIsCreating] = useState(false);
 
     const trimmedNickname = useMemo(() => nickname.trim(), [nickname]);
-    const isValid = Boolean(selectedCategory) && trimmedNickname.length > 0;
+    const nicknameRegex = /^[가-힣a-zA-Z0-9 ]+$/;
+    const isNicknameValid = (trimmedNickname.length >= 1 && trimmedNickname.length <= 8 && nicknameRegex.test(trimmedNickname));
+    const isValid = Boolean(selectedCategory) && isNicknameValid;
 
     const handleCreate = async () => {
         if (!isValid || isCreating || !selectedCategory) return;
@@ -106,8 +112,8 @@ function CreateRoomContent() {
                             onChange={(e) => {
                                 setNickname(e.target.value);
                             }}
-                            placeholder="MC 닉네임 정하기"
-                            className={`w-full h-16 px-6 rounded-2xl bg-gray-50 border-2 text-lg font-bold text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-0 outline-none transition-all shadow-sm ${nickname.length > 0 && nickname.trim().length < 2
+                            placeholder="MC 닉네임 정하기 (1~8글자)"
+                            className={`w-full h-16 px-6 rounded-2xl bg-gray-50 border-2 text-lg font-bold text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-0 outline-none transition-all shadow-sm ${nickname.length > 0 && !isNicknameValid
                                 ? 'border-red-300 focus:border-red-500 bg-red-50'
                                 : 'border-gray-200 focus:border-black'
                                 }`}
@@ -116,11 +122,11 @@ function CreateRoomContent() {
                             autoCapitalize="off"
                             autoCorrect="off"
                             spellCheck={false}
-                            maxLength={12}
+                            maxLength={8} // Constraint
                         />
 
-                        {nickname.length > 0 && nickname.trim().length < 2 && (
-                            <p className="text-red-500 text-xs font-medium px-2 animate-pulse">🚨 닉네임은 2글자 이상 입력해주세요!</p>
+                        {nickname.length > 0 && !isNicknameValid && (
+                            <p className="text-red-500 text-xs font-medium px-2 animate-pulse">🚨 닉네임은 1~8글자(한글/영문/숫자)로 입력해 주세요</p>
                         )}
                     </div>
 
@@ -184,6 +190,13 @@ function CreateRoomContent() {
             {/* Bottom CTA */}
             <div className="shrink-0 border-t border-gray-200 bg-white px-4 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))]">
                 <div className="mx-auto w-full max-w-[480px]">
+                    {!isValid && (
+                        <div className="text-center mb-2">
+                            <p className="inline-block px-3 py-1 bg-gray-800 text-white text-xs rounded-full animate-bounce">
+                                ☝️ 닉네임을 입력해야 시작할 수 있어요
+                            </p>
+                        </div>
+                    )}
                     <button
                         type="button"
                         onClick={handleCreate}

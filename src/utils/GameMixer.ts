@@ -122,7 +122,10 @@ export class GameMixer {
         const random = Math.random();
 
         // Ratio Logic
-        if (currentThemeId === 'drinking' || currentThemeId === 'party') {
+        // Senior Themes: 100% Theme (No Common)
+        if (['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId)) {
+            useTheme = true;
+        } else if (currentThemeId === 'drinking' || currentThemeId === 'party') {
             // 70% Theme / 30% Common
             if (random > 0.7) useTheme = false;
         } else {
@@ -131,9 +134,13 @@ export class GameMixer {
         }
 
         // 2. Select Candidate Pool
-        // Prefer the chosen pool, but fallback if empty
         let primaryPool = useTheme ? this.validThemePool : this.validCommonPool;
         let secondaryPool = useTheme ? this.validCommonPool : this.validThemePool;
+
+        // Special restriction for Senior Themes: Secondary Pool (Common) is BANNED
+        if (['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId)) {
+            secondaryPool = []; // Empty the fallback pool effectively
+        }
 
         // 3. Filter Candidates
         let candidates = this.filterCandidates(primaryPool, playerCount);
@@ -143,10 +150,15 @@ export class GameMixer {
             candidates = this.filterCandidates(secondaryPool, playerCount);
         }
 
-        // Final fallback: if absolutely nothing, clear history and try again from all
+        // Final fallback: if absolutely nothing
         if (candidates.length === 0) {
+            // If Senior theme, only recycle Theme Pool
+            const isSenior = ['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId);
+
+            // Clear history to allow repeats
             this.history = [];
-            const all = [...this.validThemePool, ...this.validCommonPool];
+
+            const all = isSenior ? [...this.validThemePool] : [...this.validThemePool, ...this.validCommonPool];
             candidates = this.filterCandidates(all, playerCount);
         }
 

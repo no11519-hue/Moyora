@@ -73,61 +73,30 @@ export const useTurnStore = create<TurnState>()(
                 const nextIdx = currentIndex + 1;
 
                 if (nextIdx >= queue.length) {
-                    // Turn Ended
                     return false;
                 }
 
                 const game = queue[nextIdx];
+                const gameId = game.id; // Local JSON ID
 
-                // 1. Sync to Supabase via Admin API (to bypass RLS)
-                let questionUUID = '';
-                try {
-                    const payload = {
-                        id: game.id, // Sends 'IB_Q01' (code)
-                        category: game.theme,
-                        type: game.type,
-                        content: game.prompt,
-                        timer: game.timeSec,
-                        options: game.type === 'C' ? JSON.stringify([game.A, game.B]) : null
-                    };
-
-                    const syncRes = await fetch('/api/game/sync', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const syncData = await syncRes.json();
-
-                    if (!syncRes.ok) {
-                        console.error("Sync API Error:", syncData);
-
-                        if (syncData.code === '22P02') {
-                            alert(`[오류] ID 포맷 불일치 (Code vs UUID). 개발자 확인 필요.`);
-                        } else if (syncRes.status === 500 && syncData.error?.includes('Missing')) {
-                            alert(`[설정 오류] Service Role Key 누락.`);
-                        } else {
-                            alert(`질문 동기화 실패: ${syncData.error}`);
-                        }
-                        return false;
-                    }
-
-                    questionUUID = syncData.id; // API returns the UUID
-
-                } catch (e: any) {
-                    console.error("Sync Exception", e);
-                    alert(`질문 동기화 중 예외: ${e.message}`);
+                if (!gameId) {
+                    console.error("Game ID is missing");
                     return false;
                 }
 
-                // 2. Update Room (Client should have permission to update room)
+                // 2. Update Room directly with Game ID from Local JSON
+                // The 'rooms' table 'current_question_id' column must accept this string ID.
+                // Constraint: If 'current_question_id' is a foreign key to 'questions' table (UUID), this will fail if we don't drop that FK.
+                // Assuming "Stop Fetching Content from Supabase" implies we are breaking that link/FK dependence.
+                // For now, try to update. If it fails due to FK, user receives error but they asked to "Stop Fetching".
+
                 const { error: roomError } = await supabase.from('rooms').update({
-                    current_question_id: questionUUID, // Use UUID from DB
+                    current_question_id: gameId,
                     status: 'playing',
                 } as any).eq('id', roomId);
 
                 if (roomError) {
-                    console.error("Room Update Error:", roomError);
+                    console.error("Room Update Error (FK violation likely if questions table used):", roomError);
                     alert(`방 업데이트 실패: ${roomError.message}`);
                     return false;
                 }

@@ -41,12 +41,12 @@ export default function Home() {
           </Link>
 
           {/* Trust Badge */}
-          <div className="flex items-center gap-3 text-[10px] text-neutral-400 mt-2">
-            <span className="flex items-center gap-1">💸 완전 무료</span>
-            <span className="w-px h-2 bg-neutral-200"></span>
-            <span className="flex items-center gap-1">🚫 광고 없음</span>
-            <span className="w-px h-2 bg-neutral-200"></span>
-            <span className="flex items-center gap-1">🔒 정보 저장 X</span>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-neutral-400 mt-2 tracking-wide">
+            <span>완전 무료</span>
+            <span>·</span>
+            <span>광고 없음</span>
+            <span>·</span>
+            <span>정보 저장 X</span>
           </div>
         </section>
 
@@ -60,7 +60,7 @@ export default function Home() {
             <h2 className="text-[15px] font-bold text-neutral-800">인기 테마</h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-3 overflow-y-auto pb-4">
             {THEME_CARDS.map((theme, i) => (
               <Link
                 key={i}
@@ -96,16 +96,14 @@ export default function Home() {
         </section>
 
         {/* Footer with Policy Links */}
-        <footer className="mt-4 pt-4 border-t border-neutral-100 text-center pb-4">
-          <p className="text-[10px] text-neutral-400 mb-2">
+        <footer className="mt-auto pt-4 border-t border-neutral-100 text-center pb-8">
+          <p className="text-[10px] text-neutral-400 mb-3">
             © 2026 Moyora. Simple Ice-breaking Service.
           </p>
-          <div className="flex justify-center gap-3 text-[10px] text-neutral-400">
-            <span className="cursor-not-allowed opacity-50">이용약관</span>
-            <span className="w-px h-2 bg-neutral-200 my-auto"></span>
-            <span className="cursor-not-allowed opacity-50">개인정보처리방침</span>
-            <span className="w-px h-2 bg-neutral-200 my-auto"></span>
-            <a href="mailto:support@moyora.com" className="hover:text-neutral-600 transition-colors">문의하기</a>
+          <div className="flex justify-center flex-wrap gap-4 text-[11px] text-neutral-500 font-medium">
+            <button type="button" className="min-h-[44px] flex items-center px-2 cursor-not-allowed opacity-50">이용약관</button>
+            <button type="button" className="min-h-[44px] flex items-center px-2 cursor-not-allowed opacity-50">개인정보처리방침</button>
+            <a href="mailto:support@moyora.com" className="min-h-[44px] flex items-center px-2 hover:text-neutral-900 transition-colors">문의하기</a>
           </div>
           <p className="mt-2 text-[9px] text-neutral-300">
             모요라는 대화 내용을 서버에 영구 저장하지 않습니다.
@@ -126,10 +124,10 @@ const THEME_CARDS = [
     examples: ["학창시절 선생님 몰래 딴짓왕은?", "평생 라면 vs 평생 치킨"]
   },
   {
-    id: "dating",
+    id: "meeting",
     title: "미팅/소개팅",
     sub: "설레는 탐색전",
-    icon: "💕",
+    icon: "💘",
     examples: ["첫인상이 내 이상형인 사람은?", "연락 문제: 잠수 vs 1분마다 톡"]
   },
   {
@@ -141,20 +139,20 @@ const THEME_CARDS = [
   },
   {
     id: "crewmode",
-    title: "크루모드(동호회)",
+    title: "팀 빌딩/워크숍",
     sub: "훈훈한 마무리",
-    icon: "🔥",
+    icon: "⚡",
     examples: ["우리 모임의 숨은 해결사는?", "가장 먼저 유튜버로 대박날 사람?"]
   },
   {
-    id: "retro7080",
+    id: "reply7080",
     title: "응답하라 7080",
     sub: "추억의 동창회",
     icon: "📼",
     examples: ["학창시절 추억은?", "첫사랑의 기억"]
   },
   {
-    id: "goldenlife",
+    id: "bravo_life",
     title: "브라보 마이 라이프",
     sub: "골든에이지 취향",
     icon: "🌟",

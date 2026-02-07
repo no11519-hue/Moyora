@@ -49,11 +49,10 @@ export async function GET(request: Request) {
         for (let i = 0; i < 12; i++) {
             const game = mixerInstance!.getNextGame(playerCount, themeId);
             if (game) {
-                // Add an ID if missing (GameItem usually doesn't have ID in gameData.ts)
-                // We'll use a simple hash or random ID.
+                const id = game.id || Buffer.from(game.question).toString('base64').substring(0, 8);
                 const gameWithId = {
                     ...game,
-                    id: game.question ? Buffer.from(game.question).toString('base64').substring(0, 8) : Math.random().toString(36).substring(7),
+                    id,
                     theme: themeId // Tag with current theme for context
                 };
                 turnData.push(gameWithId);
