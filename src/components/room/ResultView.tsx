@@ -7,22 +7,43 @@ import { useState, useEffect, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { Play, Download, Share2, Crown, Trophy } from 'lucide-react';
 import { useTurnStore } from '@/store/turnStore';
+import { Database } from '@/types/database.types';
+
+type Vote = Database['public']['Tables']['votes']['Row'];
+
+interface RoomMessage {
+    id: string;
+    room_id: string;
+    nickname: string;
+    message: string;
+    created_at: string;
+}
+
+interface GameAction {
+    id: string;
+    room_id: string;
+    question_id: string;
+    voter_id: string;
+    target_value: string;
+    action_type: string;
+    created_at: string;
+}
 
 interface ResultViewProps {
-    votes: any[];
+    votes: Vote[];
 }
 
 export default function ResultView({ votes }: ResultViewProps) {
     const { room, participants, currentUser, currentQuestion } = useGameStore();
     const [isNextLoading, setIsNextLoading] = useState(false);
-    const [missionMessages, setMissionMessages] = useState<any[]>([]);
+    const [missionMessages, setMissionMessages] = useState<RoomMessage[]>([]);
 
     const isMissionType = currentQuestion?.type?.startsWith('mission_') ||
         currentQuestion?.type?.startsWith('talk_') ||
         currentQuestion?.type === 'Q';
 
     const isFreeVoteType = ['vote_image', 'vote_praise'].includes(currentQuestion?.type || '');
-    const [freeVotes, setFreeVotes] = useState<any[]>([]);
+    const [freeVotes, setFreeVotes] = useState<GameAction[]>([]);
 
     // Fetch Messages for Mission Type
     useEffect(() => {
@@ -33,7 +54,7 @@ export default function ResultView({ votes }: ResultViewProps) {
                 .eq('question_id', currentQuestion.id)
                 .order('created_at', { ascending: true })
                 .then(({ data }) => {
-                    if (data) setMissionMessages(data);
+                    if (data) setMissionMessages(data as unknown as RoomMessage[]);
                 });
         }
     }, [isMissionType, room?.id, currentQuestion?.id]);
@@ -46,7 +67,7 @@ export default function ResultView({ votes }: ResultViewProps) {
                 .eq('room_id', room.id)
                 .eq('question_id', currentQuestion.id)
                 .then(({ data }) => {
-                    if (data) setFreeVotes(data);
+                    if (data) setFreeVotes(data as unknown as GameAction[]);
                 });
         }
     }, [isFreeVoteType, room?.id, currentQuestion?.id]);
@@ -155,7 +176,7 @@ export default function ResultView({ votes }: ResultViewProps) {
                 // User requirement: "3 rounds ended -> Declare Turn End -> Ready for Next Turn"
                 // Ideally we show a 'Turn End' summary, but here we just auto-start new turn for seamless play.
 
-                await fetchTurn(); // Fetch new 12 games
+                await fetchTurn(room.category, participants.length); // Fetch new 12 games
                 success = await playNextGame(room.id);
 
                 if (!success) {
