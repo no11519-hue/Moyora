@@ -11,6 +11,7 @@ interface GameState {
     participants: Participant[];
     currentUser: Participant | null;
     currentQuestion: Question | null;
+    votes: any[]; // Or Database Row type
 
     isSeniorMode: boolean; // Derived from room.category
 
@@ -18,6 +19,7 @@ interface GameState {
     setParticipants: (participants: Participant[]) => void;
     setCurrentUser: (user: Participant) => void;
     setCurrentQuestion: (question: Question | null) => void;
+    setVotes: (votes: any[]) => void;
     reset: () => void;
 }
 
@@ -26,15 +28,17 @@ export const useGameStore = create<GameState>((set) => ({
     participants: [],
     currentUser: null,
     currentQuestion: null,
+    votes: [], // Store standard votes globally
     isSeniorMode: false,
 
     setRoom: (room) => {
-        const seniorThemes = ['retro7080', 'goldenlife'];
+        const seniorThemes = ['reply7080', 'bravo_life', 'retro7080', 'goldenlife'];
         const isSenior = seniorThemes.includes(room.category);
         set({ room, isSeniorMode: isSenior });
     },
     setParticipants: (participants) => set({ participants }),
     setCurrentUser: (currentUser) => set({ currentUser }),
     setCurrentQuestion: (currentQuestion) => set({ currentQuestion }),
-    reset: () => set({ room: null, participants: [], currentUser: null, currentQuestion: null, isSeniorMode: false }),
+    setVotes: (votes) => set({ votes }),
+    reset: () => set({ room: null, participants: [], currentUser: null, currentQuestion: null, votes: [], isSeniorMode: false }),
 }));

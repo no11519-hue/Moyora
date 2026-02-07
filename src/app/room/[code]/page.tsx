@@ -17,11 +17,11 @@ export default function RoomPage() {
         room, setRoom,
         participants, setParticipants,
         currentUser, setCurrentUser,
-        currentQuestion, setCurrentQuestion
+        currentQuestion, setCurrentQuestion,
+        votes, setVotes
     } = useGameStore();
 
     const [isLoading, setIsLoading] = useState(true);
-    const [votes, setVotes] = useState<any[]>([]);
 
     // 1. Initial Data Fetch
     useEffect(() => {
@@ -97,7 +97,9 @@ export default function RoomPage() {
                 'postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'votes', filter: `room_id=eq.${room.id}` },
                 (payload) => {
-                    setVotes(prev => [...prev, payload.new]);
+                    // Access current state directly to avoid dependency issues
+                    const currentVotes = useGameStore.getState().votes;
+                    setVotes([...currentVotes, payload.new]);
                 }
             )
             .subscribe();
@@ -132,9 +134,13 @@ export default function RoomPage() {
                     });
                 } else {
                     console.warn(`Game not found in local pack: ${room.current_question_id}`);
-                    // Fallback: If not found, maybe invalid ID or custom game? 
-                    // Render Empty or Error
-                    // setCurrentQuestion(null);
+                    // RECOVERY LOGIC for Stale IDs
+                    if (currentUser?.is_host && room.status !== 'waiting') {
+                        console.warn("Attempting auto-skip of stale game due to ID mismatch...");
+                        import('@/store/turnStore').then(({ useTurnStore }) => {
+                            useTurnStore.getState().playNextGame(room.id);
+                        });
+                    }
                 }
 
                 // Still fetch votes from DB (Votes are user data, not static)

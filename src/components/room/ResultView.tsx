@@ -59,7 +59,7 @@ export default function ResultView({ votes }: ResultViewProps) {
         }
     }, [isMissionType, room?.id, currentQuestion?.id]);
 
-    // Fetch Free Votes for Free Vote Type
+    // Fetch Free Votes for Free Vote Type (Existing)
     useEffect(() => {
         if (isFreeVoteType && room?.id && currentQuestion?.id) {
             supabase.from('game_actions' as any)
@@ -71,6 +71,22 @@ export default function ResultView({ votes }: ResultViewProps) {
                 });
         }
     }, [isFreeVoteType, room?.id, currentQuestion?.id]);
+
+    // NEW: Fetch Standard Votes ensures we have latest data even if Subscription missed
+    // This solves "Results not showing" if realtime is flaky
+    const { setVotes: setStoreVotes } = useGameStore();
+    useEffect(() => {
+        if (!isFreeVoteType && room?.id && currentQuestion?.id) {
+            supabase.from('votes')
+                .select('*')
+                .eq('room_id', room.id)
+                .eq('question_id', currentQuestion.id)
+                .then(({ data }) => {
+                    if (data) setStoreVotes(data);
+                });
+        }
+    }, [isFreeVoteType, room?.id, currentQuestion?.id, setStoreVotes]);
+
 
     // Parse options
     let options: string[] = [];
