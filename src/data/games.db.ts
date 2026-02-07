@@ -70,7 +70,7 @@ export const GAME_DB: Game[] = [
     { id: "DM_Q03", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "데이트픽 3~4글자!" },
     { id: "DM_Q04", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "대화톤 3~4글자!" },
     { id: "DM_Q05", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "연락톤 3~4글자!" },
-    { id: "DM_Q06", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "첫멘트 3~4글자!" },
+    { id: "DM_Q06", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "첫인사 건네기! (자유롭게)" },
     { id: "DM_Q07", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "나의무드 3~4글자!" },
     { id: "DM_Q08", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "선물픽 3~4글자!" },
     { id: "DM_Q09", theme: "소개팅·미팅", type: "Q", timeSec: 20, prompt: "취향태그 3~4글자!" },
