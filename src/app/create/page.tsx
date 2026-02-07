@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Check, Loader2, Info } from 'lucide-react';
@@ -15,19 +15,22 @@ const CATEGORIES = [
 
 type CategoryId = (typeof CATEGORIES)[number]['id'];
 
-export default function CreateRoomPage() {
+function CreateRoomContent() {
     const router = useRouter();
-    const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
+    const searchParams = useSearchParams();
+
+    // Initialize state from URL param 'theme'
+    const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(() => {
+        const theme = searchParams.get('theme');
+        const isValid = CATEGORIES.some(c => c.id === theme);
+        return isValid ? (theme as CategoryId) : null;
+    });
+
     const [nickname, setNickname] = useState('');
     const [isCreating, setIsCreating] = useState(false);
 
     const trimmedNickname = useMemo(() => nickname.trim(), [nickname]);
     const isValid = Boolean(selectedCategory) && trimmedNickname.length > 0;
-
-    const selectedDesc = useMemo(() => {
-        if (!selectedCategory) return null;
-        return CATEGORIES.find((c) => c.id === selectedCategory)?.desc ?? null;
-    }, [selectedCategory]);
 
     const handleCreate = async () => {
         if (!isValid || isCreating || !selectedCategory) return;
@@ -84,7 +87,6 @@ export default function CreateRoomPage() {
             </header>
 
             {/* Content */}
-            {/* ✅ 핵심: flex-1 + min-h-0 => 아래 CTA가 화면 밖으로 밀리지 않음 */}
             <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 pt-3 pb-3">
                 {/* Step 1 */}
                 <section className="mb-4">
@@ -95,19 +97,30 @@ export default function CreateRoomPage() {
                         진행자 닉네임
                     </label>
 
-                    <input
-                        type="text"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
-                        placeholder="MC 닉네임 정하기"
-                        className="w-full h-16 px-6 rounded-2xl bg-gray-50 border-2 border-gray-200 text-lg font-bold text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-black focus:ring-0 outline-none transition-all shadow-sm"
-                        autoFocus
-                        inputMode="text"
-                        autoCapitalize="off"
-                        autoCorrect="off"
-                        spellCheck={false}
-                        maxLength={20}
-                    />
+                    <div className="flex flex-col gap-1">
+                        <input
+                            type="text"
+                            value={nickname}
+                            onChange={(e) => {
+                                setNickname(e.target.value);
+                            }}
+                            placeholder="MC 닉네임 정하기"
+                            className={`w-full h-16 px-6 rounded-2xl bg-gray-50 border-2 text-lg font-bold text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-0 outline-none transition-all shadow-sm ${nickname.length > 0 && nickname.trim().length < 2
+                                ? 'border-red-300 focus:border-red-500 bg-red-50'
+                                : 'border-gray-200 focus:border-black'
+                                }`}
+                            autoFocus
+                            inputMode="text"
+                            autoCapitalize="off"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            maxLength={12}
+                        />
+
+                        {nickname.length > 0 && nickname.trim().length < 2 && (
+                            <p className="text-red-500 text-xs font-medium px-2 animate-pulse">🚨 닉네임은 2글자 이상 입력해주세요!</p>
+                        )}
+                    </div>
 
                     <p className="mt-1 text-xs text-gray-400 leading-5">예: 현, 민지, 팀장님 등</p>
                 </section>
@@ -185,5 +198,13 @@ export default function CreateRoomPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function CreateRoomPage() {
+    return (
+        <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin w-10 h-10 text-gray-300" /></div>}>
+            <CreateRoomContent />
+        </Suspense>
     );
 }
