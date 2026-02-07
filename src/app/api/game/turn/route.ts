@@ -34,11 +34,14 @@ export async function GET(request: Request) {
         // NOTE: In serverless (Vercel), global variables may reset. But for now this follows the previous pattern.
 
         if (reset || !mixerInstance) {
+            // Check if theme excludes common games
+            const commonGames = (themeCategory.excludeCommon || !commonCategory) ? [] : commonCategory.games;
+
             mixerInstance = new GameMixer(
                 themeCategory.games,
-                commonCategory ? commonCategory.games : []
+                commonGames
             );
-            console.log(`[API] New Mixer initialized`);
+            console.log(`[API] New Mixer initialized (Common Games: ${commonGames.length})`);
         }
 
         // 3. Generate 12 Games (3 Rounds * 4 Games)

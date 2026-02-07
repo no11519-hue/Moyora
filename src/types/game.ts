@@ -27,6 +27,7 @@ export interface GameCategory {
     title: string;
     description: string;
     games: GameItem[];
+    excludeCommon?: boolean; // If true, common games will not be mixed in
 }
 
 export interface GameData {
