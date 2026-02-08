@@ -49,57 +49,68 @@ export class GameMixer {
     public getNextGame(playerCount: number, currentThemeId: string): GameItem | null {
         this.roundsSinceAction++;
 
-        // 1. Determine Source Pool (Theme vs Common)
-        let useTheme = true;
-        const random = Math.random();
+        const isSenior = ['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId);
 
-        // Ratio Logic
-        // Senior Themes: 100% Theme (No Common)
-        if (['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId)) {
-            useTheme = true;
-        } else if (currentThemeId === 'drinking' || currentThemeId === 'party') {
-            // 70% Theme / 30% Common
-            if (random > 0.7) useTheme = false;
+        // Categorize Pools
+        // Theme Pool contains both "Theme Games" (Balance/Questions) and "Person Games" (Vote)
+        const themeBalanceGames = this.validThemePool.filter(g => !g.type.startsWith('vote_'));
+        const themeVoteGames = this.validThemePool.filter(g => g.type.startsWith('vote_'));
+        const commonGames = this.validCommonPool;
+
+        let targetPool: GameItem[] = [];
+        const r = Math.random();
+
+        if (isSenior) {
+            // Senior: 80% Balance, 20% Vote, 0% Common
+            if (r < 0.8) {
+                targetPool = themeBalanceGames;
+                // Fallback if empty
+                if (targetPool.length === 0) targetPool = themeVoteGames;
+            } else {
+                targetPool = themeVoteGames;
+                // Fallback if empty
+                if (targetPool.length === 0) targetPool = themeBalanceGames;
+            }
         } else {
-            // 80% Theme / 20% Common
-            if (random > 0.8) useTheme = false;
+            // General: 70% Balance, 15% Vote, 15% Common
+            if (r < 0.7) {
+                targetPool = themeBalanceGames;
+                if (targetPool.length === 0) targetPool = themeVoteGames.length > 0 ? themeVoteGames : commonGames;
+            } else if (r < 0.85) { // 70% ~ 85% (15%)
+                targetPool = themeVoteGames;
+                if (targetPool.length === 0) targetPool = themeBalanceGames.length > 0 ? themeBalanceGames : commonGames;
+            } else { // 85% ~ 100% (15%)
+                targetPool = commonGames;
+                if (targetPool.length === 0) targetPool = themeBalanceGames.length > 0 ? themeBalanceGames : themeVoteGames;
+            }
         }
 
-        // 2. Select Candidate Pool
-        let primaryPool = useTheme ? this.validThemePool : this.validCommonPool;
-        let secondaryPool = useTheme ? this.validCommonPool : this.validThemePool;
-
-        // Special restriction for Senior Themes: Secondary Pool (Common) is BANNED
-        if (['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId)) {
-            secondaryPool = []; // Empty the fallback pool effectively
+        // Final Safety Fallback: Use everything if target is still empty
+        if (targetPool.length === 0) {
+            targetPool = [...this.validThemePool, ...this.validCommonPool];
         }
 
-        // 3. Filter Candidates
-        let candidates = this.filterCandidates(primaryPool, playerCount);
+        // Filter Candidates from the selected target pool
+        let candidates = this.filterCandidates(targetPool, playerCount);
 
-        // Fallback if no candidates in primary
+        // If specific pool filtered to nothing, try broadening to the whole allowed set
         if (candidates.length === 0) {
-            candidates = this.filterCandidates(secondaryPool, playerCount);
-        }
-
-        // Final fallback: if absolutely nothing
-        if (candidates.length === 0) {
-            // If Senior theme, only recycle Theme Pool
-            const isSenior = ['reply7080', 'bravo_life', 'retro7080', 'goldenlife'].includes(currentThemeId);
-
-            // Clear history to allow repeats
-            this.history = [];
-
-            const all = isSenior ? [...this.validThemePool] : [...this.validThemePool, ...this.validCommonPool];
-            candidates = this.filterCandidates(all, playerCount);
+            // Senior: Try all theme pool
+            // General: Try all theme + common
+            const fallbackAll = isSenior ? [...this.validThemePool] : [...this.validThemePool, ...this.validCommonPool];
+            // Reset history to allow repeats if we are drastically out of options
+            if (this.filterCandidates(fallbackAll, playerCount).length === 0) {
+                this.history = [];
+            }
+            candidates = this.filterCandidates(fallbackAll, playerCount);
         }
 
         if (candidates.length === 0) return null;
 
-        // 4. Pick Random
+        // Pick Random
         const selected = candidates[Math.floor(Math.random() * candidates.length)];
 
-        // 5. Update State
+        // Update State
         this.updateState(selected);
 
         return selected;

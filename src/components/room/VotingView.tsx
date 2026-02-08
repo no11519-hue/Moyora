@@ -351,7 +351,8 @@ export default function VotingView({ votes }: VotingViewProps) {
                     {/* 3. FOOTER AREA (Timer + Controls + Chat Input) */}
                     <div className={`fixed bottom-0 left-0 w-full z-50 px-6 pb-[calc(20px+env(safe-area-inset-bottom))] pt-4 transition-all duration-300 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ${isTimeOver ? 'bg-gray-900/95 backdrop-blur-xl border-t border-white/10' : 'bg-white/95 backdrop-blur-xl border-t border-gray-100'} ${isSeniorMode ? '!bg-white !border-t-4 !border-black' : ''}`} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999 }}>
                         {/* Chat Input moved to Footer */}
-                        {isMissionType && (
+                        {/* Chat Input moved to Footer - Hidden for 'mission_action' (Common Games) */}
+                        {isMissionType && currentQuestion.type !== 'mission_action' && (
                             <div className="w-full max-w-lg mx-auto flex gap-2">
                                 <input
                                     type="text"
@@ -370,6 +371,14 @@ export default function VotingView({ votes }: VotingViewProps) {
                                 >
                                     <Send className={`w-5 h-5 ${isSeniorMode ? 'w-8 h-8' : ''}`} />
                                 </button>
+                            </div>
+                        )}
+                        {/* Message for mission_action only */}
+                        {currentQuestion.type === 'mission_action' && (
+                            <div className="w-full text-center pb-2">
+                                <p className={`font-bold ${isSeniorMode ? 'text-black text-xl' : 'text-gray-500 text-sm'}`}>
+                                    다 같이 행동으로 수행하는 미션입니다!
+                                </p>
                             </div>
                         )}
                         {/* Timer Display */}
