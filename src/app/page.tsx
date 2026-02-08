@@ -28,6 +28,9 @@ export default function Home() {
             <span className="text-brand">QR 찍고 3초컷으로 해결!</span>
           </h1>
 
+          <p className="text-neutral-600 text-[13px] font-bold mb-1">
+            로그인 없이 즐기는 게임
+          </p>
           <p className="text-neutral-500 text-sm leading-snug break-keep">
             처음 만난 자리, <br />
             대화가 자연스럽게 이어지는 아이스브레이커
