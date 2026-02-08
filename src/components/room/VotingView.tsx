@@ -21,8 +21,8 @@ export default function VotingView({ votes }: VotingViewProps) {
     const isFreeVoteType = ['vote_image', 'vote_praise'].includes(currentQuestion?.type || '');
     const isBalanceType = currentQuestion?.type?.startsWith('balance_') || currentQuestion?.type === 'C';
     const isRouletteType = currentQuestion?.type?.startsWith('roulette_');
-    const isMissionType = !isRouletteType && (
-        currentQuestion?.type?.startsWith('mission_') ||
+    const isActionGame = currentQuestion?.type === 'action_game' || currentQuestion?.type?.startsWith('mission_');
+    const isMissionType = !isRouletteType && !isActionGame && (
         currentQuestion?.type?.startsWith('talk_') ||
         currentQuestion?.type === 'Q'
     );
@@ -31,6 +31,7 @@ export default function VotingView({ votes }: VotingViewProps) {
     const [chatMessages, setChatMessages] = useState<{ sender: string, text: string }[]>([]);
     const [chatInput, setChatInput] = useState('');
     const [freeVoteInput, setFreeVoteInput] = useState('');
+    const [hasCompletedAction, setHasCompletedAction] = useState(false);
 
     useEffect(() => {
         if (!room) return;
@@ -139,6 +140,25 @@ export default function VotingView({ votes }: VotingViewProps) {
         await supabase.from('rooms').update({ status: 'result' }).eq('id', room.id);
     };
 
+    const handleActionComplete = async () => {
+        if (isInteractionDisabled || hasCompletedAction || !room || !currentQuestion || !currentUser) return;
+        setIsVoting(true);
+        try {
+            await supabase.from('game_actions' as any).insert({
+                room_id: room.id,
+                question_id: currentQuestion.id,
+                voter_id: currentUser.id,
+                target_value: null,
+                action_type: 'action'
+            });
+            setHasCompletedAction(true);
+        } catch (e) {
+            console.error(e);
+            alert('완료 처리 실패');
+            setIsVoting(false);
+        }
+    };
+
     // Parse options for Balance Game
     let options: string[] = [];
     if (currentQuestion?.options && typeof currentQuestion.options === 'string') {
@@ -225,7 +245,13 @@ export default function VotingView({ votes }: VotingViewProps) {
 
                         {/* Instruction Hint */}
                         <p className={`font-medium ${isSeniorMode ? 'text-base text-gray-600 font-bold' : 'text-xs text-gray-400'}`}>
-                            {isVoteType ? (isFreeVoteType ? '👇 이름을 직접 입력하세요' : '👇 투표할 대상을 선택하세요') : isBalanceType ? '👇 하나를 선택하세요' : '💬 자유롭게 이야기해보세요'}
+                            {isVoteType
+                                ? (isFreeVoteType ? '👇 이름을 직접 입력하세요' : '👇 투표할 대상을 선택하세요')
+                                : isBalanceType
+                                    ? '👇 하나를 선택하세요'
+                                    : isActionGame
+                                        ? '👇 완료 버튼을 눌러주세요'
+                                        : '💬 자유롭게 이야기해보세요'}
                         </p>
                     </div>
                 </div>
@@ -372,6 +398,20 @@ export default function VotingView({ votes }: VotingViewProps) {
                                 </button>
                             </div>
                         )}
+                        {isActionGame && (
+                            <div className="w-full max-w-lg mx-auto">
+                                <button
+                                    onClick={handleActionComplete}
+                                    disabled={isInteractionDisabled || hasCompletedAction}
+                                    className={`w-full h-16 rounded-2xl font-black transition-all flex items-center justify-center gap-3 disabled:bg-gray-300 disabled:text-gray-500
+                                    ${isSeniorMode
+                                            ? 'bg-black text-white border-4 border-black text-3xl shadow-none hover:bg-gray-800'
+                                            : 'bg-emerald-500 text-white text-2xl shadow-xl hover:bg-emerald-600 active:scale-95'}`}
+                                >
+                                    {hasCompletedAction ? '완료됨 ✓' : '완료'}
+                                </button>
+                            </div>
+                        )}
                         {/* Timer Display */}
                         {currentQuestion.timer && (
                             <div className="flex justify-center w-full">
@@ -394,7 +434,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                         )}
 
                         {/* Host Controls INSIDE Footer */}
-                        {currentUser?.is_host && (isMissionType || totalVotes > 0) && (
+                        {currentUser?.is_host && (isMissionType || isActionGame || totalVotes > 0) && (
                             <div className="w-full">
                                 <button
                                     onClick={handleShowResult}
@@ -403,7 +443,7 @@ export default function VotingView({ votes }: VotingViewProps) {
                                             ? 'bg-black text-white border-4 border-black text-3xl shadow-none hover:bg-gray-800'
                                             : 'bg-primary text-white text-2xl shadow-xl hover:bg-primary/90 active:scale-95'}`}
                                 >
-                                    {isMissionType ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
+                                    {isMissionType || isActionGame ? '다음으로 넘어가기 ▶' : '결과 공개하기 🎉'}
                                 </button>
                             </div>
                         )}

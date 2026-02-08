@@ -1,7 +1,7 @@
 // ==========================
 // 게임 진행 엔진 (로직)
 // ==========================
-import { GAME_DB, Game, GameType, QuestionGame, ChoiceGame } from '@/data/games.db';
+import { GAME_DB, Game, QuestionGame, ChoiceGame } from '@/data/games.db';
 import { GameCategory, GameItem } from '@/types/game';
 import { RuleType } from '@/utils/GameMixer';
 
@@ -10,35 +10,29 @@ export type SessionState = {
     rngSeed: number;
 };
 
-export type MixPreset = {
-    weights: Record<RuleType, number>;
+export type MixTargetCounts = Record<RuleType, number>;
+
+const BASE_TARGET_COUNTS: MixTargetCounts = {
+    choice_ab: 18,
+    pick_person: 4,
+    action_game: 3
 };
 
-const DEFAULT_PRESET: MixPreset = {
-    weights: {
-        choice_ab: 0.75,
-        pick_person: 0.15,
-        action_game: 0.1
+export function getSessionTargetCounts(options: {
+    playerCount: number;
+    hasPickPerson: boolean;
+    hasActionGame: boolean;
+}): MixTargetCounts {
+    const counts = { ...BASE_TARGET_COUNTS };
+    if (options.playerCount < 3 || !options.hasPickPerson) {
+        counts.choice_ab += counts.pick_person;
+        counts.pick_person = 0;
     }
-};
-
-const PARTY_PRESET: MixPreset = {
-    weights: {
-        choice_ab: 0.6,
-        pick_person: 0.2,
-        action_game: 0.2
+    if (!options.hasActionGame) {
+        counts.choice_ab += counts.action_game;
+        counts.action_game = 0;
     }
-};
-
-const EXCLUDE_COMMON_THEMES = new Set(['retro7080', 'goldenlife']);
-
-export function getThemeMixPreset(themeId: string): MixPreset {
-    const basePreset = themeId === 'party' ? PARTY_PRESET : DEFAULT_PRESET;
-    const weights = { ...basePreset.weights };
-    if (EXCLUDE_COMMON_THEMES.has(themeId)) {
-        weights.action_game = 0;
-    }
-    return { weights };
+    return counts;
 }
 
 export function buildMixPool(theme: GameCategory, common?: GameCategory): GameItem[] {

@@ -4,7 +4,7 @@ import { GameItem, GameType } from '@/types/game';
 export type RuleType = 'choice_ab' | 'pick_person' | 'action_game';
 
 export type MixConfig = {
-    weights: Record<RuleType, number>;
+    targetCounts: Record<RuleType, number>;
     playerCount: number;
     random?: () => number;
 };
@@ -12,6 +12,7 @@ export type MixConfig = {
 export type MixContext = {
     recentTypes: RuleType[];
     recentIds: string[];
+    remainingCounts: Record<RuleType, number>;
 };
 
 // Define the logical mapping between requested rules and existing types
@@ -72,6 +73,7 @@ export function pickNextGame(games: GameItem[], config: MixConfig, ctx: MixConte
     const recentIds = new Set(ctx.recentIds);
     const lastType = ctx.recentTypes.at(-1) ?? null;
     const pickPersonOnCooldown = ctx.recentTypes.slice(-2).includes('pick_person');
+    const remainingCounts = ctx.remainingCounts ?? { ...config.targetCounts };
 
     const bannedTypes = new Set<RuleType>();
     if (config.playerCount < 3) bannedTypes.add('pick_person');
@@ -85,13 +87,15 @@ export function pickNextGame(games: GameItem[], config: MixConfig, ctx: MixConte
     };
 
     const availableTypes = RULE_TYPES.filter(
-        type => !bannedTypes.has(type) && filteredPools[type].length > 0 && (config.weights[type] ?? 0) > 0
+        type => !bannedTypes.has(type) && filteredPools[type].length > 0 && (remainingCounts[type] ?? 0) > 0
     );
 
-    let selectedType = pickWeightedType(availableTypes, config.weights, rnd);
+    let selectedType = pickWeightedType(availableTypes, remainingCounts, rnd);
 
     if (!selectedType || filteredPools[selectedType].length === 0) {
-        selectedType = !bannedTypes.has('choice_ab') && filteredPools.choice_ab.length > 0 ? 'choice_ab' : null;
+        selectedType = filteredPools.choice_ab.length > 0 && remainingCounts.choice_ab > 0
+            ? 'choice_ab'
+            : null;
     }
 
     if (!selectedType) return null;
@@ -107,6 +111,10 @@ export function pickNextGame(games: GameItem[], config: MixConfig, ctx: MixConte
         [...ctx.recentTypes, selectedType],
         10
     );
+    ctx.remainingCounts = {
+        ...remainingCounts,
+        [selectedType]: Math.max(0, remainingCounts[selectedType] - 1)
+    };
 
     return picked;
 }

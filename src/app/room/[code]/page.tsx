@@ -10,6 +10,7 @@ import LobbyView from '@/components/room/LobbyView';
 import VotingView from '@/components/room/VotingView';
 import ResultView from '@/components/room/ResultView';
 import { Loader2 } from 'lucide-react';
+import { getRuleType } from '@/utils/GameMixer';
 
 export default function RoomPage() {
     const { code } = useParams();
@@ -123,13 +124,18 @@ export default function RoomPage() {
                 const localGame = findGameById(room.current_question_id);
 
                 if (localGame) {
+                    const ruleType = getRuleType(localGame.type);
+                    const overrideTimer = ruleType === 'choice_ab' ? 10 : localGame.timer;
+                    const normalizedType = ruleType === 'action_game' && localGame.type.startsWith('mission_')
+                        ? 'action_game'
+                        : localGame.type;
                     setCurrentQuestion({
                         id: localGame.id || room.current_question_id, // Ensure ID exists
                         category: localGame.category,
-                        type: localGame.type,
+                        type: normalizedType,
                         content: localGame.question,
                         options: localGame.options || null, // Handle undefined
-                        timer: localGame.timer,
+                        timer: overrideTimer,
                         created_at: new Date().toISOString() // Mock
                     });
                 } else {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GAME_DATA } from '@/data/gameData';
-import { buildMixPool, getThemeMixPreset } from '@/lib/games.engine';
-import { MixContext, pickNextGame } from '@/utils/GameMixer';
+import { buildMixPool, getSessionTargetCounts } from '@/lib/games.engine';
+import { getRuleType, MixContext, pickNextGame, RuleType } from '@/utils/GameMixer';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +25,6 @@ export async function GET(request: Request) {
             throw new Error(`Theme '${themeId}' not found`);
         }
 
-        const mixPreset = getThemeMixPreset(themeId);
         const pool = buildMixPool(themeCategory, commonCategory).map(game =>
             game.id
                 ? game
@@ -34,20 +33,28 @@ export async function GET(request: Request) {
                     id: Buffer.from(game.question).toString('base64').substring(0, 8)
                 }
         );
+        const hasActionGame = pool.some(game => getRuleType(game.type) === 'action_game');
+        const hasPickPerson = pool.some(game => getRuleType(game.type) === 'pick_person');
+        const targetCounts = getSessionTargetCounts({
+            playerCount,
+            hasPickPerson,
+            hasActionGame
+        });
         console.log(`[API] Mix pool size: ${pool.length}`);
 
-        // 3. Generate 12 Games (3 Rounds * 4 Games)
+        // 3. Generate 25 Games (fixed distribution per session)
         const turnData = [];
         const ctx: MixContext = {
             recentTypes: [],
-            recentIds: []
+            recentIds: [],
+            remainingCounts: targetCounts
         };
 
         if (recentTypesParam) {
             try {
                 const parsed = JSON.parse(recentTypesParam);
                 if (Array.isArray(parsed)) {
-                    ctx.recentTypes = parsed.filter(type => type === 'choice_ab' || type === 'pick_person' || type === 'action_game');
+                    ctx.recentTypes = parsed.filter((type: RuleType) => type === 'choice_ab' || type === 'pick_person' || type === 'action_game');
                 }
             } catch {
                 console.warn('[API] Failed to parse recentTypes param');
@@ -68,10 +75,11 @@ export async function GET(request: Request) {
         if (reset) {
             ctx.recentIds = [];
             ctx.recentTypes = [];
+            ctx.remainingCounts = targetCounts;
         }
 
-        for (let i = 0; i < 12; i++) {
-            const game = pickNextGame(pool, { weights: mixPreset.weights, playerCount }, ctx);
+        for (let i = 0; i < 25; i++) {
+            const game = pickNextGame(pool, { targetCounts, playerCount }, ctx);
             if (game) {
                 const id = game.id || Buffer.from(game.question).toString('base64').substring(0, 8);
                 const gameWithId = {
