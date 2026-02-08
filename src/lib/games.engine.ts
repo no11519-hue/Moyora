@@ -1,12 +1,46 @@
 // ==========================
 // 게임 진행 엔진 (로직)
 // ==========================
-import { GAME_DB, Game, GameType, QuestionGame, ChoiceGame } from '@/data/games.db';
+import { GAME_DB, Game, QuestionGame, ChoiceGame } from '@/data/games.db';
+import { GameCategory, GameItem } from '@/types/game';
+import { RuleType } from '@/utils/GameMixer';
 
 export type SessionState = {
     usedIds: Set<string>;
     rngSeed: number;
 };
+
+export type MixTargetCounts = Record<RuleType, number>;
+
+const BASE_TARGET_COUNTS: MixTargetCounts = {
+    choice_ab: 18,
+    pick_person: 4,
+    action_game: 3
+};
+
+export function getSessionTargetCounts(options: {
+    playerCount: number;
+    hasPickPerson: boolean;
+    hasActionGame: boolean;
+}): MixTargetCounts {
+    const counts = { ...BASE_TARGET_COUNTS };
+    if (options.playerCount < 3 || !options.hasPickPerson) {
+        counts.choice_ab += counts.pick_person;
+        counts.pick_person = 0;
+    }
+    if (!options.hasActionGame) {
+        counts.choice_ab += counts.action_game;
+        counts.action_game = 0;
+    }
+    return counts;
+}
+
+export function buildMixPool(theme: GameCategory, common?: GameCategory): GameItem[] {
+    if (theme.excludeCommon) {
+        return [...theme.games];
+    }
+    return [...theme.games, ...(common?.games ?? [])];
+}
 
 // ==========================
 // 유틸: 시드 랜덤 & 헬퍼

@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GAME_DATA } from '@/data/gameData';
-import { GameMixer } from '@/utils/GameMixer';
-
-// Simple in-memory session (Not ideal for serverless but sufficient for MVP/Demo)
-let mixerInstance: GameMixer | null = null;
+import { buildMixPool, getSessionTargetCounts } from '@/lib/games.engine';
+import { getRuleType, MixContext, pickNextGame, RuleType } from '@/utils/GameMixer';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +11,8 @@ export async function GET(request: Request) {
     const countStr = searchParams.get('count') || '4';
     const reset = searchParams.get('reset') === 'true';
     const playerCount = parseInt(countStr, 10);
+    const recentTypesParam = searchParams.get('recentTypes');
+    const recentIdsParam = searchParams.get('recentIds');
 
     try {
         console.log(`[API] Generating turn for Theme: ${themeId}, Players: ${playerCount}, Reset: ${reset}`);
@@ -25,29 +25,61 @@ export async function GET(request: Request) {
             throw new Error(`Theme '${themeId}' not found`);
         }
 
-        // 2. Initialize Mixer (Singleton-ish for demo, or per request if stateless desired)
-        // Since GameMixer is stateful (history), we should technically persist it per room.
-        // However, this API is called once per 'Turn' (batch of games). 
-        // We can just instantiate a new Mixer and generate a batch, but history won't persist across turns.
-        // Given the requirement for '10 round cooldown', we need persistence.
-        // For MVP without Redis, we'll use the global variable but reset it if 'reset=true' is passed.
-        // NOTE: In serverless (Vercel), global variables may reset. But for now this follows the previous pattern.
+        const pool = buildMixPool(themeCategory, commonCategory).map(game =>
+            game.id
+                ? game
+                : {
+                    ...game,
+                    id: Buffer.from(game.question).toString('base64').substring(0, 8)
+                }
+        );
+        const hasActionGame = pool.some(game => getRuleType(game.type) === 'action_game');
+        const hasPickPerson = pool.some(game => getRuleType(game.type) === 'pick_person');
+        const targetCounts = getSessionTargetCounts({
+            playerCount,
+            hasPickPerson,
+            hasActionGame
+        });
+        console.log(`[API] Mix pool size: ${pool.length}`);
 
-        if (reset || !mixerInstance) {
-            // Check if theme excludes common games
-            const commonGames = (themeCategory.excludeCommon || !commonCategory) ? [] : commonCategory.games;
+        // 3. Generate 25 Games (fixed distribution per session)
+        const turnData = [];
+        const ctx: MixContext = {
+            recentTypes: [],
+            recentIds: [],
+            remainingCounts: targetCounts
+        };
 
-            mixerInstance = new GameMixer(
-                themeCategory.games,
-                commonGames
-            );
-            console.log(`[API] New Mixer initialized (Common Games: ${commonGames.length})`);
+        if (recentTypesParam) {
+            try {
+                const parsed = JSON.parse(recentTypesParam);
+                if (Array.isArray(parsed)) {
+                    ctx.recentTypes = parsed.filter((type: RuleType) => type === 'choice_ab' || type === 'pick_person' || type === 'action_game');
+                }
+            } catch {
+                console.warn('[API] Failed to parse recentTypes param');
+            }
         }
 
-        // 3. Generate 12 Games (3 Rounds * 4 Games)
-        const turnData = [];
-        for (let i = 0; i < 12; i++) {
-            const game = mixerInstance!.getNextGame(playerCount, themeId);
+        if (recentIdsParam) {
+            try {
+                const parsed = JSON.parse(recentIdsParam);
+                if (Array.isArray(parsed)) {
+                    ctx.recentIds = parsed.filter(id => typeof id === 'string');
+                }
+            } catch {
+                console.warn('[API] Failed to parse recentIds param');
+            }
+        }
+
+        if (reset) {
+            ctx.recentIds = [];
+            ctx.recentTypes = [];
+            ctx.remainingCounts = targetCounts;
+        }
+
+        for (let i = 0; i < 25; i++) {
+            const game = pickNextGame(pool, { targetCounts, playerCount }, ctx);
             if (game) {
                 const id = game.id || Buffer.from(game.question).toString('base64').substring(0, 8);
                 const gameWithId = {

@@ -7,12 +7,48 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Check, Loader2, Info } from 'lucide-react';
 
 const CATEGORIES = [
-    { id: 'icebreaking', label: '아이스브레이킹', emoji: '🧊', desc: '어색한 공기를 깨는 가벼운 질문!' },
-    { id: 'meeting', label: '미팅/소개팅', emoji: '💘', desc: '상대방의 마음을 알아보는 설렘 가득 질문' },
-    { id: 'drinking', label: '술자리 게임', emoji: '🍻', desc: '분위기 띄우는 화끈한 매운맛 질문' },
-    { id: 'crewmode', label: '팀 빌딩/워크숍', emoji: '⚡', desc: '우리 팀 단합력 UP! 칭찬과 격려' },
-    { id: 'reply7080', label: '응답하라 7080', emoji: '📼', desc: '추억의 동창회/동호회 토크 (공통게임X)' },
-    { id: 'bravo_life', label: '브라보 마이 라이프', emoji: '🌟', desc: '골든에이지 취향/건강/여행 토크 (공통게임X)' },
+    {
+        id: 'icebreaking',
+        label: '아이스브레이킹',
+        emoji: '🧊',
+        desc: '어색한 공기를 깨는 가벼운 질문',
+        examples: ['학창시절 선생님 몰래 딴짓왕은?', '평생 라면 vs 평생 치킨']
+    },
+    {
+        id: 'meeting',
+        label: '미팅/소개팅',
+        emoji: '💘',
+        desc: '호감 포인트를 알아보는 설레는 질문',
+        examples: ['첫인상이 내 이상형인 사람은?', '연락 문제: 잠수 vs 1분마다 톡']
+    },
+    {
+        id: 'drinking',
+        label: '술자리 게임',
+        emoji: '🍻',
+        desc: '분위기 올리는 화끈한 밸런스 질문',
+        examples: ['100% 1억 vs 50% 100억', '취하면 흑역사 만들 것 같은 사람?']
+    },
+    {
+        id: 'crewmode',
+        label: '팀 빌딩/워크숍',
+        emoji: '⚡',
+        desc: '우리 팀 단합력 UP! 칭찬과 격려',
+        examples: ['우리 모임의 숨은 해결사는?', '가장 먼저 유튜버로 대박날 사람?']
+    },
+    {
+        id: 'reply7080',
+        label: '응답하라 7080',
+        emoji: '📼',
+        desc: '추억의 동창회 토크 (공통 게임 제외)',
+        examples: ['학창시절 추억은?', '첫사랑의 기억']
+    },
+    {
+        id: 'bravo_life',
+        label: '브라보 마이 라이프',
+        emoji: '🌟',
+        desc: '골든에이지 취향/건강/여행 토크 (공통 게임 제외)',
+        examples: ['버킷리스트 뭐할래?', '건강 vs 지혜']
+    },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]['id'];
@@ -95,7 +131,11 @@ function CreateRoomContent() {
             </header>
 
             {/* Content */}
-            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 pt-3 pb-3">
+            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 pt-4 pb-3">
+                <div className="mb-4">
+                    <p className="text-xs text-gray-500">1분이면 준비 완료</p>
+                    <p className="text-lg font-bold text-gray-900">방 정보를 입력하고 바로 시작하세요.</p>
+                </div>
                 {/* Step 1 */}
                 <section className="mb-4">
                     <label className="flex items-center gap-2 text-[14px] font-semibold text-gray-800 mb-2">
@@ -130,7 +170,7 @@ function CreateRoomContent() {
                         )}
                     </div>
 
-                    <p className="mt-1 text-xs text-gray-400 leading-5">예: 현, 민지, 팀장님 등</p>
+                    <p className="mt-1 text-xs text-gray-400 leading-5">예: 현, 민지, 팀장님</p>
                 </section>
 
                 {/* Step 2 */}
@@ -159,13 +199,21 @@ function CreateRoomContent() {
                                     ].join(' ')}
                                 >
                                     <span className="text-3xl shrink-0">{cat.emoji}</span>
-                                    <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                                    <div className="flex-1 min-w-0 flex flex-col gap-1">
                                         <span className="text-base font-bold text-gray-900">
                                             {cat.label}
                                         </span>
                                         <span className="text-xs text-gray-500">
                                             {cat.desc}
                                         </span>
+                                        <div className="space-y-1 pt-1">
+                                            {cat.examples.map((example) => (
+                                                <div key={example} className="flex items-center gap-1.5 text-[11px] text-gray-400">
+                                                    <span className="w-1 h-1 rounded-full bg-gray-300" />
+                                                    <span className="truncate">{example}</span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                     {isSelected && (
                                         <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center shrink-0 animate-fade-in">
@@ -182,7 +230,7 @@ function CreateRoomContent() {
                 <div className="mt-2 p-2.5 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 flex gap-2 items-start">
                     <Info className="w-4 h-4 shrink-0 mt-0.5 text-blue-600" />
                     <p className="text-[11px] leading-[1.4] text-blue-700">
-                        <span className="font-bold">TIP</span>: 어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 무난해요!
+                        <span className="font-bold">TIP</span>: 어색한 사이라면 <span className="font-bold">'아이스브레이킹'</span>이 가장 무난해요.
                     </p>
                 </div>
             </div>
@@ -218,7 +266,16 @@ function CreateRoomContent() {
 
 export default function CreateRoomPage() {
     return (
-        <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin w-10 h-10 text-gray-300" /></div>}>
+        <Suspense
+            fallback={
+                <div className="flex h-screen items-center justify-center bg-white">
+                    <div className="flex flex-col items-center gap-3 text-gray-400">
+                        <Loader2 className="animate-spin w-10 h-10" />
+                        <p className="text-sm font-medium">방 만들기 화면 불러오는 중...</p>
+                    </div>
+                </div>
+            }
+        >
             <CreateRoomContent />
         </Suspense>
     );
