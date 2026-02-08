@@ -86,34 +86,9 @@ export default function Home() {
                         {theme.sub} <ArrowRight className="w-3 h-3 inline-block ml-0.5" />
                       </span>
                     </div>
-                    <p className="text-[12px] text-neutral-500 mb-2 leading-snug">
+                    <p className="text-[12px] text-neutral-500 leading-snug">
                       {theme.description}
                     </p>
-
-                    {/* Example Questions Preview */}
-                    <div className="space-y-1">
-                      {theme.examples.slice(0, 2).map((ex, j) => (
-                        <div key={j} className="flex items-center gap-1.5 opacity-70">
-                          <div className="w-1 h-1 rounded-full bg-neutral-400 shrink-0" />
-                          <span className="text-[12px] text-neutral-600 truncate">{ex}</span>
-                        </div>
-                      ))}
-                    </div>
-                    {theme.examples.length > 2 && (
-                      <details className="mt-2 text-[11px] text-neutral-500">
-                        <summary className="cursor-pointer list-none inline-flex items-center gap-1 rounded-full bg-neutral-50 px-2 py-1 hover:bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900">
-                          예시 더 보기
-                        </summary>
-                        <div className="mt-2 space-y-1">
-                          {theme.examples.slice(2).map((ex, j) => (
-                            <div key={j} className="flex items-center gap-1.5 opacity-70">
-                              <div className="w-1 h-1 rounded-full bg-neutral-300 shrink-0" />
-                              <span className="text-[12px] text-neutral-600 truncate">{ex}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </details>
-                    )}
                   </div>
                 </div>
               </Link>
@@ -162,47 +137,41 @@ const THEME_CARDS = [
     title: "아이스브레이킹",
     sub: "어색함 해제",
     icon: "🧊",
-    description: "첫 만남에 부담 없이 시작하는 가벼운 질문.",
-    examples: ["학창시절 선생님 몰래 딴짓왕은?", "평생 라면 vs 평생 치킨", "새 학기 자리 메이트로 어울릴 사람은?"]
+    description: "첫 만남에 부담 없이 시작하는 가벼운 질문."
   },
   {
     id: "meeting",
     title: "미팅/소개팅",
     sub: "설레는 탐색전",
     icon: "💘",
-    description: "호감과 가치관을 자연스럽게 알아봐요.",
-    examples: ["첫인상이 내 이상형인 사람은?", "연락 문제: 잠수 vs 1분마다 톡", "호감 포인트는 매너 vs 유머?"]
+    description: "호감과 가치관을 자연스럽게 알아봐요."
   },
   {
     id: "drinking",
     title: "술자리/회식",
     sub: "텐션 UP!",
     icon: "🍻",
-    description: "분위기를 올려주는 밸런스와 벌칙 게임.",
-    examples: ["100% 1억 vs 50% 100억", "취하면 흑역사 만들 것 같은 사람?", "술자리 건배사를 잘할 사람은?"]
+    description: "분위기를 올려주는 밸런스와 벌칙 게임."
   },
   {
     id: "crewmode",
     title: "팀 빌딩/워크숍",
     sub: "훈훈한 마무리",
     icon: "⚡",
-    description: "팀 분위기와 협업 감각을 높이는 질문.",
-    examples: ["우리 모임의 숨은 해결사는?", "가장 먼저 유튜버로 대박날 사람?", "이 팀에서 에너지가 가장 넘치는 사람은?"]
+    description: "팀 분위기와 협업 감각을 높이는 질문."
   },
   {
     id: "reply7080",
     title: "응답하라 7080",
     sub: "추억의 동창회",
     icon: "📼",
-    description: "추억 토크와 공감 포인트를 함께 나눠요.",
-    examples: ["학창시절 추억은?", "첫사랑의 기억", "다 같이 부르고 싶은 노래는?"]
+    description: "추억 토크와 공감 포인트를 함께 나눠요."
   },
   {
     id: "bravo_life",
     title: "브라보 마이 라이프",
     sub: "골든에이지 취향",
     icon: "🌟",
-    description: "취향과 일상을 이야기하는 따뜻한 질문.",
-    examples: ["버킷리스트 뭐할래?", "건강 vs 지혜", "지금 가장 하고 싶은 취미는?"]
+    description: "취향과 일상을 이야기하는 따뜻한 질문."
   },
 ];
